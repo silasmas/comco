@@ -1,0 +1,285 @@
+/**
+ * Surcharges COMCO pour le thème Elixir.
+ */
+
+.navbar-elixir {
+  margin-bottom: -3.688rem;
+}
+
+.navbar-elixir .navbar {
+  align-items: center;
+  min-height: auto;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.navbar-elixir .navbar-nav {
+  align-items: center;
+}
+
+.comco-logo {
+  display: block;
+  height: 42px;
+  width: auto;
+  max-width: none;
+}
+
+.comco-logo-footer {
+  height: 42px;
+}
+
+.navbar-brand {
+  margin-right: 1.5rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1;
+}
+
+.theme-slider .slide-subtitle {
+  color: var(--elixir-warning, #fdd428) !important;
+}
+
+.theme-slider .swiper-nav [class*="swiper-"] {
+  color: #fff !important;
+}
+
+.theme-slider .swiper-nav [class*="swiper-"]:hover,
+.theme-slider .swiper-nav [class*="swiper-"]:focus {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+
+.theme-slider:hover .swiper-nav [class*="swiper-"],
+.theme-slider:focus .swiper-nav [class*="swiper-"] {
+  opacity: 0.85;
+}
+
+.footer-tagline {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.comco-tab-pane .nav-link {
+  color: var(--elixir-primary, #2a3855);
+}
+
+.comco-tab-pane .nav-link.active {
+  border-bottom: 3px solid var(--elixir-warning, #fdd428);
+}
+
+.comco-tab-pane .card-featured {
+  border-left: 4px solid var(--elixir-warning, #fdd428);
+}
+
+.content-page img {
+  max-width: 100%;
+  height: auto;
+}
+
+.theme-slider .bg-holder {
+  background-position: center center;
+  background-size: cover;
+}
+
+.comco-alert-box {
+  border-left: 4px solid var(--elixir-danger, #b33641);
+}
+
+.legal-pdf-viewer {
+  min-height: 720px;
+  border: 0;
+  width: 100%;
+}
+
+.comco-pagination .pagination {
+  margin-bottom: 0;
+  gap: 0.25rem;
+}
+
+.comco-pagination .page-link {
+  color: var(--elixir-primary, #2a3855);
+  border-radius: 0.25rem;
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+.comco-pagination .page-item.active .page-link {
+  background-color: var(--elixir-primary, #2a3855);
+  border-color: var(--elixir-primary, #2a3855);
+  color: #fff;
+}
+
+.comco-pagination .page-item.disabled .page-link {
+  color: #949494;
+}
+
+.comco-legal-list .comco-legal-tab {
+  border: 1px solid #e1e1e1;
+  border-left: 4px solid transparent;
+  border-radius: 0.375rem;
+  margin-bottom: 0.75rem;
+  padding: 1rem;
+  text-align: left;
+  background: #fff;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.comco-legal-list .comco-legal-tab:hover {
+  background: #fafafa;
+}
+
+.comco-legal-list .comco-legal-tab.is-selected {
+  border-left-color: var(--elixir-warning, #fdd428);
+  background: #fffdf2;
+}
+
+.comco-legal-list .comco-legal-tab.is-selected .comco-legal-tab-title {
+  color: #8a6d00;
+}
+
+.comco-legal-list .comco-legal-tab:not(.is-selected) .comco-legal-tab-title {
+  color: var(--elixir-primary, #2a3855);
+}
+
+.comco-legal-tab-desc {
+  color: #7f7f7f;
+}
+
+.comco-gallery-link {
+  position: relative;
+  cursor: zoom-in;
+}
+
+.comco-gallery-link:hover .comco-gallery-thumb {
+  transform: scale(1.04);
+}
+
+.comco-gallery-thumb {
+  transition: transform 0.25s ease;
+}
+
+.comco-form-feedback {
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+
+.alert-success.comco-form-feedback {
+  border-left-color: #36b36a;
+}
+
+.alert-danger.comco-form-feedback {
+  border-left-color: #b33641;
+}
+
+.alert-info.comco-form-feedback {
+  border-left-color: #3680b3;
+}
+
+.alert-warning.comco-form-feedback {
+  border-left-color: var(--elixir-warning, #fdd428);
+}
+
+.comco-toast-container {
+  z-index: 11000;
+  pointer-events: none;
+}
+
+.comco-toast-container .toast {
+  pointer-events: auto;
+}
+
+.comco-toast {
+  min-width: min(100vw - 2rem, 380px);
+  max-width: 420px;
+  border: 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  animation: comcoToastIn 0.35s ease;
+}
+
+@keyframes comcoToastIn {
+  from {
+    opacity: 0;
+    transform: translateX(1.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.comco-toast__header {
+  border-bottom: 0;
+  padding: 0.85rem 1rem 0.35rem;
+  background: transparent;
+}
+
+.comco-toast__title {
+  font-size: 0.95rem;
+}
+
+.comco-toast__body {
+  padding: 0.35rem 1rem 1rem 2.35rem;
+  font-size: 0.925rem;
+  line-height: 1.5;
+}
+
+.comco-toast__icon {
+  font-size: 1.1rem;
+}
+
+.comco-toast__close {
+  opacity: 0.65;
+}
+
+.comco-toast__close:hover {
+  opacity: 1;
+}
+
+.comco-toast--success {
+  background: #f3fbf6;
+  border-left: 5px solid #36b36a;
+}
+
+.comco-toast--success .comco-toast__icon,
+.comco-toast--success .comco-toast__title {
+  color: #248a4f;
+}
+
+.comco-toast--danger {
+  background: #fff5f5;
+  border-left: 5px solid #b33641;
+}
+
+.comco-toast--danger .comco-toast__icon,
+.comco-toast--danger .comco-toast__title {
+  color: #9b2c34;
+}
+
+.comco-toast--info {
+  background: #f2f8fc;
+  border-left: 5px solid #3680b3;
+}
+
+.comco-toast--info .comco-toast__icon,
+.comco-toast--info .comco-toast__title {
+  color: #2a6a94;
+}
+
+.comco-toast--warning {
+  background: #fffdf2;
+  border-left: 5px solid var(--elixir-warning, #fdd428);
+}
+
+.comco-toast--warning .comco-toast__icon,
+.comco-toast--warning .comco-toast__title {
+  color: #8a6d00;
+}
+
+@media (min-width: 992px) {
+  .navbar-elixir .navbar-collapse {
+    align-items: center;
+  }
+}
