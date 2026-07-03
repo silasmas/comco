@@ -20,18 +20,8 @@ class FilamentInstallAccess
    */
   public function handle(Request $request, Closure $next): Response
   {
-    if (
-      SiteDeploymentState::requiresInstallation()
-      && (
-        $request->routeIs('filament.admin.pages.site-installation')
-        || $request->is('livewire/*')
-      )
-    ) {
-      return $next($request);
-    }
-
     if (SiteDeploymentState::requiresInstallation()) {
-      return redirect()->to(SiteDeploymentState::installationUrl());
+      return redirect()->to(SiteDeploymentState::installationPath());
     }
 
     if (auth()->check()) {

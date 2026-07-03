@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Filament\Pages\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Support\SiteDeploymentState;
 use App\Support\SiteInstaller;
@@ -96,11 +95,11 @@ class InstallationActionController extends Controller
     }
 
     return redirect()
-      ->to(Dashboard::getUrl())
+      ->to(SiteDeploymentState::adminPathPrefix())
       ->with('installation_notice', [
         'type' => 'success',
         'title' => 'Site mis en ligne',
-        'body' => 'Le site public est maintenant accessible.',
+        'body' => 'Le site public est maintenant accessible. Connectez-vous au panneau d\'administration.',
       ]);
   }
 

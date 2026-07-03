@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\SiteInstallation;
 use App\Filament\Widgets\ContactMessagesChartWidget;
 use App\Filament\Widgets\EServiceSubmissionsChartWidget;
 use App\Filament\Widgets\ForumActivityChartWidget;
@@ -69,9 +68,7 @@ class AdminPanelProvider extends PanelProvider
 
     if (SiteDeploymentState::requiresInstallation()) {
       return $panel
-        ->pages([
-          SiteInstallation::class,
-        ])
+        ->pages([])
         ->widgets([]);
     }
 

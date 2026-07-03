@@ -53,6 +53,8 @@ class SiteInstallation extends Page
 
   protected static ?int $navigationSort = 99;
 
+  protected static bool $isDiscovered = false;
+
   /**
    * @var array<string, mixed>|null
    */

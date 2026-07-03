@@ -24,12 +24,7 @@ class RedirectAdminToInstallation
       return $next($request);
     }
 
-    if ($request->routeIs(
-      'filament.admin.pages.site-installation',
-      'filament.admin.auth.logout',
-      'livewire.update',
-      'comco.install.*',
-    )) {
+    if ($request->routeIs('comco.installation.show', 'comco.install.*')) {
       return $next($request);
     }
 
@@ -37,6 +32,9 @@ class RedirectAdminToInstallation
       SiteDeploymentState::installationPath(),
       SiteDeploymentState::adminPathPrefix() . '/install',
       SiteDeploymentState::adminPathPrefix() . '/install/*',
+      'public/admin/site-installation',
+      'public/admin/install',
+      'public/admin/install/*',
     )) {
       return $next($request);
     }

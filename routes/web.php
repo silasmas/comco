@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\InstallationActionController;
+use App\Http\Controllers\Admin\InstallationPageController;
 use App\Http\Controllers\Public\ForumController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\PageController;
@@ -15,14 +16,23 @@ Route::prefix('admin/install')
     Route::get('optimize', [InstallationActionController::class, 'optimize'])->name('optimize');
     Route::get('run-all', [InstallationActionController::class, 'runAll'])->name('run-all');
     Route::get('launch', [InstallationActionController::class, 'launch'])->name('launch');
+    Route::post('save-configuration', [InstallationPageController::class, 'saveConfiguration'])->name('save-configuration');
+    Route::post('create-super-admin', [InstallationPageController::class, 'createSuperAdmin'])->name('create-super-admin');
   });
 
-Route::prefix('public/admin/install')->group(function (): void {
-  Route::get('migrate', [InstallationActionController::class, 'migrate']);
-  Route::get('storage-link', [InstallationActionController::class, 'storageLink']);
-  Route::get('optimize', [InstallationActionController::class, 'optimize']);
-  Route::get('run-all', [InstallationActionController::class, 'runAll']);
-  Route::get('launch', [InstallationActionController::class, 'launch']);
+Route::get('admin/site-installation', [InstallationPageController::class, 'show'])->name('comco.installation.show');
+
+Route::prefix('public/admin')->group(function (): void {
+  Route::get('site-installation', [InstallationPageController::class, 'show']);
+  Route::prefix('install')->group(function (): void {
+    Route::get('migrate', [InstallationActionController::class, 'migrate']);
+    Route::get('storage-link', [InstallationActionController::class, 'storageLink']);
+    Route::get('optimize', [InstallationActionController::class, 'optimize']);
+    Route::get('run-all', [InstallationActionController::class, 'runAll']);
+    Route::get('launch', [InstallationActionController::class, 'launch']);
+    Route::post('save-configuration', [InstallationPageController::class, 'saveConfiguration']);
+    Route::post('create-super-admin', [InstallationPageController::class, 'createSuperAdmin']);
+  });
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
