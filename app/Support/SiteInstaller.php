@@ -117,6 +117,25 @@ class SiteInstaller
   }
 
   /**
+   * Exécute le seeder des articles d'actualité.
+   *
+   * @return string Message de confirmation
+   */
+  public static function runPostsSeeder(): string
+  {
+    if (! SiteDeploymentState::databaseIsReady()) {
+      throw new \RuntimeException('Exécutez d\'abord les migrations avant d\'importer les articles.');
+    }
+
+    Artisan::call('db:seed', [
+      '--class' => 'Database\\Seeders\\PostsSeeder',
+      '--force' => true,
+    ]);
+
+    return trim(Artisan::output()) ?: '15 articles d\'actualité importés ou mis à jour avec succès.';
+  }
+
+  /**
    * Finalise le déploiement et rend le site public accessible.
    *
    * @throws \RuntimeException Si aucun super administrateur n'existe

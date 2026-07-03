@@ -14,6 +14,7 @@ Route::prefix('admin/install')
     Route::get('migrate', [InstallationActionController::class, 'migrate'])->name('migrate');
     Route::get('storage-link', [InstallationActionController::class, 'storageLink'])->name('storage-link');
     Route::get('optimize', [InstallationActionController::class, 'optimize'])->name('optimize');
+    Route::get('seed-posts', [InstallationActionController::class, 'seedPosts'])->name('seed-posts');
     Route::get('run-all', [InstallationActionController::class, 'runAll'])->name('run-all');
     Route::get('launch', [InstallationActionController::class, 'launch'])->name('launch');
     Route::post('save-configuration', [InstallationPageController::class, 'saveConfiguration'])->name('save-configuration');
@@ -28,6 +29,7 @@ Route::prefix('public/admin')->group(function (): void {
     Route::get('migrate', [InstallationActionController::class, 'migrate']);
     Route::get('storage-link', [InstallationActionController::class, 'storageLink']);
     Route::get('optimize', [InstallationActionController::class, 'optimize']);
+    Route::get('seed-posts', [InstallationActionController::class, 'seedPosts']);
     Route::get('run-all', [InstallationActionController::class, 'runAll']);
     Route::get('launch', [InstallationActionController::class, 'launch']);
     Route::post('save-configuration', [InstallationPageController::class, 'saveConfiguration']);

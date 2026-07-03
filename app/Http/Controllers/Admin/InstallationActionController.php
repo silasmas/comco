@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Filament\Pages\SiteInstallation;
 use App\Support\SiteDeploymentState;
 use App\Support\SiteInstaller;
 use Illuminate\Http\RedirectResponse;
@@ -82,6 +83,22 @@ class InstallationActionController extends Controller
   }
 
   /**
+   * Importe les articles de démonstration via le seeder.
+   */
+  public function seedPosts(): RedirectResponse
+  {
+    $this->ensureAccess();
+
+    try {
+      $message = SiteInstaller::runPostsSeeder();
+    } catch (\Throwable $exception) {
+      return $this->backToInstallation('error', 'Seeder impossible', $exception->getMessage());
+    }
+
+    return $this->backToInstallation('success', 'Articles importés', $message);
+  }
+
+  /**
    * Finalise le déploiement et redirige vers le tableau de bord.
    */
   public function launch(): RedirectResponse
@@ -130,8 +147,22 @@ class InstallationActionController extends Controller
    */
   private function backToInstallation(string $type, string $title, string $body): RedirectResponse
   {
+    $url = $this->installationReturnUrl();
+
     return redirect()
-      ->to(SiteDeploymentState::installationPath())
+      ->to($url)
       ->with('installation_notice', compact('type', 'title', 'body'));
+  }
+
+  /**
+   * URL de retour après une action (Filament si connecté, page standalone sinon).
+   */
+  private function installationReturnUrl(): string
+  {
+    if (Auth::check() && ! SiteDeploymentState::requiresInstallation()) {
+      return SiteInstallation::getUrl();
+    }
+
+    return SiteDeploymentState::installationPath();
   }
 }

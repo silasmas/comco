@@ -24,7 +24,11 @@ class RedirectAdminToInstallation
       return $next($request);
     }
 
-    if ($request->routeIs('comco.installation.show', 'comco.install.*')) {
+    if ($request->routeIs(
+      'comco.installation.show',
+      'comco.install.*',
+      'filament.admin.pages.installation-production',
+    )) {
       return $next($request);
     }
 

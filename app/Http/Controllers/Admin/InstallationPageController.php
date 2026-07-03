@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Support\InstallationPageData;
 use App\Support\SiteDeploymentState;
 use App\Support\SiteInstaller;
 use Illuminate\Http\RedirectResponse;
@@ -25,25 +26,7 @@ class InstallationPageController extends Controller
       abort(403);
     }
 
-    return view('admin.site-installation', [
-      'adminPrefix' => SiteDeploymentState::adminPathPrefix(),
-      'requiresInstallation' => SiteDeploymentState::requiresInstallation(),
-      'notice' => session('installation_notice'),
-      'configValues' => [
-        'app_url' => old('app_url', config('app.url')),
-        'app_env' => old('app_env', config('app.env')),
-        'app_debug' => old('app_debug', config('app.debug') ? 'true' : 'false'),
-        'institution_full_name' => old('institution_full_name', config('institution.fullName')),
-        'institution_name' => old('institution_name', config('institution.name')),
-        'institution_email' => old('institution_email', config('institution.contact.email')),
-        'mail_from_address' => old('mail_from_address', config('mail.from.address')),
-        'mail_from_name' => old('mail_from_name', config('mail.from.name')),
-      ],
-      'adminDefaults' => [
-        'name' => old('name', 'Super Admin'),
-        'email' => old('email', 'superadmin@comco.gouv.cd'),
-      ],
-    ]);
+    return view('admin.site-installation', InstallationPageData::forView());
   }
 
   /**
@@ -122,8 +105,12 @@ class InstallationPageController extends Controller
    */
   private function back(string $type, string $title, string $body): RedirectResponse
   {
+    $url = Auth::check() && ! SiteDeploymentState::requiresInstallation()
+      ? \App\Filament\Pages\SiteInstallation::getUrl()
+      : SiteDeploymentState::installationPath();
+
     return redirect()
-      ->to(SiteDeploymentState::installationPath())
+      ->to($url)
       ->with('installation_notice', compact('type', 'title', 'body'));
   }
 
@@ -134,11 +121,13 @@ class InstallationPageController extends Controller
    */
   private function backWithInput(string $type, string $title, string $body, bool $onlyAdmin = false): RedirectResponse
   {
-    $redirect = redirect()
-      ->to(SiteDeploymentState::installationPath())
+    $url = Auth::check() && ! SiteDeploymentState::requiresInstallation()
+      ? \App\Filament\Pages\SiteInstallation::getUrl()
+      : SiteDeploymentState::installationPath();
+
+    return redirect()
+      ->to($url)
       ->with('installation_notice', compact('type', 'title', 'body'))
       ->withInput();
-
-    return $redirect;
   }
 }
