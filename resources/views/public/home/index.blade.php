@@ -95,62 +95,6 @@
     </div>
   </section>
 
-  {{-- Onglets COMCO : actualité / à la une / activités --}}
-  <section class="bg-100">
-    <div class="container">
-      <div class="text-center mb-6">
-        <h3 class="fs-2 fs-md-3">Actualités &amp; activités</h3>
-        <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
-      </div>
-      <ul class="nav nav-tabs justify-content-center border-0 mb-5 comco-tab-pane" role="tablist">
-        @foreach (config('institution.homeTabs') as $key => $label)
-          <li class="nav-item" role="presentation">
-            <button class="nav-link @if($loop->first) active @endif fw-semi-bold border-0" data-bs-toggle="tab" data-bs-target="#pane-{{ $key }}" type="button" role="tab">
-              {{ $label }}
-            </button>
-          </li>
-        @endforeach
-      </ul>
-      <div class="tab-content">
-        <div class="tab-pane fade show active" id="pane-actualite" role="tabpanel">
-          @livewire('public.latest-posts', ['variant' => 'elixir'])
-        </div>
-        <div class="tab-pane fade" id="pane-une" role="tabpanel">
-          @php $featured = config('institution.featured'); @endphp
-          <div class="card card-featured">
-            <div class="row g-0">
-              <div class="col-md-5">
-                <img class="card-img h-100 object-fit-cover" src="{{ comcoAsset($featured['image']) }}" alt="{{ $featured['title'] }}">
-              </div>
-              <div class="col-md-7">
-                <div class="card-body p-4 p-lg-5">
-                  <span class="badge bg-danger mb-2">A la une</span>
-                  <h4 class="mb-3">{{ $featured['title'] }}</h4>
-                  <p class="mb-0">{{ $featured['text'] }}</p>
-                  <p class="text-500 mt-3 mb-0">comco.gouv.cd — {{ $featured['date'] }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="tab-pane fade" id="pane-activites" role="tabpanel">
-          <div class="row g-4">
-            @foreach (config('institution.activities') as $activity)
-              <div class="col-md-6">
-                <div class="card h-100">
-                  <div class="card-body p-4">
-                    <h5>{{ $activity['title'] }}</h5>
-                    <p class="mb-0 text-500">{{ $activity['text'] }}</p>
-                  </div>
-                </div>
-              </div>
-            @endforeach
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   {{-- Story + vidéo --}}
   <section class="pt-0">
     <div class="container">
@@ -326,14 +270,59 @@
     </div>
   </section>
 
-  {{-- Latest News --}}
+  {{-- Actualités & activités --}}
   <section class="bg-100">
     <div class="container">
       <div class="text-center mb-6">
-        <h3 class="fs-2 fs-md-3">Nos articles</h3>
+        <h3 class="fs-2 fs-md-3">Actualités &amp; activités</h3>
         <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
       </div>
-      @livewire('public.latest-posts', ['variant' => 'elixir'])
+      <ul class="nav nav-tabs justify-content-center border-0 mb-5 comco-tab-pane" role="tablist">
+        @foreach (config('institution.homeTabs') as $key => $label)
+          <li class="nav-item" role="presentation">
+            <button class="nav-link @if($loop->first) active @endif fw-semi-bold border-0" data-bs-toggle="tab" data-bs-target="#pane-{{ $key }}" type="button" role="tab">
+              {{ $label }}
+            </button>
+          </li>
+        @endforeach
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="pane-actualite" role="tabpanel">
+          @livewire('public.latest-posts', ['variant' => 'elixir'])
+        </div>
+        <div class="tab-pane fade" id="pane-une" role="tabpanel">
+          @php $featured = config('institution.featured'); @endphp
+          <div class="card card-featured">
+            <div class="row g-0">
+              <div class="col-md-5">
+                <img class="card-img h-100 object-fit-cover" src="{{ comcoAsset($featured['image']) }}" alt="{{ $featured['title'] }}">
+              </div>
+              <div class="col-md-7">
+                <div class="card-body p-4 p-lg-5">
+                  <span class="badge bg-danger mb-2">A la une</span>
+                  <h4 class="mb-3">{{ $featured['title'] }}</h4>
+                  <p class="mb-0">{{ $featured['text'] }}</p>
+                  <p class="text-500 mt-3 mb-0">comco.gouv.cd — {{ $featured['date'] }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="pane-activites" role="tabpanel">
+          <div class="row g-4">
+            @foreach (config('institution.activities') as $activity)
+              <div class="col-md-6">
+                <div class="card h-100">
+                  <div class="card-body p-4">
+                    <h5>{{ $activity['title'] }}</h5>
+                    <p class="mb-0 text-500">{{ $activity['text'] }}</p>
+                  </div>
+                </div>
+              </div>
+            @endforeach
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
