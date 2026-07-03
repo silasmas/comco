@@ -287,11 +287,14 @@ class SiteInstallation extends Page
   /**
    * Redirige vers une action système exécutée hors Livewire.
    *
-   * @param string $routeName Nom de la route comco.install.*
+   * @param string $action Segment d'URL (migrate, storage-link, optimize, run-all, launch)
    */
-  protected function redirectToInstallAction(string $routeName): void
+  protected function redirectToInstallAction(string $action): void
   {
-    $this->redirect(route($routeName, [], false), navigate: false);
+    $this->redirect(
+      SiteDeploymentState::adminPathPrefix() . '/install/' . $action,
+      navigate: false,
+    );
   }
 
   /**
@@ -309,7 +312,7 @@ class SiteInstallation extends Page
         ->requiresConfirmation()
         ->modalHeading('Mettre le site en ligne')
         ->modalDescription('Le site public sera accessible. Assurez-vous d\'avoir exécuté les migrations et créé le super administrateur.')
-        ->action(fn () => $this->redirectToInstallAction('comco.install.launch'));
+        ->action(fn () => $this->redirectToInstallAction('launch'));
     }
 
     $actions[] = Action::make('runAll')
@@ -318,7 +321,7 @@ class SiteInstallation extends Page
       ->requiresConfirmation()
       ->modalHeading('Installation complète')
       ->modalDescription('Exécute les migrations, crée le lien storage et met en cache la configuration.')
-      ->action(fn () => $this->redirectToInstallAction('comco.install.run-all'));
+      ->action(fn () => $this->redirectToInstallAction('run-all'));
 
     return $actions;
   }
@@ -338,19 +341,19 @@ class SiteInstallation extends Page
                 ->label('Exécuter les migrations')
                 ->icon(Heroicon::OutlinedCircleStack)
                 ->requiresConfirmation()
-                ->action(fn () => $this->redirectToInstallAction('comco.install.migrate')),
+                ->action(fn () => $this->redirectToInstallAction('migrate')),
               Action::make('storageLink')
                 ->label('Créer le lien storage')
                 ->icon(Heroicon::OutlinedLink)
                 ->requiresConfirmation()
-                ->action(fn () => $this->redirectToInstallAction('comco.install.storage-link')),
+                ->action(fn () => $this->redirectToInstallAction('storage-link')),
               Action::make('optimize')
                 ->label('Optimiser pour la production')
                 ->icon(Heroicon::OutlinedBolt)
                 ->requiresConfirmation()
                 ->modalHeading('Optimiser pour la production')
                 ->modalDescription('Sur le serveur : met la configuration en cache pour de meilleures performances. En local : vide les caches sans bloquer le développement.')
-                ->action(fn () => $this->redirectToInstallAction('comco.install.optimize')),
+                ->action(fn () => $this->redirectToInstallAction('optimize')),
             ]),
           ]),
         Section::make('Configuration de base')

@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\SiteInstallation;
 use App\Filament\Widgets\ContactMessagesChartWidget;
 use App\Filament\Widgets\EServiceSubmissionsChartWidget;
 use App\Filament\Widgets\ForumActivityChartWidget;
@@ -10,6 +11,7 @@ use App\Filament\Widgets\PostsChartWidget;
 use App\Filament\Widgets\SubmissionStatsWidget;
 use App\Http\Middleware\FilamentInstallAccess;
 use App\Http\Middleware\RedirectAdminToInstallation;
+use App\Support\SiteDeploymentState;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -27,11 +29,12 @@ use YacoubAlhaidari\FilamentTour\FilamentTourPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
+  /**
+   * Configure le panneau Filament admin COMCO.
+   */
   public function panel(Panel $panel): Panel
   {
-    $tour = config('comco-filament.tour', []);
-
-    return $panel
+    $panel = $panel
       ->default()
       ->id('admin')
       ->path('admin')
@@ -48,6 +51,33 @@ class AdminPanelProvider extends PanelProvider
         'info' => Color::hex('#3680b3'),
         'gray' => Color::hex('#2a3855'),
       ])
+      ->middleware([
+        EncryptCookies::class,
+        AddQueuedCookiesToResponse::class,
+        StartSession::class,
+        AuthenticateSession::class,
+        ShareErrorsFromSession::class,
+        PreventRequestForgery::class,
+        SubstituteBindings::class,
+        DisableBladeIconComponents::class,
+        DispatchServingFilamentEvent::class,
+        RedirectAdminToInstallation::class,
+      ])
+      ->authMiddleware([
+        FilamentInstallAccess::class,
+      ]);
+
+    if (SiteDeploymentState::requiresInstallation()) {
+      return $panel
+        ->pages([
+          SiteInstallation::class,
+        ])
+        ->widgets([]);
+    }
+
+    $tour = config('comco-filament.tour', []);
+
+    return $panel
       ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
       ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
       ->pages([])
@@ -97,21 +127,6 @@ class AdminPanelProvider extends PanelProvider
               ['text' => 'Terminer', 'action' => 'complete', 'secondary' => false],
             ],
           ]),
-      ])
-      ->middleware([
-        EncryptCookies::class,
-        AddQueuedCookiesToResponse::class,
-        StartSession::class,
-        AuthenticateSession::class,
-        ShareErrorsFromSession::class,
-        PreventRequestForgery::class,
-        SubstituteBindings::class,
-        DisableBladeIconComponents::class,
-        DispatchServingFilamentEvent::class,
-        RedirectAdminToInstallation::class,
-      ])
-      ->authMiddleware([
-        FilamentInstallAccess::class,
       ]);
   }
 }

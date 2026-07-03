@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\Response;
@@ -126,11 +127,51 @@ class SiteDeploymentState
   }
 
   /**
+   * Exécute une requête sur un modèle si sa table existe.
+   *
+   * @template T
+   * @param class-string<Model> $modelClass Classe Eloquent
+   * @param callable(): T $callback Requête à exécuter
+   * @param T $default Valeur par défaut
+   * @return T
+   */
+  public static function whenModelTableReady(string $modelClass, callable $callback, mixed $default = null): mixed
+  {
+    try {
+      $table = (new $modelClass())->getTable();
+
+      if (! Schema::hasTable($table)) {
+        return $default;
+      }
+
+      return $callback();
+    } catch (\Throwable) {
+      return $default;
+    }
+  }
+
+  /**
+   * Préfixe URL de l'administration selon la requête courante.
+   */
+  public static function adminPathPrefix(): string
+  {
+    try {
+      if (request()->is('public/admin', 'public/admin/*')) {
+        return '/public/admin';
+      }
+    } catch (\Throwable) {
+      //
+    }
+
+    return '/admin';
+  }
+
+  /**
    * Chemin relatif de la page d'installation Filament.
    */
   public static function installationPath(): string
   {
-    return '/admin/site-installation';
+    return self::adminPathPrefix() . '/site-installation';
   }
 
   /**
@@ -152,8 +193,16 @@ class SiteDeploymentState
       return null;
     }
 
-    if ($request->is('admin', 'admin/*', 'livewire/*', 'admin/install', 'admin/install/*')) {
-      return redirect()->to(self::installationUrl());
+    if ($request->is(
+      'admin',
+      'admin/*',
+      'livewire/*',
+      'admin/install',
+      'admin/install/*',
+      'public/admin',
+      'public/admin/*',
+    )) {
+      return redirect()->to(self::installationPath());
     }
 
     if ($request->is('up')) {

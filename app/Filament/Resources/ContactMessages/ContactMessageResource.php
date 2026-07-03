@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ContactMessages;
 
 use App\Filament\Concerns\HasComcoResourceMeta;
+use App\Filament\Concerns\HasSafeNavigationBadge;
 use App\Filament\Resources\ContactMessages\Pages\EditContactMessage;
 use App\Filament\Resources\ContactMessages\Pages\ListContactMessages;
 use App\Filament\Resources\ContactMessages\Schemas\ContactMessageForm;
@@ -17,6 +18,7 @@ use Filament\Tables\Table;
 class ContactMessageResource extends Resource
 {
   use HasComcoResourceMeta;
+  use HasSafeNavigationBadge;
 
   protected static ?string $model = ContactMessage::class;
 
@@ -69,9 +71,7 @@ class ContactMessageResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = static::getModel()::query()->where('status', 'pending')->count();
-
-        return $count > 0 ? (string) $count : null;
+        return static::countNavigationBadge(static::getModel(), ['status' => 'pending']);
     }
 
     public static function getNavigationBadgeColor(): string|array|null

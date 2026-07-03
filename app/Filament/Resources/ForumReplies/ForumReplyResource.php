@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ForumReplies;
 
 use App\Filament\Concerns\HasComcoResourceMeta;
+use App\Filament\Concerns\HasSafeNavigationBadge;
 use App\Filament\Resources\ForumReplies\Pages\EditForumReply;
 use App\Filament\Resources\ForumReplies\Pages\ListForumReplies;
 use App\Filament\Resources\ForumReplies\Schemas\ForumReplyForm;
@@ -17,6 +18,7 @@ use Filament\Tables\Table;
 class ForumReplyResource extends Resource
 {
   use HasComcoResourceMeta;
+  use HasSafeNavigationBadge;
 
   protected static ?string $model = ForumReply::class;
 
@@ -69,9 +71,7 @@ class ForumReplyResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = static::getModel()::query()->where('status', 'pending')->count();
-
-        return $count > 0 ? (string) $count : null;
+        return static::countNavigationBadge(static::getModel(), ['status' => 'pending']);
     }
 
     public static function getNavigationBadgeColor(): string|array|null

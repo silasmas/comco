@@ -24,7 +24,16 @@ class ShowDeploymentPage
       return $next($request);
     }
 
-    if ($request->is('admin', 'admin/*', 'admin/install', 'admin/install/*', 'up', 'livewire/*')) {
+    if ($request->is(
+      'admin',
+      'admin/*',
+      'admin/install',
+      'admin/install/*',
+      'public/admin',
+      'public/admin/*',
+      'up',
+      'livewire/*',
+    )) {
       return $next($request);
     }
 

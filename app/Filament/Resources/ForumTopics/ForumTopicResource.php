@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ForumTopics;
 
 use App\Filament\Concerns\HasComcoResourceMeta;
+use App\Filament\Concerns\HasSafeNavigationBadge;
 use App\Filament\Resources\ForumTopics\Pages\CreateForumTopic;
 use App\Filament\Resources\ForumTopics\Pages\EditForumTopic;
 use App\Filament\Resources\ForumTopics\Pages\ListForumTopics;
@@ -19,6 +20,7 @@ use Filament\Tables\Table;
 class ForumTopicResource extends Resource
 {
   use HasComcoResourceMeta;
+  use HasSafeNavigationBadge;
 
   protected static ?string $model = ForumTopic::class;
 
@@ -74,9 +76,7 @@ class ForumTopicResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = static::getModel()::query()->where('status', 'pending')->count();
-
-        return $count > 0 ? (string) $count : null;
+        return static::countNavigationBadge(static::getModel(), ['status' => 'pending']);
     }
 
     public static function getNavigationBadgeColor(): string|array|null

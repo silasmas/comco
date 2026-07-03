@@ -17,6 +17,14 @@ Route::prefix('admin/install')
     Route::get('launch', [InstallationActionController::class, 'launch'])->name('launch');
   });
 
+Route::prefix('public/admin/install')->group(function (): void {
+  Route::get('migrate', [InstallationActionController::class, 'migrate']);
+  Route::get('storage-link', [InstallationActionController::class, 'storageLink']);
+  Route::get('optimize', [InstallationActionController::class, 'optimize']);
+  Route::get('run-all', [InstallationActionController::class, 'runAll']);
+  Route::get('launch', [InstallationActionController::class, 'launch']);
+});
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::view('/contact', 'public.pages.contact')->name('contact');
 Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');

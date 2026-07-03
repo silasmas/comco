@@ -33,8 +33,22 @@ class RedirectAdminToInstallation
       return $next($request);
     }
 
-    if ($request->is('admin', 'admin/*', 'livewire/*') && ! $request->routeIs('comco.install.*')) {
-      return redirect()->to(SiteDeploymentState::installationUrl());
+    if ($request->is(
+      SiteDeploymentState::installationPath(),
+      SiteDeploymentState::adminPathPrefix() . '/install',
+      SiteDeploymentState::adminPathPrefix() . '/install/*',
+    )) {
+      return $next($request);
+    }
+
+    if ($request->is(
+      'admin',
+      'admin/*',
+      'public/admin',
+      'public/admin/*',
+      'livewire/*',
+    )) {
+      return redirect()->to(SiteDeploymentState::installationPath());
     }
 
     return $next($request);
