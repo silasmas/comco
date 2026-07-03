@@ -10,7 +10,6 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use App\Filament\Pages\Dashboard;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\CanAuthorizeAccess;
 use Filament\Pages\Page;
@@ -101,10 +100,26 @@ class SiteInstallation extends Page
   }
 
   /**
-   * Préremplit les formulaires avec la configuration actuelle.
+   * Préremplit les formulaires et affiche les retours d'actions système.
    */
   public function mount(): void
   {
+    $notice = session()->pull('installation_notice');
+
+    if (is_array($notice)) {
+      $notification = Notification::make()
+        ->title($notice['title'] ?? 'Installation')
+        ->body($notice['body'] ?? '');
+
+      if (($notice['type'] ?? '') === 'success') {
+        $notification->success();
+      } else {
+        $notification->danger();
+      }
+
+      $notification->send();
+    }
+
     $this->configForm->fill([
       'app_url' => config('app.url'),
       'app_env' => config('app.env'),
@@ -199,76 +214,22 @@ class SiteInstallation extends Page
   }
 
   /**
-   * Exécute les migrations de la base de données.
-   */
-  public function runMigrations(): void
-  {
-    try {
-      $output = SiteInstaller::runMigrations();
-    } catch (\Throwable $exception) {
-      Notification::make()
-        ->danger()
-        ->title('Migrations impossible')
-        ->body($exception->getMessage())
-        ->send();
-
-      return;
-    }
-
-    Notification::make()
-      ->success()
-      ->title('Migrations exécutées')
-      ->body($output)
-      ->send();
-  }
-
-  /**
-   * Crée le lien symbolique storage.
-   */
-  public function runStorageLink(): void
-  {
-    $output = SiteInstaller::createStorageLink();
-
-    Notification::make()
-      ->success()
-      ->title('Lien storage')
-      ->body($output)
-      ->send();
-  }
-
-  /**
-   * Optimise l'application pour la production.
-   */
-  public function runOptimize(): void
-  {
-    try {
-      $output = SiteInstaller::optimizeApplication(full: false);
-    } catch (\Throwable $exception) {
-      Notification::make()
-        ->danger()
-        ->title('Optimisation impossible')
-        ->body($exception->getMessage())
-        ->send();
-
-      return;
-    }
-
-    Notification::make()
-      ->success()
-      ->title('Optimisation terminée')
-      ->body($output)
-      ->send();
-
-    $this->redirect(static::getUrl(), navigate: false);
-  }
-
-  /**
    * Enregistre la configuration de base dans le fichier .env.
    */
   public function saveConfiguration(): void
   {
-    $data = $this->configForm->getState();
-    $updated = SiteInstaller::applyBaseConfiguration($data);
+    try {
+      $data = $this->configForm->getState();
+      $updated = SiteInstaller::applyBaseConfiguration($data);
+    } catch (\Throwable $exception) {
+      Notification::make()
+        ->danger()
+        ->title('Configuration impossible')
+        ->body($exception->getMessage())
+        ->send();
+
+      return;
+    }
 
     Notification::make()
       ->success()
@@ -324,6 +285,16 @@ class SiteInstallation extends Page
   }
 
   /**
+   * Redirige vers une action système exécutée hors Livewire.
+   *
+   * @param string $routeName Nom de la route comco.install.*
+   */
+  protected function redirectToInstallAction(string $routeName): void
+  {
+    $this->redirect(route($routeName, [], false), navigate: false);
+  }
+
+  /**
    * @return array<Action>
    */
   protected function getHeaderActions(): array
@@ -338,40 +309,16 @@ class SiteInstallation extends Page
         ->requiresConfirmation()
         ->modalHeading('Mettre le site en ligne')
         ->modalDescription('Le site public sera accessible. Assurez-vous d\'avoir exécuté les migrations et créé le super administrateur.')
-        ->action('launchSite');
+        ->action(fn () => $this->redirectToInstallAction('comco.install.launch'));
     }
 
     $actions[] = Action::make('runAll')
-        ->label('Tout installer')
-        ->icon(Heroicon::OutlinedPlay)
-        ->requiresConfirmation()
-        ->modalHeading('Installation complète')
-        ->modalDescription('Exécute les migrations, crée le lien storage et met en cache la configuration.')
-        ->action(function (): void {
-          try {
-            $messages = [
-              SiteInstaller::runMigrations(),
-              SiteInstaller::createStorageLink(),
-              SiteInstaller::optimizeApplication(full: false),
-            ];
-          } catch (\Throwable $exception) {
-            Notification::make()
-              ->danger()
-              ->title('Installation impossible')
-              ->body($exception->getMessage())
-              ->send();
-
-            return;
-          }
-
-          Notification::make()
-            ->success()
-            ->title('Installation terminée')
-            ->body(implode(' | ', $messages))
-            ->send();
-
-          $this->redirect(static::getUrl(), navigate: false);
-        });
+      ->label('Tout installer')
+      ->icon(Heroicon::OutlinedPlay)
+      ->requiresConfirmation()
+      ->modalHeading('Installation complète')
+      ->modalDescription('Exécute les migrations, crée le lien storage et met en cache la configuration.')
+      ->action(fn () => $this->redirectToInstallAction('comco.install.run-all'));
 
     return $actions;
   }
@@ -384,24 +331,26 @@ class SiteInstallation extends Page
     return $schema
       ->components([
         Section::make('Étapes système')
-          ->description('Actions à exécuter lors du déploiement en production.')
+          ->description('Prépare le serveur de production : migrations, lien storage, puis cache Laravel (config, routes, vues) pour accélérer le site. En local, « Optimiser » vide seulement les caches — le cache production s\'applique à la mise en ligne.')
           ->schema([
             Actions::make([
               Action::make('migrate')
                 ->label('Exécuter les migrations')
                 ->icon(Heroicon::OutlinedCircleStack)
                 ->requiresConfirmation()
-                ->action('runMigrations'),
+                ->action(fn () => $this->redirectToInstallAction('comco.install.migrate')),
               Action::make('storageLink')
                 ->label('Créer le lien storage')
                 ->icon(Heroicon::OutlinedLink)
                 ->requiresConfirmation()
-                ->action('runStorageLink'),
+                ->action(fn () => $this->redirectToInstallAction('comco.install.storage-link')),
               Action::make('optimize')
                 ->label('Optimiser pour la production')
                 ->icon(Heroicon::OutlinedBolt)
                 ->requiresConfirmation()
-                ->action('runOptimize'),
+                ->modalHeading('Optimiser pour la production')
+                ->modalDescription('Sur le serveur : met la configuration en cache pour de meilleures performances. En local : vide les caches sans bloquer le développement.')
+                ->action(fn () => $this->redirectToInstallAction('comco.install.optimize')),
             ]),
           ]),
         Section::make('Configuration de base')
@@ -445,31 +394,5 @@ class SiteInstallation extends Page
     }
 
     return static::getResourceDescription();
-  }
-
-  /**
-   * Met le site en ligne et désactive la page publique de déploiement.
-   */
-  public function launchSite(): void
-  {
-    try {
-      SiteInstaller::finalizeDeployment();
-    } catch (\Throwable $exception) {
-      Notification::make()
-        ->danger()
-        ->title('Mise en ligne impossible')
-        ->body($exception->getMessage())
-        ->send();
-
-      return;
-    }
-
-    Notification::make()
-      ->success()
-      ->title('Site mis en ligne')
-      ->body('Le site public est maintenant accessible. Vous pouvez accéder au tableau de bord.')
-      ->send();
-
-    $this->redirect(Dashboard::getUrl(), navigate: true);
   }
 }

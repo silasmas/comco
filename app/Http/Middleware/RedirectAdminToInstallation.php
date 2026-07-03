@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Filament\Pages\SiteInstallation;
 use App\Support\SiteDeploymentState;
 use Closure;
 use Illuminate\Http\Request;
@@ -29,12 +28,13 @@ class RedirectAdminToInstallation
       'filament.admin.pages.site-installation',
       'filament.admin.auth.logout',
       'livewire.update',
+      'comco.install.*',
     )) {
       return $next($request);
     }
 
-    if ($request->is('admin', 'admin/*', 'livewire/*')) {
-      return redirect()->to(SiteInstallation::getUrl());
+    if ($request->is('admin', 'admin/*', 'livewire/*') && ! $request->routeIs('comco.install.*')) {
+      return redirect()->to(SiteDeploymentState::installationUrl());
     }
 
     return $next($request);

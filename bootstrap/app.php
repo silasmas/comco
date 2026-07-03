@@ -1,6 +1,5 @@
 <?php
 
-use App\Filament\Pages\SiteInstallation;
 use App\Http\Middleware\ShowDeploymentPage;
 use App\Support\SiteDeploymentState;
 use Illuminate\Database\QueryException;
@@ -16,9 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->prependToGroup('web', [
-            ShowDeploymentPage::class,
-        ]);
+        $middleware->prepend(ShowDeploymentPage::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
@@ -26,18 +23,10 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $exceptions->render(function (QueryException $exception, Request $request) {
-            if (SiteDeploymentState::isInstalled()) {
-                return null;
-            }
+            return SiteDeploymentState::fallbackResponse($request);
+        });
 
-            if ($request->is('admin', 'admin/*', 'livewire/*')) {
-                return redirect()->to(SiteInstallation::getUrl());
-            }
-
-            if (! $request->is('up')) {
-                return response()->view('public.deployment', [], 503);
-            }
-
-            return null;
+        $exceptions->render(function (\PDOException $exception, Request $request) {
+            return SiteDeploymentState::fallbackResponse($request);
         });
     })->create();

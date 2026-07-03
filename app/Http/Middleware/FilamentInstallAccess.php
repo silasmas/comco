@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Filament\Pages\SiteInstallation;
 use App\Support\SiteDeploymentState;
 use Closure;
 use Illuminate\Http\Request;
@@ -32,7 +31,7 @@ class FilamentInstallAccess
     }
 
     if (SiteDeploymentState::requiresInstallation()) {
-      return redirect()->to(SiteInstallation::getUrl());
+      return redirect()->to(SiteDeploymentState::installationUrl());
     }
 
     if (auth()->check()) {

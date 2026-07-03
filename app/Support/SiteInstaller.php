@@ -46,11 +46,19 @@ class SiteInstaller
    */
   public static function optimizeApplication(bool $full = false): string
   {
+    if (SiteDeploymentState::isLocalHostRequest()) {
+      Artisan::call('config:clear');
+      Artisan::call('route:clear');
+      Artisan::call('view:clear');
+
+      return 'En local : caches vidés. Le cache production complet sera appliqué automatiquement à la mise en ligne sur le serveur.';
+    }
+
     Artisan::call('config:clear');
     Artisan::call('config:cache');
 
     if (! $full) {
-      return 'Configuration mise en cache. Les routes et vues seront mises en cache à la mise en ligne du site.';
+      return 'Configuration mise en cache. Routes et vues : cache appliqué à la mise en ligne du site.';
     }
 
     Artisan::call('route:cache');
@@ -120,6 +128,9 @@ class SiteInstaller
     }
 
     SiteDeploymentState::markAsInstalled();
-    self::optimizeApplication(full: true);
+
+    if (! SiteDeploymentState::isLocalHostRequest()) {
+      self::optimizeApplication(full: true);
+    }
   }
 }

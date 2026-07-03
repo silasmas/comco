@@ -3,7 +3,9 @@
 namespace App\Support;
 
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Gère l'état de déploiement / installation initiale du site COMCO.
@@ -29,6 +31,25 @@ class SiteDeploymentState
   }
 
   /**
+   * Indique si la requête provient d'un poste de développement local.
+   */
+  public static function isLocalHostRequest(): bool
+  {
+    try {
+      $host = strtolower(request()->getHost());
+
+      if (in_array($host, ['localhost', '127.0.0.1', '[::1]'], true)) {
+        return true;
+      }
+
+      return str_ends_with($host, '.test')
+        || str_ends_with($host, '.localhost');
+    } catch (\Throwable) {
+      return false;
+    }
+  }
+
+  /**
    * Indique si le site public doit afficher la page de déploiement.
    */
   public static function isDeploying(): bool
@@ -37,7 +58,7 @@ class SiteDeploymentState
       return false;
     }
 
-    if (app()->isLocal()) {
+    if (self::isLocalHostRequest()) {
       return false;
     }
 
@@ -53,7 +74,7 @@ class SiteDeploymentState
       return false;
     }
 
-    if (app()->isLocal()) {
+    if (self::isLocalHostRequest()) {
       return self::hasIncompleteSetup();
     }
 
@@ -105,6 +126,44 @@ class SiteDeploymentState
   }
 
   /**
+   * Chemin relatif de la page d'installation Filament.
+   */
+  public static function installationPath(): string
+  {
+    return '/admin/site-installation';
+  }
+
+  /**
+   * URL de la page d'installation Filament (sans dépendre du boot complet).
+   */
+  public static function installationUrl(): string
+  {
+    return self::installationPath();
+  }
+
+  /**
+   * Réponse de secours lorsque la base n'est pas prête avant installation.
+   *
+   * @param Request $request Requête HTTP entrante
+   */
+  public static function fallbackResponse(Request $request): ?Response
+  {
+    if (self::isInstalled()) {
+      return null;
+    }
+
+    if ($request->is('admin', 'admin/*', 'livewire/*', 'admin/install', 'admin/install/*')) {
+      return redirect()->to(self::installationUrl());
+    }
+
+    if ($request->is('up')) {
+      return null;
+    }
+
+    return response()->view('public.deployment', [], 503);
+  }
+
+  /**
    * Marque le site comme installé et accessible au public.
    */
   public static function markAsInstalled(): void
@@ -143,7 +202,7 @@ class SiteDeploymentState
    */
   public static function syncLocalInstallationMarker(): void
   {
-    if (! app()->isLocal() || self::isInstalled()) {
+    if (! self::isLocalHostRequest() || self::isInstalled()) {
       return;
     }
 
