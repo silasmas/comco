@@ -61,6 +61,50 @@ class SiteDeploymentState
   }
 
   /**
+   * Indique si la base de données est joignable et migrée (table users).
+   */
+  public static function databaseIsReady(): bool
+  {
+    try {
+      return Schema::hasTable('users');
+    } catch (\Throwable) {
+      return false;
+    }
+  }
+
+  /**
+   * Exécute une requête utilisateur sans lever d'exception si la base n'est pas prête.
+   *
+   * @template T
+   * @param callable(): T $callback Requête à exéuter
+   * @param T $default Valeur par défaut en cas d'échec
+   * @return T
+   */
+  public static function whenDatabaseReady(callable $callback, mixed $default = null): mixed
+  {
+    if (! self::databaseIsReady()) {
+      return $default;
+    }
+
+    try {
+      return $callback();
+    } catch (\Throwable) {
+      return $default;
+    }
+  }
+
+  /**
+   * Indique si au moins un super administrateur existe.
+   */
+  public static function hasSuperAdmin(): bool
+  {
+    return (bool) self::whenDatabaseReady(
+      fn () => User::query()->where('is_super_admin', true)->exists(),
+      false,
+    );
+  }
+
+  /**
    * Marque le site comme installé et accessible au public.
    */
   public static function markAsInstalled(): void
@@ -87,15 +131,11 @@ class SiteDeploymentState
    */
   public static function hasIncompleteSetup(): bool
   {
-    try {
-      if (! Schema::hasTable('users')) {
-        return true;
-      }
-
-      return ! User::query()->where('is_super_admin', true)->exists();
-    } catch (\Throwable) {
+    if (! self::databaseIsReady()) {
       return true;
     }
+
+    return ! self::hasSuperAdmin();
   }
 
   /**

@@ -23,9 +23,16 @@ class FilamentInstallAccess
   {
     if (
       SiteDeploymentState::requiresInstallation()
-      && $request->routeIs('filament.admin.pages.site-installation')
+      && (
+        $request->routeIs('filament.admin.pages.site-installation')
+        || $request->is('livewire/*')
+      )
     ) {
       return $next($request);
+    }
+
+    if (SiteDeploymentState::requiresInstallation()) {
+      return redirect()->to(SiteInstallation::getUrl());
     }
 
     if (auth()->check()) {

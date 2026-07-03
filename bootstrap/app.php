@@ -1,10 +1,13 @@
 <?php
 
+use App\Filament\Pages\SiteInstallation;
+use App\Http\Middleware\ShowDeploymentPage;
+use App\Support\SiteDeploymentState;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-use App\Http\Middleware\ShowDeploymentPage;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->appendToGroup('web', [
+        $middleware->prependToGroup('web', [
             ShowDeploymentPage::class,
         ]);
     })
@@ -21,4 +24,20 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+
+        $exceptions->render(function (QueryException $exception, Request $request) {
+            if (SiteDeploymentState::isInstalled()) {
+                return null;
+            }
+
+            if ($request->is('admin', 'admin/*', 'livewire/*')) {
+                return redirect()->to(SiteInstallation::getUrl());
+            }
+
+            if (! $request->is('up')) {
+                return response()->view('public.deployment', [], 503);
+            }
+
+            return null;
+        });
     })->create();

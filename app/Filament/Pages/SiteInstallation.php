@@ -83,7 +83,7 @@ class SiteInstallation extends Page
       return true;
     }
 
-    return ! User::query()->where('is_super_admin', true)->exists();
+    return ! SiteDeploymentState::hasSuperAdmin();
   }
 
   /**
@@ -203,7 +203,17 @@ class SiteInstallation extends Page
    */
   public function runMigrations(): void
   {
-    $output = SiteInstaller::runMigrations();
+    try {
+      $output = SiteInstaller::runMigrations();
+    } catch (\Throwable $exception) {
+      Notification::make()
+        ->danger()
+        ->title('Migrations impossible')
+        ->body($exception->getMessage())
+        ->send();
+
+      return;
+    }
 
     Notification::make()
       ->success()
@@ -231,13 +241,25 @@ class SiteInstallation extends Page
    */
   public function runOptimize(): void
   {
-    $output = SiteInstaller::optimizeApplication();
+    try {
+      $output = SiteInstaller::optimizeApplication(full: false);
+    } catch (\Throwable $exception) {
+      Notification::make()
+        ->danger()
+        ->title('Optimisation impossible')
+        ->body($exception->getMessage())
+        ->send();
+
+      return;
+    }
 
     Notification::make()
       ->success()
       ->title('Optimisation terminée')
       ->body($output)
       ->send();
+
+    $this->redirect(static::getUrl(), navigate: false);
   }
 
   /**
@@ -262,19 +284,29 @@ class SiteInstallation extends Page
   {
     $data = $this->adminForm->getState();
 
-    if ($data['promote_current_user'] ?? false) {
-      $user = Auth::user();
+    try {
+      if ($data['promote_current_user'] ?? false) {
+        $user = Auth::user();
 
-      if ($user instanceof User) {
-        $user->update(['is_super_admin' => true]);
+        if ($user instanceof User) {
+          $user->update(['is_super_admin' => true]);
+        }
       }
-    }
 
-    SiteInstaller::createSuperAdmin(
-      name: $data['name'],
-      email: $data['email'],
-      password: $data['password'],
-    );
+      SiteInstaller::createSuperAdmin(
+        name: $data['name'],
+        email: $data['email'],
+        password: $data['password'],
+      );
+    } catch (\Throwable $exception) {
+      Notification::make()
+        ->danger()
+        ->title('Création impossible')
+        ->body($exception->getMessage())
+        ->send();
+
+      return;
+    }
 
     Notification::make()
       ->success()
@@ -316,17 +348,29 @@ class SiteInstallation extends Page
         ->modalHeading('Installation complète')
         ->modalDescription('Exécute les migrations, crée le lien storage et met en cache la configuration.')
         ->action(function (): void {
-          $messages = [
-            SiteInstaller::runMigrations(),
-            SiteInstaller::createStorageLink(),
-            SiteInstaller::optimizeApplication(),
-          ];
+          try {
+            $messages = [
+              SiteInstaller::runMigrations(),
+              SiteInstaller::createStorageLink(),
+              SiteInstaller::optimizeApplication(full: false),
+            ];
+          } catch (\Throwable $exception) {
+            Notification::make()
+              ->danger()
+              ->title('Installation impossible')
+              ->body($exception->getMessage())
+              ->send();
+
+            return;
+          }
 
           Notification::make()
             ->success()
             ->title('Installation terminée')
             ->body(implode(' | ', $messages))
             ->send();
+
+          $this->redirect(static::getUrl(), navigate: false);
         });
 
     return $actions;

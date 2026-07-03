@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Filament\Pages\SiteInstallation;
-use App\Models\User;
 use App\Support\SiteDeploymentState;
 use Closure;
 use Illuminate\Http\Request;
@@ -26,21 +25,15 @@ class RedirectAdminToInstallation
       return $next($request);
     }
 
-    if (
-      User::query()->count() === 0
-      && $request->routeIs('filament.admin.auth.login')
-    ) {
-      return redirect()->to(SiteInstallation::getUrl());
-    }
-
     if ($request->routeIs(
       'filament.admin.pages.site-installation',
       'filament.admin.auth.logout',
+      'livewire.update',
     )) {
       return $next($request);
     }
 
-    if ($request->is('admin', 'admin/*')) {
+    if ($request->is('admin', 'admin/*', 'livewire/*')) {
       return redirect()->to(SiteInstallation::getUrl());
     }
 

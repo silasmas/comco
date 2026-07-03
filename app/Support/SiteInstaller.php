@@ -39,14 +39,20 @@ class SiteInstaller
   }
 
   /**
-   * Met en cache la configuration, les routes et les vues.
+   * Met en cache la configuration pour la production.
    *
+   * @param bool $full Si true, met aussi routes et vues en cache (à la fin de l'installation)
    * @return string Message de confirmation
    */
-  public static function optimizeApplication(): string
+  public static function optimizeApplication(bool $full = false): string
   {
     Artisan::call('config:clear');
     Artisan::call('config:cache');
+
+    if (! $full) {
+      return 'Configuration mise en cache. Les routes et vues seront mises en cache à la mise en ligne du site.';
+    }
+
     Artisan::call('route:cache');
     Artisan::call('view:cache');
 
@@ -109,11 +115,11 @@ class SiteInstaller
    */
   public static function finalizeDeployment(): void
   {
-    if (! User::query()->where('is_super_admin', true)->exists()) {
+    if (! SiteDeploymentState::hasSuperAdmin()) {
       throw new \RuntimeException('Créez d\'abord un super administrateur avant de mettre le site en ligne.');
     }
 
     SiteDeploymentState::markAsInstalled();
-    self::optimizeApplication();
+    self::optimizeApplication(full: true);
   }
 }
