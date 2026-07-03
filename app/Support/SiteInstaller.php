@@ -101,4 +101,19 @@ class SiteInstaller
 
     return $updated;
   }
+
+  /**
+   * Finalise le déploiement et rend le site public accessible.
+   *
+   * @throws \RuntimeException Si aucun super administrateur n'existe
+   */
+  public static function finalizeDeployment(): void
+  {
+    if (! User::query()->where('is_super_admin', true)->exists()) {
+      throw new \RuntimeException('Créez d\'abord un super administrateur avant de mettre le site en ligne.');
+    }
+
+    SiteDeploymentState::markAsInstalled();
+    self::optimizeApplication();
+  }
 }

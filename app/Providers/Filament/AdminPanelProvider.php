@@ -8,7 +8,8 @@ use App\Filament\Widgets\ForumActivityChartWidget;
 use App\Filament\Widgets\NewsletterChartWidget;
 use App\Filament\Widgets\PostsChartWidget;
 use App\Filament\Widgets\SubmissionStatsWidget;
-use Filament\Http\Middleware\Authenticate;
+use App\Http\Middleware\FilamentInstallAccess;
+use App\Http\Middleware\RedirectAdminToInstallation;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -107,9 +108,10 @@ class AdminPanelProvider extends PanelProvider
         SubstituteBindings::class,
         DisableBladeIconComponents::class,
         DispatchServingFilamentEvent::class,
+        RedirectAdminToInstallation::class,
       ])
       ->authMiddleware([
-        Authenticate::class,
+        FilamentInstallAccess::class,
       ]);
   }
 }

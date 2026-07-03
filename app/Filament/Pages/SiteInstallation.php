@@ -4,11 +4,13 @@ namespace App\Filament\Pages;
 
 use App\Filament\Concerns\HasComcoResourceMeta;
 use App\Models\User;
+use App\Support\SiteDeploymentState;
 use App\Support\SiteInstaller;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use App\Filament\Pages\Dashboard;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\CanAuthorizeAccess;
 use Filament\Pages\Page;
@@ -63,10 +65,14 @@ class SiteInstallation extends Page
   public ?array $adminData = [];
 
   /**
-   * Vérifie l'accès réservé aux super administrateurs.
+   * Vérifie l'accès à la page d'installation ou aux super administrateurs une fois le site en ligne.
    */
   public static function canAccess(): bool
   {
+    if (SiteDeploymentState::requiresInstallation()) {
+      return true;
+    }
+
     $user = Auth::user();
 
     if (! $user instanceof User) {
@@ -78,6 +84,20 @@ class SiteInstallation extends Page
     }
 
     return ! User::query()->where('is_super_admin', true)->exists();
+  }
+
+  /**
+   * Masque le menu latéral pendant le déploiement initial.
+   */
+  public static function shouldRegisterNavigation(): bool
+  {
+    if (SiteDeploymentState::requiresInstallation()) {
+      return false;
+    }
+
+    $user = Auth::user();
+
+    return $user instanceof User && $user->is_super_admin;
   }
 
   /**
@@ -276,8 +296,20 @@ class SiteInstallation extends Page
    */
   protected function getHeaderActions(): array
   {
-    return [
-      Action::make('runAll')
+    $actions = [];
+
+    if (SiteDeploymentState::requiresInstallation()) {
+      $actions[] = Action::make('launchSite')
+        ->label('Mettre le site en ligne')
+        ->icon(Heroicon::OutlinedGlobeAlt)
+        ->color('success')
+        ->requiresConfirmation()
+        ->modalHeading('Mettre le site en ligne')
+        ->modalDescription('Le site public sera accessible. Assurez-vous d\'avoir exécuté les migrations et créé le super administrateur.')
+        ->action('launchSite');
+    }
+
+    $actions[] = Action::make('runAll')
         ->label('Tout installer')
         ->icon(Heroicon::OutlinedPlay)
         ->requiresConfirmation()
@@ -295,8 +327,9 @@ class SiteInstallation extends Page
             ->title('Installation terminée')
             ->body(implode(' | ', $messages))
             ->send();
-        }),
-    ];
+        });
+
+    return $actions;
   }
 
   /**
@@ -363,6 +396,36 @@ class SiteInstallation extends Page
    */
   public function getSubheading(): string|Htmlable|null
   {
+    if (SiteDeploymentState::requiresInstallation()) {
+      return 'Première mise en production : configurez le site, créez le super administrateur, puis mettez le site en ligne.';
+    }
+
     return static::getResourceDescription();
+  }
+
+  /**
+   * Met le site en ligne et désactive la page publique de déploiement.
+   */
+  public function launchSite(): void
+  {
+    try {
+      SiteInstaller::finalizeDeployment();
+    } catch (\Throwable $exception) {
+      Notification::make()
+        ->danger()
+        ->title('Mise en ligne impossible')
+        ->body($exception->getMessage())
+        ->send();
+
+      return;
+    }
+
+    Notification::make()
+      ->success()
+      ->title('Site mis en ligne')
+      ->body('Le site public est maintenant accessible. Vous pouvez accéder au tableau de bord.')
+      ->send();
+
+    $this->redirect(Dashboard::getUrl(), navigate: true);
   }
 }

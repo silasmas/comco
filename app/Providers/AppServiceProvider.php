@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Support\SiteDeploymentState;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
@@ -23,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
     {
         App::setLocale(config('app.locale', 'fr'));
         Paginator::useBootstrapFive();
+        SiteDeploymentState::syncLocalInstallationMarker();
     }
 }

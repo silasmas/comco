@@ -4,6 +4,8 @@
  * Personnalisation Filament / visite guidée COMCO.
  */
 return [
+  'deploying' => env('COMCO_DEPLOYING', true),
+
   'tour' => [
     'tooltip' => env('COMCO_TOUR_TOOLTIP', 'Visite guidée du panneau d\'administration'),
     'header_color' => env('COMCO_TOUR_HEADER_COLOR', '#003DA5'),
