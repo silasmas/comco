@@ -18,60 +18,62 @@ use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
-  use HasComcoResourceMeta;
+    use HasComcoResourceMeta;
 
-  protected static ?string $model = User::class;
+    protected static ?string $model = User::class;
 
-  protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
-  protected static ?string $navigationLabel = 'Utilisateurs';
+    protected static ?string $navigationLabel = 'Utilisateurs';
 
-  protected static ?string $modelLabel = 'utilisateur';
+    protected static ?string $modelLabel = 'utilisateur';
 
-  protected static ?string $pluralModelLabel = 'utilisateurs';
+    protected static ?string $pluralModelLabel = 'utilisateurs';
 
-  protected static string|null|\UnitEnum $navigationGroup = 'Système';
+    protected static string|null|\UnitEnum $navigationGroup = 'Système';
 
-  protected static ?int $navigationSort = 90;
+    protected static ?int $navigationSort = 90;
 
-  protected static string $resourceDescription = 'Gérez les comptes ayant accès au panneau d\'administration et les droits de super administrateur.';
+    protected static string $resourceDescription = 'Administrez les comptes autorisés à se connecter au panneau COMCO et attribuez le rôle de super administrateur si nécessaire.';
 
-  protected static ?string $tourStepId = 'users';
+    protected static ?string $tourStepId = 'users';
 
-  protected static int $tourStepSort = 90;
+    protected static int $tourStepSort = 90;
 
-  protected static array $tourStepFeatures = [
-    'Créer des comptes administrateurs',
-    'Attribuer le rôle super administrateur',
-    'Modifier les identifiants de connexion',
-  ];
-
-  /**
-   * Restreint l'accès aux super administrateurs.
-   */
-  public static function canAccess(): bool
-  {
-    $user = Auth::user();
-
-    return $user instanceof User && $user->is_super_admin;
-  }
-
-  public static function form(Schema $schema): Schema
-  {
-    return UserForm::configure($schema);
-  }
-
-  public static function table(Table $table): Table
-  {
-    return UsersTable::configure($table);
-  }
-
-  public static function getPages(): array
-  {
-    return [
-      'index' => ListUsers::route('/'),
-      'create' => CreateUser::route('/create'),
-      'edit' => EditUser::route('/{record}/edit'),
+    protected static array $tourStepFeatures = [
+        'Créer un compte administrateur (nom, e-mail, mot de passe)',
+        'Accorder ou retirer le statut « Super administrateur » (accès complet + installation)',
+        'Modifier les identifiants d\'un collègue sans intervention technique',
+        'Révoquer l\'accès en supprimant ou en désactivant un compte',
+        'Réserver cette section aux super administrateurs uniquement',
     ];
-  }
+
+    /**
+     * Restreint l'accès aux super administrateurs.
+     */
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        return $user instanceof User && $user->is_super_admin;
+    }
+
+    public static function form(Schema $schema): Schema
+    {
+        return UserForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return UsersTable::configure($table);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListUsers::route('/'),
+            'create' => CreateUser::route('/create'),
+            'edit' => EditUser::route('/{record}/edit'),
+        ];
+    }
 }

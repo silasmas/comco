@@ -36,16 +36,19 @@ class NavigationItemResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
-    protected static string $resourceDescription = 'Gérez le menu principal et les liens du pied de page affichés sur le site public.';
+    protected static string $resourceDescription = 'Configurez la navigation publique : en-tête du site, sous-menus par section et trois colonnes de liens dans le pied de page.';
 
     protected static ?string $tourStepId = 'navigation-items';
 
-    protected static int $tourStepSort = 6;
+    protected static int $tourStepSort = 5;
 
     protected static array $tourStepFeatures = [
-        'Modifier le menu principal et ses sous-menus',
-        'Gérer les liens du pied de page',
-        'Activer ou désactiver un lien sans le supprimer',
+        'Organiser le menu principal (Accueil, Qui sommes-nous, Centre d\'information, Médias, E-services, Forum, Contact)',
+        'Créer des sous-liens vers une page CMS (section + slug) ou une route interne (forum, contact)',
+        'Gérer les menus du pied de page : institution, e-services et liens utiles',
+        'Définir l\'ordre d\'affichage de chaque entrée via le champ « Ordre »',
+        'Masquer un lien temporairement avec « Actif » sans le supprimer',
+        'Ajouter un nouvel élément de menu sans intervention technique',
     ];
 
     public static function form(Schema $schema): Schema

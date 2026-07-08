@@ -32,16 +32,20 @@ class PageResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static string $resourceDescription = 'Gérez les pages institutionnelles du site (textes, gabarits et contenus par section).';
+    protected static string $resourceDescription = 'Éditez le contenu des pages institutionnelles par section (Qui sommes-nous, Centre d\'information, Médias, E-services) avec gabarits, médias attachés et SEO.';
 
     protected static ?string $tourStepId = 'pages';
 
-    protected static int $tourStepSort = 20;
+    protected static int $tourStepSort = 11;
 
     protected static array $tourStepFeatures = [
-        'Modifier le contenu des pages publiques',
-        'Choisir le gabarit d\'affichage',
-        'Mettre à jour les extraits et métadonnées SEO',
+        'Modifier le titre, le chapô et le corps éditorial avec l\'éditeur enrichi',
+        'Choisir un gabarit d\'affichage (standard, galerie photo, équipe/partenaires, documents juridiques)',
+        'Gérer la galerie, l\'équipe ou les PDF juridiques via les onglets en bas de fiche (selon le gabarit)',
+        'Consulter le statut du formulaire en ligne pour les pages de la section E-services',
+        'Ajouter ou configurer un formulaire e-service depuis les boutons en en-tête de fiche',
+        'Contrôler la publication (brouillon / publiée) et les métadonnées SEO (titre et description)',
+        'Prévisualiser la page publique via le bouton « Voir la page publique »',
     ];
 
     public static function form(Schema $schema): Schema

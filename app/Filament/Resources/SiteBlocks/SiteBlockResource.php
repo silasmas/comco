@@ -37,16 +37,20 @@ class SiteBlockResource extends Resource
 
     protected static ?int $navigationSort = 0;
 
-    protected static string $resourceDescription = 'Modifiez le slider, les cartes, les chiffres clés et les témoignages affichés sur la page d\'accueil.';
+    protected static string $resourceDescription = 'Administrez les blocs dynamiques de la page d\'accueil : slider hero, cartes institutionnelles, chiffres clés, témoignages, partenaires, vidéo et onglets actualités.';
 
     protected static ?string $tourStepId = 'home-blocks';
 
-    protected static int $tourStepSort = 5;
+    protected static int $tourStepSort = 1;
 
     protected static array $tourStepFeatures = [
-        'Gérer les diapositives du slider',
-        'Mettre à jour les missions et ressources',
-        'Ajuster les témoignages et partenaires',
+        'Modifier les diapositives du slider (titres, textes, images, boutons et liens internes)',
+        'Éditer les sections Bienvenue, Notre histoire, Missions, Ressources et Pourquoi la COMCO',
+        'Ajuster les chiffres clés animés, le bloc « À la une » et les activités institutionnelles',
+        'Mettre à jour les témoignages du carousel et les logos partenaires',
+        'Changer la vidéo institutionnelle mise en avant et les libellés des onglets',
+        'Téléverser des visuels COMCO ou choisir une image du thème Elixir',
+        'Désactiver temporairement un bloc sans le supprimer (case « Actif »)',
     ];
 
     /**

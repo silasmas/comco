@@ -17,10 +17,10 @@ use Filament\Tables\Table;
 
 class ForumReplyResource extends Resource
 {
-  use HasComcoResourceMeta;
-  use HasSafeNavigationBadge;
+    use HasComcoResourceMeta;
+    use HasSafeNavigationBadge;
 
-  protected static ?string $model = ForumReply::class;
+    protected static ?string $model = ForumReply::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftEllipsis;
 
@@ -32,21 +32,23 @@ class ForumReplyResource extends Resource
 
     protected static string|null|\UnitEnum $navigationGroup = 'Forum';
 
-  protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 2;
 
-  protected static string $resourceDescription = 'Modérez les réponses au forum : validez ou rejetez les contributions avant publication.';
+    protected static string $resourceDescription = 'Modérez les contributions des visiteurs au forum : chaque réponse est soumise à validation avant affichage public.';
 
-  protected static ?string $tourStepId = 'forum-replies';
+    protected static ?string $tourStepId = 'forum-replies';
 
-  protected static int $tourStepSort = 41;
+    protected static int $tourStepSort = 31;
 
-  protected static array $tourStepFeatures = [
-    'Approuver ou rejeter en masse',
-    'Lire le contexte du sujet associé',
-    'Suivre les réponses en attente',
-  ];
+    protected static array $tourStepFeatures = [
+        'Lire le texte complet de chaque réponse et son auteur',
+        'Approuver ou rejeter en masse depuis le tableau de liste',
+        'Retrouver le sujet parent depuis la fiche de la réponse',
+        'Traiter en priorité les réponses en attente (badge orange du menu)',
+        'Garantir un forum modéré sans publication automatique',
+    ];
 
-  public static function form(Schema $schema): Schema
+    public static function form(Schema $schema): Schema
     {
         return ForumReplyForm::configure($schema);
     }

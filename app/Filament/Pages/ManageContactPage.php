@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\HasComcoResourceMeta;
 use App\Models\SiteBlock;
 use App\Support\ContactPageContent;
 use BackedEnum;
@@ -23,6 +24,22 @@ use Illuminate\Contracts\Support\Htmlable;
  */
 class ManageContactPage extends Page
 {
+    use HasComcoResourceMeta;
+
+    protected static string $resourceDescription = 'Éditez les textes des blocs spécifiques à la page contact : représentations provinciales et appel aux e-services (les coordonnées viennent des paramètres institution).';
+
+    protected static ?string $tourStepId = 'contact-page';
+
+    protected static int $tourStepSort = 4;
+
+    protected static array $tourStepFeatures = [
+        'Modifier le titre et le texte du bloc « Représentations provinciales »',
+        'Adapter le bandeau incitant à utiliser les e-services en ligne',
+        'Laisser les coordonnées (adresse, e-mail, téléphone, carte) aux paramètres institution',
+        'Enregistrer les changements sans redéploiement technique',
+        'Prévisualiser le résultat sur la page /contact du site public',
+    ];
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhone;
 
     protected static ?string $navigationLabel = 'Page contact';
@@ -49,7 +66,7 @@ class ManageContactPage extends Page
      */
     public function getSubheading(): string|Htmlable|null
     {
-        return 'Modifiez les textes des blocs éditoriaux affichés sur la page contact publique.';
+        return static::getResourceDescription();
     }
 
     /**

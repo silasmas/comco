@@ -37,17 +37,28 @@ class EServiceDefinitionResource extends Resource
 
     protected static ?int $navigationSort = 6;
 
-    protected static string $resourceDescription = 'Modifiez les libellés, introductions et champs des formulaires e-services en ligne.';
+    protected static string $resourceDescription = 'Configurez les formulaires de dépôt en ligne (fusions, plaintes, signalements…) : libellés, introduction, champs dynamiques et activation publique.';
 
     protected static ?string $tourStepId = 'e-service-definitions';
 
-    protected static int $tourStepSort = 7;
+    protected static int $tourStepSort = 6;
 
     protected static array $tourStepFeatures = [
-        'Adapter les textes d\'introduction des formulaires',
-        'Activer ou désactiver un service en ligne',
-        'Personnaliser les champs demandés aux usagers',
+        'Créer un nouveau formulaire e-service avec le bouton « Nouveau formulaire »',
+        'Personnaliser les champs (texte, zone de texte, liste déroulante, case à cocher, obligatoire ou non)',
+        'Adapter le libellé et l\'introduction affichés au-dessus du formulaire public',
+        'Activer ou désactiver un service sans supprimer sa configuration',
+        'Associer un formulaire à une page CMS via le même slug URL (section e-services)',
+        'Accéder à la page publique ou à la page CMS depuis l\'en-tête d\'édition',
     ];
+
+    /**
+     * Titre affiché dans la visite guidée.
+     */
+    public static function getTourStepTitle(): ?string
+    {
+        return 'Formulaires e-services';
+    }
 
     public static function form(Schema $schema): Schema
     {

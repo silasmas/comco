@@ -14,9 +14,9 @@ use Filament\Tables\Table;
 
 class NewsletterSubscriberResource extends Resource
 {
-  use HasComcoResourceMeta;
+    use HasComcoResourceMeta;
 
-  protected static ?string $model = NewsletterSubscriber::class;
+    protected static ?string $model = NewsletterSubscriber::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelopeOpen;
 
@@ -28,21 +28,23 @@ class NewsletterSubscriberResource extends Resource
 
     protected static string|null|\UnitEnum $navigationGroup = 'Soumissions';
 
-  protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 3;
 
-  protected static string $resourceDescription = 'Consultez la liste des abonnés à la newsletter institutionnelle.';
+    protected static string $resourceDescription = 'Consultez la liste des personnes inscrites à la newsletter institutionnelle depuis le pied de page ou les formulaires du site.';
 
-  protected static ?string $tourStepId = 'newsletter';
+    protected static ?string $tourStepId = 'newsletter';
 
-  protected static int $tourStepSort = 32;
+    protected static int $tourStepSort = 22;
 
-  protected static array $tourStepFeatures = [
-    'Voir les emails inscrits',
-    'Suivre la date d\'inscription',
-    'Exporter la base d\'abonnés',
-  ];
+    protected static array $tourStepFeatures = [
+        'Voir tous les e-mails inscrits avec la date d\'enregistrement',
+        'Rechercher un abonné par adresse e-mail',
+        'Suivre la croissance des inscriptions via le graphique du tableau de bord',
+        'Exporter ou exploiter la liste pour vos campagnes (hors panneau)',
+        'Constater qu\'aucune inscription ne peut être créée manuellement ici (flux public uniquement)',
+    ];
 
-  public static function form(Schema $schema): Schema
+    public static function form(Schema $schema): Schema
     {
         return $schema;
     }

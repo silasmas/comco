@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\HasComcoResourceMeta;
 use App\Models\SiteBlock;
 use App\Support\HomePageContent;
 use BackedEnum;
@@ -23,6 +24,23 @@ use Illuminate\Contracts\Support\Htmlable;
  */
 class ManageHomePromos extends Page
 {
+    use HasComcoResourceMeta;
+
+    protected static string $resourceDescription = 'Gérez les bandeaux promotionnels de la page d\'accueil non couverts par les blocs principaux : alertes, législation, TALO, contact et visuels complémentaires.';
+
+    protected static ?string $tourStepId = 'home-promos';
+
+    protected static int $tourStepSort = 2;
+
+    protected static array $tourStepFeatures = [
+        'Configurer l\'alerte « Signaler une pratique abusive » (titre, texte, bouton)',
+        'Personnaliser le bandeau d\'appel au contact en bas de page d\'accueil',
+        'Mettre à jour la promotion du cadre juridique congolais (titre de section et loi)',
+        'Adapter le bloc TALO (application mobile à venir) visible sur l\'accueil',
+        'Modifier les deux lignes d\'introduction de la section chiffres clés',
+        'Changer l\'image de la colonne « Pourquoi la COMCO »',
+    ];
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSparkles;
 
     protected static ?string $navigationLabel = 'Blocs promotionnels';
@@ -49,7 +67,7 @@ class ManageHomePromos extends Page
      */
     public function getSubheading(): string|Htmlable|null
     {
-        return 'Alertes, bandeaux, promotions législatives et visuels complémentaires de la page d\'accueil.';
+        return static::getResourceDescription();
     }
 
     /**

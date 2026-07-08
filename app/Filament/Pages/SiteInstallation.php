@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\HasComcoResourceMeta;
 use App\Models\User;
 use App\Support\InstallationPageData;
 use App\Support\SiteDeploymentState;
@@ -17,65 +18,86 @@ use Illuminate\Support\Facades\Auth;
  */
 class SiteInstallation extends Page
 {
-  use CanAuthorizeAccess;
+    use CanAuthorizeAccess;
+    use HasComcoResourceMeta;
 
-  protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRocketLaunch;
+    protected static string $resourceDescription = 'Outils réservés aux super administrateurs pour la mise en production : migrations, cache, import des contenus, articles de démonstration et lancement du site.';
 
-  protected static ?string $navigationLabel = 'Installation production';
+    protected static ?string $tourStepId = 'site-installation';
 
-  protected static ?string $title = 'Installation & production';
+    protected static int $tourStepSort = 91;
 
-  protected static string|\UnitEnum|null $navigationGroup = 'Système';
+    protected static array $tourStepFeatures = [
+        'Exécuter les migrations de base de données en un clic',
+        'Créer le lien symbolique storage/public pour les fichiers téléversés',
+        'Optimiser la configuration Laravel (config, routes, vues) en production',
+        'Importer les contenus du site (pages, navigation, accueil, contact, e-services, médias)',
+        'Charger séparément les articles de démonstration si souhaité',
+        'Créer le premier super administrateur et marquer l\'installation comme terminée',
+    ];
 
-  protected static ?int $navigationSort = 99;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRocketLaunch;
 
-  protected static ?string $slug = 'installation-production';
+    protected static ?string $navigationLabel = 'Installation production';
 
-  protected string $view = 'filament.pages.site-installation';
+    protected static ?string $title = 'Installation & production';
 
-  /**
-   * Vérifie l'accès réservé aux super administrateurs.
-   */
-  public static function canAccess(): bool
-  {
-    $user = Auth::user();
+    protected static string|\UnitEnum|null $navigationGroup = 'Système';
 
-    if ($user instanceof User && $user->is_super_admin) {
-      return true;
+    protected static ?int $navigationSort = 99;
+
+    protected static ?string $slug = 'installation-production';
+
+    protected string $view = 'filament.pages.site-installation';
+
+    /**
+     * Vérifie l'accès réservé aux super administrateurs.
+     */
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        if ($user instanceof User && $user->is_super_admin) {
+            return true;
+        }
+
+        return ! SiteDeploymentState::hasSuperAdmin();
     }
 
-    return ! SiteDeploymentState::hasSuperAdmin();
-  }
+    /**
+     * Affiche le menu uniquement une fois le site installé.
+     */
+    public static function shouldRegisterNavigation(): bool
+    {
+        if (SiteDeploymentState::requiresInstallation()) {
+            return false;
+        }
 
-  /**
-   * Affiche le menu uniquement une fois le site installé.
-   */
-  public static function shouldRegisterNavigation(): bool
-  {
-    if (SiteDeploymentState::requiresInstallation()) {
-      return false;
+        $user = Auth::user();
+
+        return $user instanceof User && $user->is_super_admin;
     }
 
-    $user = Auth::user();
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getViewData(): array
+    {
+        return array_merge(parent::getViewData(), InstallationPageData::forView(), [
+            'embeddedInFilament' => true,
+        ]);
+    }
 
-    return $user instanceof User && $user->is_super_admin;
-  }
+    public function getSubheading(): string|Htmlable|null
+    {
+        return static::getResourceDescription();
+    }
 
-  /**
-   * @return array<string, mixed>
-   */
-  protected function getViewData(): array
-  {
-    return array_merge(parent::getViewData(), InstallationPageData::forView(), [
-      'embeddedInFilament' => true,
-    ]);
-  }
-
-  /**
-   * @return string|Htmlable
-   */
-  public function getSubheading(): string|Htmlable|null
-  {
-    return 'Migrations, configuration, seeders d\'articles et maintenance du serveur de production.';
-  }
+    /**
+     * Titre affiché dans la visite guidée.
+     */
+    public static function getTourStepTitle(): ?string
+    {
+        return 'Installation production';
+    }
 }

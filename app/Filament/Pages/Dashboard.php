@@ -11,33 +11,35 @@ use Illuminate\Contracts\Support\Htmlable;
  */
 class Dashboard extends BaseDashboard
 {
-  use HasComcoResourceMeta;
+    use HasComcoResourceMeta;
 
-  protected static string $resourceDescription = 'Vue d\'ensemble des activités du site : soumissions, contenus, forum et statistiques mensuelles.';
+    protected static string $resourceDescription = 'Point d\'entrée du panneau : suivez en un coup d\'œil les soumissions en attente, l\'activité éditoriale et les tendances mensuelles du site public.';
 
-  protected static ?string $tourStepId = 'dashboard';
+    protected static ?string $tourStepId = 'dashboard';
 
-  protected static int $tourStepSort = 0;
+    protected static int $tourStepSort = 0;
 
-  protected static array $tourStepFeatures = [
-    'Consulter les indicateurs clés',
-    'Suivre l\'évolution mensuelle par ressource',
-    'Accéder rapidement aux modules de gestion',
-  ];
+    protected static array $tourStepFeatures = [
+        'Consulter les compteurs de dossiers e-services, messages contact et sujets forum en attente',
+        'Analyser les graphiques mensuels (actualités, contact, e-services, forum, newsletter)',
+        'Repérer rapidement les pics d\'activité ou les retards de traitement',
+        'Accéder à chaque module via le menu latéral, regroupé par thème (contenu, soumissions, forum…)',
+        'Relancer cette visite guidée à tout moment via l\'icône casquette dans le menu utilisateur',
+    ];
 
-  /**
-   * Titre affiché dans la visite guidée.
-   */
-  public static function getTourStepTitle(): ?string
-  {
-    return 'Tableau de bord';
-  }
+    /**
+     * Titre affiché dans la visite guidée.
+     */
+    public static function getTourStepTitle(): ?string
+    {
+        return 'Tableau de bord';
+    }
 
-  /**
-   * Sous-titre pédagogique du tableau de bord.
-   */
-  public function getSubheading(): string|Htmlable|null
-  {
-    return static::getResourceDescription();
-  }
+    /**
+     * Sous-titre pédagogique du tableau de bord.
+     */
+    public function getSubheading(): string|Htmlable|null
+    {
+        return static::getResourceDescription();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\HasComcoResourceMeta;
 use App\Support\InstitutionSettings;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -22,6 +23,23 @@ use Illuminate\Contracts\Support\Htmlable;
  */
 class ManageInstitutionSettings extends Page
 {
+    use HasComcoResourceMeta;
+
+    protected static string $resourceDescription = 'Centralisez l\'identité COMCO et les coordonnées affichées sur tout le site : en-tête, pied de page, page contact, e-mails automatiques et SEO par défaut.';
+
+    protected static ?string $tourStepId = 'institution-settings';
+
+    protected static int $tourStepSort = 3;
+
+    protected static array $tourStepFeatures = [
+        'Modifier le nom institutionnel, le sigle et le slogan institutionnel',
+        'Mettre à jour l\'e-mail, le téléphone et l\'adresse postale de contact',
+        'Configurer la carte Google Maps (lien et code embed) de la page contact',
+        'Renseigner les URL des réseaux sociaux (LinkedIn, X, Facebook, YouTube)',
+        'Ajuster le suffixe des titres SEO et la description meta par défaut du site',
+        'Appliquer immédiatement les changements sur l\'ensemble du site public',
+    ];
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
     protected static ?string $navigationLabel = 'Paramètres institution';
@@ -48,7 +66,7 @@ class ManageInstitutionSettings extends Page
      */
     public function getSubheading(): string|Htmlable|null
     {
-        return 'Coordonnées, identité visuelle, réseaux sociaux et paramètres SEO affichés sur tout le site public.';
+        return static::getResourceDescription();
     }
 
     /**

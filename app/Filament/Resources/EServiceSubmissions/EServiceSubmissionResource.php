@@ -17,10 +17,10 @@ use Filament\Tables\Table;
 
 class EServiceSubmissionResource extends Resource
 {
-  use HasComcoResourceMeta;
-  use HasSafeNavigationBadge;
+    use HasComcoResourceMeta;
+    use HasSafeNavigationBadge;
 
-  protected static ?string $model = EServiceSubmission::class;
+    protected static ?string $model = EServiceSubmission::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInboxArrowDown;
 
@@ -32,21 +32,32 @@ class EServiceSubmissionResource extends Resource
 
     protected static string|null|\UnitEnum $navigationGroup = 'Soumissions';
 
-  protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 1;
 
-  protected static string $resourceDescription = 'Traitez les dossiers transmis par les e-services publics (signalements, fusions, autorisations, etc.).';
+    protected static string $resourceDescription = 'Traitez les dossiers déposés en ligne par le public : notifications de fusion, plaintes, signalements confidentiels, produits dangereux, etc.';
 
-  protected static ?string $tourStepId = 'e-service-submissions';
+    protected static ?string $tourStepId = 'e-service-submissions';
 
-  protected static int $tourStepSort = 31;
+    protected static int $tourStepSort = 20;
 
-  protected static array $tourStepFeatures = [
-    'Consulter les dossiers reçus',
-    'Marquer un dossier comme traité ou rejeté',
-    'Filtrer par service et statut',
-  ];
+    protected static array $tourStepFeatures = [
+        'Consulter chaque dossier avec nom, coordonnées, description et champs spécifiques au service',
+        'Filtrer par type de service (fusion, plainte consommateur, signalement…) et par statut',
+        'Marquer un dossier comme traité, en cours ou rejeté depuis la fiche ou le tableau',
+        'Identifier les dossiers en attente grâce au badge orange dans le menu',
+        'Lire les données complémentaires saisies dans le formulaire dynamique (payload JSON)',
+        'Recevoir automatiquement un e-mail institutionnel à chaque nouvelle soumission',
+    ];
 
-  public static function form(Schema $schema): Schema
+    /**
+     * Titre affiché dans la visite guidée.
+     */
+    public static function getTourStepTitle(): ?string
+    {
+        return 'Soumissions e-services';
+    }
+
+    public static function form(Schema $schema): Schema
     {
         return EServiceSubmissionForm::configure($schema);
     }

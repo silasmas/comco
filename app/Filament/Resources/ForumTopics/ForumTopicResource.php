@@ -19,10 +19,10 @@ use Filament\Tables\Table;
 
 class ForumTopicResource extends Resource
 {
-  use HasComcoResourceMeta;
-  use HasSafeNavigationBadge;
+    use HasComcoResourceMeta;
+    use HasSafeNavigationBadge;
 
-  protected static ?string $model = ForumTopic::class;
+    protected static ?string $model = ForumTopic::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleBottomCenterText;
 
@@ -34,21 +34,24 @@ class ForumTopicResource extends Resource
 
     protected static string|null|\UnitEnum $navigationGroup = 'Forum';
 
-  protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 1;
 
-  protected static string $resourceDescription = 'Modérez les sujets du forum public : approuvez, rejetez ou fermez les discussions.';
+    protected static string $resourceDescription = 'Modérez les discussions ouvertes sur le forum public : validation, rejet, fermeture et suivi des réponses associées.';
 
-  protected static ?string $tourStepId = 'forum-topics';
+    protected static ?string $tourStepId = 'forum-topics';
 
-  protected static int $tourStepSort = 40;
+    protected static int $tourStepSort = 30;
 
-  protected static array $tourStepFeatures = [
-    'Approuver ou rejeter depuis le tableau',
-    'Gérer les catégories de discussion',
-    'Consulter les réponses associées',
-  ];
+    protected static array $tourStepFeatures = [
+        'Approuver ou rejeter un sujet avant sa publication visible',
+        'Créer un sujet officiel au nom de la COMCO (catégorie, titre, contenu)',
+        'Fermer une discussion devenue inactive ou inappropriée',
+        'Consulter les réponses liées depuis l\'onglet « Réponses » de la fiche sujet',
+        'Filtrer les sujets en attente grâce au badge orange du menu',
+        'Organiser les échanges par catégorie thématique du forum',
+    ];
 
-  public static function form(Schema $schema): Schema
+    public static function form(Schema $schema): Schema
     {
         return ForumTopicForm::configure($schema);
     }
