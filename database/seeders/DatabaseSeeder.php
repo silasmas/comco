@@ -25,6 +25,12 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(InstitutionSeeder::class);
+        $this->call(InstitutionSettingsSeeder::class);
+        $this->call(NavigationSeeder::class);
+        $this->call(HomeContentSeeder::class);
+        $this->call(ContactContentSeeder::class);
+        $this->call(PageAttachmentsSeeder::class);
+        $this->call(EServiceDefinitionSeeder::class);
         $this->call(PostsSeeder::class);
     }
 }

@@ -11,38 +11,43 @@ use Illuminate\View\View;
  */
 class PageController extends Controller
 {
-  /**
-   * Affiche une page rattachée à une section du menu COMCO.
-   *
-   * @param string $section Identifiant de section (ex: qui-sommes-nous)
-   * @param string $slug Identifiant URL de la page
-   * @return View Vue Blade de la page
-   */
-  public function showBySection(string $section, string $slug): View
-  {
-    $page = Page::query()
-      ->published()
-      ->where('section', $section)
-      ->where('slug', $slug)
-      ->firstOrFail();
+    /**
+     * Affiche une page rattachée à une section du menu COMCO.
+     *
+     * @param  string  $section  Identifiant de section (ex: qui-sommes-nous)
+     * @param  string  $slug  Identifiant URL de la page
+     * @return View Vue Blade de la page
+     */
+    public function showBySection(string $section, string $slug): View
+    {
+        $page = Page::query()
+            ->published()
+            ->with([
+                'galleryItems' => fn ($query) => $query->active(),
+                'teamMembers' => fn ($query) => $query->active(),
+                'legalDocuments' => fn ($query) => $query->active(),
+            ])
+            ->where('section', $section)
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-    return $this->renderPage($page, $section);
-  }
+        return $this->renderPage($page, $section);
+    }
 
-  /**
-   * Prépare la vue d'une page avec ses métadonnées SEO.
-   *
-   * @param Page $page Modèle page
-   * @param string|null $section Section active du menu
-   * @return View Vue Blade de la page
-   */
-  private function renderPage(Page $page, ?string $section = null): View
-  {
-    return view('public.pages.show', [
-      'page' => $page,
-      'sectionLabel' => $section ? config("navigation.sections.{$section}") : null,
-      'metaTitle' => $page->meta_title ?? $page->title,
-      'metaDescription' => $page->meta_description ?? config('institution.seo.defaultDescription'),
-    ]);
-  }
+    /**
+     * Prépare la vue d'une page avec ses métadonnées SEO.
+     *
+     * @param  Page  $page  Modèle page
+     * @param  string|null  $section  Section active du menu
+     * @return View Vue Blade de la page
+     */
+    private function renderPage(Page $page, ?string $section = null): View
+    {
+        return view('public.pages.show', [
+            'page' => $page,
+            'sectionLabel' => $section ? config("navigation.sections.{$section}") : null,
+            'metaTitle' => $page->meta_title ?? $page->title,
+            'metaDescription' => $page->meta_description ?? config('institution.seo.defaultDescription'),
+        ]);
+    }
 }

@@ -23,6 +23,10 @@ class PagesTable
                     ->sortable(),
                 TextColumn::make('slug')
                     ->searchable(),
+                TextColumn::make('template')
+                    ->label('Gabarit')
+                    ->formatStateUsing(fn (?string $state): string => config("cms-templates.{$state}") ?? ($state ?? '—'))
+                    ->sortable(),
                 TextColumn::make('meta_title')
                     ->searchable(),
                 IconColumn::make('is_published')

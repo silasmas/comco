@@ -40,20 +40,25 @@
         </div>
       </div>
 
+      @php
+        $provincialOffices = $contactContent->provincialOffices();
+        $eServicesCta = $contactContent->eServicesCta();
+      @endphp
+
       <div class="row g-4 mb-4">
         <div class="col-lg-6">
           <div class="card shadow-sm h-100">
             <div class="card-body p-4 p-lg-5">
-              <h5 class="mb-3">Représentations provinciales</h5>
-              <p class="text-500">La COMCO dispose de représentations provinciales pour assurer une couverture effective sur l'ensemble du territoire national. Les coordonnées détaillées seront publiées prochainement.</p>
+              <h5 class="mb-3">{{ $provincialOffices['title'] }}</h5>
+              <p class="text-500 mb-0">{{ $provincialOffices['text'] }}</p>
             </div>
           </div>
         </div>
         <div class="col-lg-6">
           <div class="card shadow-sm h-100 bg-primary text-white">
             <div class="card-body p-4 p-lg-5">
-              <h5 class="text-white mb-3">E-services</h5>
-              <p class="mb-4">Déposez une fusion, une exemption ou une plainte directement en ligne.</p>
+              <h5 class="text-white mb-3">{{ $eServicesCta['title'] }}</h5>
+              <p class="mb-4">{{ $eServicesCta['text'] }}</p>
               <a class="btn btn-warning me-2 mb-2" href="{{ route('sections.show', ['section' => 'e-services', 'slug' => 'deposer-fusion']) }}"><span class="text-primary fw-semi-bold">Fusion</span></a>
               <a class="btn btn-warning me-2 mb-2" href="{{ route('sections.show', ['section' => 'e-services', 'slug' => 'plainte-consommateur']) }}"><span class="text-primary fw-semi-bold">Plainte</span></a>
               <a class="btn btn-light mb-2" href="{{ route('sections.show', ['section' => 'e-services', 'slug' => 'signaler-pratique']) }}">Signalement</a>

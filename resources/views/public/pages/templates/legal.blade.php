@@ -1,6 +1,6 @@
 @php
-  $documents = config('legal.documents', []);
-  $activeDocument = $documents[0] ?? null;
+  $documents = $page->legalDocuments;
+  $activeDocument = $documents->first();
 @endphp
 
 <section class="bg-100">
@@ -13,7 +13,7 @@
       {!! $page->body !!}
     </div>
 
-    @if (count($documents) > 0)
+    @if ($documents->isNotEmpty())
       <div class="row g-4">
         <div class="col-lg-4">
           <div class="card shadow-sm h-100">
@@ -24,11 +24,13 @@
                   <button
                     type="button"
                     class="list-group-item list-group-item-action comco-legal-tab @if($loop->first) is-selected @endif"
-                    data-pdf-url="{{ legalDocumentUrl($document['filename']) }}"
-                    data-pdf-title="{{ $document['title'] }}"
+                    data-pdf-url="{{ pageLegalDocumentUrl($document->filename) }}"
+                    data-pdf-title="{{ $document->title }}"
                   >
-                    <strong class="d-block comco-legal-tab-title">{{ $document['title'] }}</strong>
-                    <small class="comco-legal-tab-desc">{{ $document['description'] }}</small>
+                    <strong class="d-block comco-legal-tab-title">{{ $document->title }}</strong>
+                    @if ($document->description)
+                      <small class="comco-legal-tab-desc">{{ $document->description }}</small>
+                    @endif
                   </button>
                 @endforeach
               </div>
@@ -39,10 +41,10 @@
         <div class="col-lg-8">
           <div class="card shadow-sm">
             <div class="card-header bg-primary text-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
-              <h5 class="text-white mb-0 comco-legal-title">{{ $activeDocument['title'] ?? 'Document' }}</h5>
+              <h5 class="text-white mb-0 comco-legal-title">{{ $activeDocument?->title ?? 'Document' }}</h5>
               <a
                 class="btn btn-warning btn-sm comco-legal-download"
-                href="{{ $activeDocument ? legalDocumentUrl($activeDocument['filename']) : '#' }}"
+                href="{{ $activeDocument ? pageLegalDocumentUrl($activeDocument->filename) : '#' }}"
                 download
               >
                 <span class="text-primary fw-semi-bold">Télécharger le PDF</span>
@@ -51,8 +53,8 @@
             <div class="card-body p-0">
               <iframe
                 class="legal-pdf-viewer comco-legal-viewer"
-                title="{{ $activeDocument['title'] ?? 'Document juridique' }}"
-                src="{{ $activeDocument ? legalDocumentUrl($activeDocument['filename']) . '#view=FitH' : '' }}"
+                title="{{ $activeDocument?->title ?? 'Document juridique' }}"
+                src="{{ $activeDocument ? pageLegalDocumentUrl($activeDocument->filename) . '#view=FitH' : '' }}"
               ></iframe>
             </div>
           </div>

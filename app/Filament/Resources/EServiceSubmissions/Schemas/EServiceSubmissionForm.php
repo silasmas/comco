@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\EServiceSubmissions\Schemas;
 
+use App\Support\EServiceRegistry;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -15,7 +16,7 @@ class EServiceSubmissionForm
             ->components([
                 TextInput::make('service_slug')
                     ->label('Service')
-                    ->formatStateUsing(fn (?string $state): string => config("e-services.{$state}.label", $state ?? ''))
+                    ->formatStateUsing(fn (?string $state): string => EServiceRegistry::get($state ?? '')['label'] ?? ($state ?? ''))
                     ->disabled(),
                 TextInput::make('name')
                     ->label('Nom')

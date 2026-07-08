@@ -15,9 +15,9 @@
   <section class="py-0">
     <div class="swiper theme-slider min-vh-100" data-swiper='{"loop":true,"allowTouchMove":false,"autoplay":{"delay":5000},"effect":"fade","speed":800}'>
       <div class="swiper-wrapper">
-        @foreach (config('institution.slider') as $slide)
+        @foreach ($homeContent->slider() as $slide)
           <div class="swiper-slide" data-zanim-timeline="{}">
-            <div class="bg-holder" style="background-image:url({{ comcoAsset($slide['image']) }});"></div>
+            <div class="bg-holder" style="background-image:url({{ blockAsset($slide) }});"></div>
             <div class="container">
               <div class="row min-vh-100 py-8 align-items-center" data-inertia='{"weight":1.5}'>
                 <div class="col-sm-8 col-lg-7 px-5 px-sm-3">
@@ -56,12 +56,12 @@
       <div class="row justify-content-center text-center">
         <div class="col-10 col-md-6">
           <h3 class="fs-2 fs-lg-3">Bienvenue à la {{ config('institution.shortName') }}</h3>
-          <p class="px-lg-4 mt-3">{{ config('institution.tagline') }}</p>
+          <p class="px-lg-4 mt-3">{{ $homeContent->tagline() }}</p>
           <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
         </div>
       </div>
       <div class="row mt-4 mt-md-5">
-        @foreach (config('institution.welcomeItems') as $item)
+        @foreach ($homeContent->welcomeItems() as $item)
           <div class="col-sm-6 col-lg-3 mt-4" data-zanim-timeline="{}" data-zanim-trigger="scroll">
             <div class="ring-icon mx-auto" data-zanim-xs='{"delay":0}'><span class="{{ $item['icon'] }}"></span></div>
             <h5 class="mt-4" data-zanim-xs='{"delay":0.1}'>{{ $item['title'] }}</h5>
@@ -75,17 +75,18 @@
   <section>
     <div class="container">
       <div class="row g-4 align-items-center">
+        @php $alert = $homeContent->alertSignalement(); @endphp
         <div class="col-lg-8">
           <div class="card shadow-sm comco-alert-box">
             <div class="card-body p-4 p-lg-5">
-              <h4 class="text-primary mb-3">Signaler une pratique abusive</h4>
-              <p class="mb-0">Toute personne peut signaler à la COMCO les ententes, abus de position dominante, fixation des prix ou pratiques trompeuses. Les signalements sont traités confidentiellement.</p>
+              <h4 class="text-primary mb-3">{{ $alert['title'] }}</h4>
+              <p class="mb-0">{{ $alert['text'] }}</p>
             </div>
           </div>
         </div>
         <div class="col-lg-4 text-lg-end">
-          <a class="btn btn-danger btn-lg" href="{{ route('sections.show', ['section' => 'e-services', 'slug' => 'signaler-pratique']) }}">
-            Signaler maintenant
+          <a class="btn btn-danger btn-lg" href="{{ route('sections.show', ['section' => $alert['button_section'], 'slug' => $alert['button_slug']]) }}">
+            {{ $alert['button_label'] }}
           </a>
           <p class="mt-3 mb-0 text-500">
             <span class="fas fa-envelope text-warning me-2"></span>{{ config('institution.contact.email') }}
@@ -101,11 +102,11 @@
       <div class="row flex-center text-center pb-6">
         <div class="col-12">
           <div class="position-relative mt-4 py-5 py-md-11">
-            <div class="bg-holder rounded-3" style="background-image:url({{ comcoAsset(config('institution.latestVideo.image')) }});"></div>
+            <div class="bg-holder rounded-3" style="background-image:url({{ blockAsset($homeContent->latestVideo()) }});"></div>
             <button
               class="btn-elixir-play"
               type="button"
-              data-bigpicture='{"ytSrc":"{{ config('institution.latestVideo.youtube') }}"}'
+              data-bigpicture='{"ytSrc":"{{ $homeContent->latestVideo()['youtube'] ?? '' }}"}'
               data-zanim-trigger="scroll"
               data-zanim-xs='{"from":{"opacity":0,"scale":0.8},"to":{"opacity":1,"scale":1},"duration":1}'
             >
@@ -115,7 +116,7 @@
         </div>
       </div>
       <div class="row">
-        @foreach (config('institution.storyItems') as $story)
+        @foreach ($homeContent->storyItems() as $story)
           <div class="col-sm-6 col-lg-4 mt-3 mt-lg-0 px-4 px-sm-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
             <h5 data-zanim-xs='{"delay":0}'><span class="text-primary me-3 {{ $story['icon'] }}"></span>{{ $story['title'] }}</h5>
             <p class="mt-3 pe-3 pe-lg-5" data-zanim-xs='{"delay":0.1}'>{{ $story['text'] }}</p>
@@ -132,10 +133,10 @@
         <h3 class="fs-2 fs-md-3">Nos missions</h3>
         <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
       </div>
-      @foreach (config('institution.services') as $service)
+      @foreach ($homeContent->services() as $service)
         <div class="row g-0 position-relative mb-4 mb-lg-0">
           <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative @if($service['reverse'] ?? false) order-lg-2 @endif" style="min-height:400px;">
-            <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0 @if($service['reverse'] ?? false) rounded-lg-ts-0 @endif" style="background-image:url({{ comcoAsset($service['image']) }});"></div>
+            <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0 @if($service['reverse'] ?? false) rounded-lg-ts-0 @endif" style="background-image:url({{ blockAsset($service) }});"></div>
           </div>
           <div class="col-lg-6 px-lg-5 py-lg-6 p-4 my-lg-0 bg-white rounded-bs-lg rounded-lg-bs-0 rounded-be-lg @if($service['reverse'] ?? false) rounded-lg-be-0 @else rounded-lg-be-0 rounded-lg-te-lg @endif">
             <div class="elixir-caret d-none d-lg-block"></div>
@@ -168,10 +169,11 @@
       </div>
       <div class="row">
         <div class="col-lg-6 pe-lg-3">
-          <img class="rounded-3 img-fluid" src="{{ comcoAsset('img4.jpg') }}" alt="Commission de la Concurrence">
+          @php $whyChooseImage = $homeContent->whyChooseImage(); @endphp
+          <img class="rounded-3 img-fluid" src="{{ blockAsset($whyChooseImage) }}" alt="Commission de la Concurrence">
         </div>
         <div class="col-lg-6 px-lg-5 mt-6 mt-lg-0" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-          @foreach (config('institution.whyChoose') as $item)
+          @foreach ($homeContent->whyChoose() as $item)
             <div class="overflow-hidden">
               <div class="px-4 px-sm-0 @if(!$loop->first) mt-5 @endif" data-zanim-xs='{"delay":0}'>
                 <h5 class="fs-0 fs-lg-1">
@@ -187,14 +189,15 @@
   </section>
 
   {{-- CTA --}}
+  @php $contactCta = $homeContent->contactCta(); @endphp
   <section class="bg-primary py-6 text-center text-md-start">
     <div class="container">
       <div class="row align-items-center">
         <div class="col-md">
-          <h4 class="text-white mb-0">Une question sur la concurrence ou les prix ?<br class="d-md-none"> La COMCO est à votre écoute.</h4>
+          <h4 class="text-white mb-0">{{ $contactCta['title'] }}</h4>
         </div>
         <div class="col-md-auto mt-md-0 mt-4">
-          <a class="btn btn-light rounded-pill" href="{{ route('contact') }}">Nous contacter</a>
+          <a class="btn btn-light rounded-pill" href="{{ route($contactCta['button_route']) }}">{{ $contactCta['button_label'] }}</a>
         </div>
       </div>
     </div>
@@ -208,7 +211,7 @@
         <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
       </div>
       <div class="row">
-        @foreach (config('institution.features') as $feature)
+        @foreach ($homeContent->features() as $feature)
           <div class="col-md-6 col-lg-4 mt-4" data-zanim-timeline="{}" data-zanim-trigger="scroll">
             <div class="px-3 py-4 px-lg-4">
               <div class="overflow-hidden"><img src="{{ themeAsset('assets/img/icons/' . $feature['icon']) }}" alt="icon" height="37" data-zanim-xs='{"delay":0}'></div>
@@ -222,16 +225,20 @@
   </section>
 
   {{-- Législation + TALO --}}
+  @php
+    $legislationPromo = $homeContent->legislationPromo();
+    $taloPromo = $homeContent->taloPromo();
+  @endphp
   <section class="bg-100">
     <div class="container">
       <div class="row g-4">
         <div class="col-lg-6">
           <div class="card h-100">
             <div class="card-body p-4 p-lg-5">
-              <h3 class="fs-2 fs-md-3 mb-4">Législation congolaise en matière de concurrence</h3>
-              <a class="d-block border rounded-3 p-4 text-decoration-none" href="{{ route('sections.show', ['section' => 'centre-information', 'slug' => 'cadre-juridique']) }}">
-                <h5 class="text-primary mb-2">LOI N°18/020 DU 09 JUILLET 2018</h5>
-                <p class="mb-0 text-500">Relative à la liberté des prix et à la concurrence</p>
+              <h3 class="fs-2 fs-md-3 mb-4">{{ $legislationPromo['section_title'] }}</h3>
+              <a class="d-block border rounded-3 p-4 text-decoration-none" href="{{ route('sections.show', ['section' => $legislationPromo['link_section'], 'slug' => $legislationPromo['link_slug']]) }}">
+                <h5 class="text-primary mb-2">{{ $legislationPromo['law_title'] }}</h5>
+                <p class="mb-0 text-500">{{ $legislationPromo['law_text'] }}</p>
               </a>
             </div>
           </div>
@@ -239,9 +246,9 @@
         <div class="col-lg-6">
           <div class="card h-100 bg-primary text-white">
             <div class="card-body p-4 p-lg-5">
-              <h3 class="fs-2 fs-md-3 text-white mb-4">Bientôt disponible</h3>
-              <p class="mb-4">L'Application TALO pour la surveillance des prix sur les marchés.</p>
-              <img class="img-fluid rounded-3" src="{{ comcoAsset('talo.jpg') }}" alt="Application TALO">
+              <h3 class="fs-2 fs-md-3 text-white mb-4">{{ $taloPromo['title'] }}</h3>
+              <p class="mb-4">{{ $taloPromo['text'] }}</p>
+              <img class="img-fluid rounded-3" src="{{ blockAsset($taloPromo) }}" alt="Application TALO">
             </div>
           </div>
         </div>
@@ -250,15 +257,16 @@
   </section>
 
   {{-- FunFact --}}
+  @php $funFactHeader = $homeContent->funFactHeader(); @endphp
   <section>
     <div class="bg-holder overlay overlay-elixir" style="background-image:url({{ themeAsset('assets/img/background-15.jpg') }});"></div>
     <div class="container">
       <div class="d-flex">
         <span class="me-3"><img src="{{ themeAsset('assets/img/checkmark.png') }}" alt="checkmark" style="width: 55px"></span>
         <div class="flex-1">
-          <h2 class="text-warning fs-3 fs-lg-4">Agir pour une concurrence loyale,<br><span class="text-white">au service de l'économie congolaise.</span></h2>
+          <h2 class="text-warning fs-3 fs-lg-4">{{ $funFactHeader['line_one'] }}<br><span class="text-white">{{ $funFactHeader['line_two'] }}</span></h2>
           <div class="row mt-4 pe-lg-10">
-            @foreach (config('institution.funFacts') as $fact)
+            @foreach ($homeContent->funFacts() as $fact)
               <div class="overflow-hidden col-6 col-md-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
                 <div class="fs-3 fs-lg-4 mb-0 fw-bold text-white mt-lg-5 mt-3 lh-xs" data-zanim-xs='{"delay":0.1}' data-countup='{"endValue":{{ $fact['value'] }}}'>{{ $fact['value'] }}</div>
                 <h6 class="fs-0 text-white" data-zanim-xs='{"delay":0.2}'>{{ $fact['label'] }}</h6>
@@ -278,7 +286,7 @@
         <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
       </div>
       <ul class="nav nav-tabs justify-content-center border-0 mb-5 comco-tab-pane" role="tablist">
-        @foreach (config('institution.homeTabs') as $key => $label)
+        @foreach ($homeContent->homeTabs() as $key => $label)
           <li class="nav-item" role="presentation">
             <button class="nav-link @if($loop->first) active @endif fw-semi-bold border-0" data-bs-toggle="tab" data-bs-target="#pane-{{ $key }}" type="button" role="tab">
               {{ $label }}
@@ -291,11 +299,11 @@
           @livewire('public.latest-posts', ['variant' => 'elixir'])
         </div>
         <div class="tab-pane fade" id="pane-une" role="tabpanel">
-          @php $featured = config('institution.featured'); @endphp
+          @php $featured = $homeContent->featured(); @endphp
           <div class="card card-featured">
             <div class="row g-0">
               <div class="col-md-5">
-                <img class="card-img h-100 object-fit-cover" src="{{ comcoAsset($featured['image']) }}" alt="{{ $featured['title'] }}">
+                <img class="card-img h-100 object-fit-cover" src="{{ blockAsset($featured) }}" alt="{{ $featured['title'] ?? '' }}">
               </div>
               <div class="col-md-7">
                 <div class="card-body p-4 p-lg-5">
@@ -310,7 +318,7 @@
         </div>
         <div class="tab-pane fade" id="pane-activites" role="tabpanel">
           <div class="row g-4">
-            @foreach (config('institution.activities') as $activity)
+            @foreach ($homeContent->activities() as $activity)
               <div class="col-md-6">
                 <div class="card h-100">
                   <div class="card-body p-4">
@@ -335,11 +343,11 @@
       </div>
       <div class="swiper theme-slider" data-swiper='{"loop":true,"slidesPerView":1,"autoplay":{"delay":5000}}'>
         <div class="swiper-wrapper">
-          @foreach (config('institution.testimonials') as $testimonial)
+          @foreach ($homeContent->testimonials() as $testimonial)
             <div class="swiper-slide">
               <div class="row px-lg-8">
                 <div class="col-4 col-md-3 mx-auto">
-                  <img class="rounded-3 mx-auto img-fluid" src="{{ themeAsset($testimonial['image']) }}" alt="{{ $testimonial['name'] }}">
+                  <img class="rounded-3 mx-auto img-fluid" src="{{ blockAsset($testimonial, 'image', 'theme') }}" alt="{{ $testimonial['name'] ?? '' }}">
                 </div>
                 <div class="col-md-9 mt-4 mt-md-0 px-4 px-sm-3">
                   <p class="lead">{{ $testimonial['quote'] }}</p>
@@ -362,9 +370,9 @@
   <div class="bg-200 py-6">
     <div class="container">
       <div class="row align-items-center" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-        @foreach (config('institution.partners') as $partner)
+        @foreach ($homeContent->partners() as $partner)
           <div class="col-4 col-md-2 my-3 overflow-hidden">
-            <img class="img-fluid" src="{{ themeAsset($partner['logo']) }}" alt="{{ $partner['name'] }}" data-zanim-xs="{}">
+            <img class="img-fluid" src="{{ blockAsset($partner, 'logo', 'theme') }}" alt="{{ $partner['name'] ?? '' }}" data-zanim-xs="{}">
           </div>
         @endforeach
       </div>

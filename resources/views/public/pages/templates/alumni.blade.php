@@ -8,29 +8,33 @@
       {!! $page->body !!}
     </div>
 
-    <div class="text-center mb-5">
-      <h3 class="fs-2 fs-md-3">Équipe & partenaires</h3>
-      <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
-    </div>
+    @if ($page->teamMembers->isNotEmpty())
+      <div class="text-center mb-5">
+        <h3 class="fs-2 fs-md-3">Équipe & partenaires</h3>
+        <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
+      </div>
 
-    <div class="row justify-content-center">
-      @foreach ([
-        ['name' => 'Coordination nationale', 'role' => 'Direction stratégique', 'image' => 'portrait-1.jpg', 'text' => 'Pilotage institutionnel et coordination des actions de la COMCO.'],
-        ['name' => 'Collège des analystes', 'role' => 'Analyse économique', 'image' => 'portrait-4.jpg', 'text' => 'Évaluation des concentrations et des pratiques anticoncurrentielles.'],
-        ['name' => 'Corps des enquêteurs', 'role' => 'Enquêtes & contrôles', 'image' => 'portrait-6.jpg', 'text' => 'Missions de terrain et collecte des preuves.'],
-      ] as $member)
-        <div class="col-sm-6 col-lg-4 mt-4">
-          <div class="card h-100">
-            <img class="card-img-top" src="{{ themeAsset('assets/img/' . $member['image']) }}" alt="{{ $member['name'] }}">
-            <div class="card-body">
-              <h5>{{ $member['name'] }}</h5>
-              <h6 class="fw-normal text-500">{{ $member['role'] }}</h6>
-              <p class="py-3 mb-0">{{ $member['text'] }}</p>
+      <div class="row justify-content-center">
+        @foreach ($page->teamMembers as $member)
+          <div class="col-sm-6 col-lg-4 mt-4">
+            <div class="card h-100">
+              @if ($member->image)
+                <img class="card-img-top" src="{{ pageAsset($member->image, $member->image_source) }}" alt="{{ $member->name }}">
+              @endif
+              <div class="card-body">
+                <h5>{{ $member->name }}</h5>
+                @if ($member->role)
+                  <h6 class="fw-normal text-500">{{ $member->role }}</h6>
+                @endif
+                @if ($member->text)
+                  <p class="py-3 mb-0">{{ $member->text }}</p>
+                @endif
+              </div>
             </div>
           </div>
-        </div>
-      @endforeach
-    </div>
+        @endforeach
+      </div>
+    @endif
   </div>
 </section>
 

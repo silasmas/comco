@@ -1,14 +1,17 @@
 @extends('layouts.public')
 
 @php
+  use App\Support\EServiceRegistry;
+
   $breadcrumb = [];
   if ($sectionLabel ?? false) {
     $breadcrumb[] = ['label' => $sectionLabel];
   }
   $breadcrumb[] = ['label' => $page->title];
   $isEService = ($page->section ?? null) === 'e-services';
-  $hasEServiceForm = $isEService && array_key_exists($page->slug, config('e-services', []));
-  $template = pageTemplate($page->section ?? '', $page->slug);
+  $hasEServiceForm = $isEService && EServiceRegistry::has($page->slug);
+  $serviceConfig = $hasEServiceForm ? EServiceRegistry::get($page->slug) : [];
+  $template = pageTemplate($page->section ?? '', $page->slug, $page->template);
 
   if ($isEService && $hasEServiceForm) {
     $template = 'e-service';
@@ -27,5 +30,6 @@
     'sectionLabel' => $sectionLabel ?? null,
     'isEService' => $isEService,
     'hasEServiceForm' => $hasEServiceForm,
+    'serviceConfig' => $serviceConfig,
   ])
 @endsection

@@ -110,9 +110,10 @@
 
   <div class="card">
     <h2>Contenus de démonstration</h2>
-    <p>Importe 15 articles d'actualité COMCO (textes provisoires et images du thème). Les articles existants sont mis à jour sans doublon.</p>
+    <p>Importe les pages CMS, la navigation, l'accueil, le contact, les e-services et les médias attachés. Les contenus existants sont mis à jour sans doublon.</p>
     <div class="actions">
-      <a class="btn btn-primary" href="{{ $adminPrefix }}/install/seed-posts" onclick="return confirm('Importer les articles de démonstration ?');">Exécuter le seeder des articles</a>
+      <a class="btn btn-primary" href="{{ $adminPrefix }}/install/seed-content" onclick="return confirm('Importer tous les contenus institutionnels ?');">Importer les contenus du site</a>
+      <a class="btn btn-secondary" href="{{ $adminPrefix }}/install/seed-posts" onclick="return confirm('Importer les articles de démonstration ?');">Importer les articles d'actualité</a>
     </div>
   </div>
 

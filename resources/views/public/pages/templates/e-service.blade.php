@@ -14,7 +14,7 @@
         @if ($hasEServiceForm ?? false)
           <div class="card shadow-sm border-warning mb-4">
             <div class="card-body p-4 p-lg-5">
-              <h4 class="text-primary mb-1">{{ config("e-services.{$page->slug}.label") }}</h4>
+              <h4 class="text-primary mb-1">{{ $serviceConfig['label'] ?? $page->title }}</h4>
               @livewire('public.e-service-form', ['serviceSlug' => $page->slug], key('eservice-' . $page->slug))
             </div>
           </div>
