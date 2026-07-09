@@ -61,9 +61,7 @@ class SiteBlockResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('page', SiteBlock::PAGE_HOME)
-            ->orderBy('sort_order')
-            ->orderBy('id');
+            ->where('page', SiteBlock::PAGE_HOME);
     }
 
     public static function form(Schema $schema): Schema

@@ -41,7 +41,11 @@ class SiteBlocksTable
                     ->sortable(),
                 TextColumn::make('content_title')
                     ->label('Titre')
-                    ->state(fn (SiteBlock $record): string => (string) ($record->payload['title'] ?? $record->payload['name'] ?? $record->payload['section_title'] ?? ''))
+                    ->state(function (SiteBlock $record): string {
+                        $payload = $record->payload ?? [];
+
+                        return (string) ($payload['title'] ?? $payload['name'] ?? $payload['section_title'] ?? '');
+                    })
                     ->limit(40),
                 TextColumn::make('sort_order')
                     ->label('Ordre')
