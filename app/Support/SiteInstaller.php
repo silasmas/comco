@@ -175,6 +175,21 @@ class SiteInstaller
     }
 
     /**
+     * Exécute tous les seeders de contenu et d'articles.
+     *
+     * @return string Message de confirmation
+     */
+    public static function runAllSeeders(): string
+    {
+        $messages = [
+            self::runContentSeeders(),
+            self::runPostsSeeder(),
+        ];
+
+        return implode(' | ', array_filter($messages));
+    }
+
+    /**
      * Finalise le déploiement et rend le site public accessible.
      *
      * @throws \RuntimeException Si aucun super administrateur n'existe

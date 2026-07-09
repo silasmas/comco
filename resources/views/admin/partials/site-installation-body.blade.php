@@ -35,16 +35,23 @@
     display: inline-block;
     padding: 10px 16px;
     border-radius: 8px;
-    text-decoration: none;
+    text-decoration: none !important;
     font-weight: 600;
     font-size: 0.92rem;
     border: none;
     cursor: pointer;
+    line-height: 1.2;
   }
-  .comco-install .btn-primary { background: #003DA5; color: #fff; }
-  .comco-install .btn-warning { background: #fdd428; color: #2a3855; }
-  .comco-install .btn-success { background: #36b36a; color: #fff; }
-  .comco-install .btn-secondary { background: #e8edf5; color: #2a3855; }
+  .comco-install .btn-primary { background: #003DA5 !important; color: #fff !important; }
+  .comco-install .btn-warning { background: #fdd428 !important; color: #2a3855 !important; }
+  .comco-install .btn-success { background: #36b36a !important; color: #fff !important; }
+  .comco-install .btn-secondary { background: #e8edf5 !important; color: #2a3855 !important; }
+  .comco-install .btn-disabled {
+    background: #d7dde8 !important;
+    color: #7a8496 !important;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
   .comco-install .grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -77,7 +84,79 @@
     gap: 10px;
     margin-bottom: 24px;
   }
+  .comco-install .status-list {
+    list-style: none;
+    margin: 0 0 18px;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .comco-install .status-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #f7f9fc;
+    border: 1px solid #e2e8f0;
+  }
+  .comco-install .status-item.is-done {
+    background: #edf9f1;
+    border-color: #b8e6cc;
+  }
+  .comco-install .status-item.is-pending {
+    background: #fff8e8;
+    border-color: #f5dfa8;
+  }
+  .comco-install .status-item.is-blocked {
+    background: #f3f4f6;
+    border-color: #d7dde8;
+    opacity: 0.85;
+  }
+  .comco-install .status-label {
+    font-weight: 600;
+    color: #2a3855;
+  }
+  .comco-install .status-detail {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.88rem;
+    color: #5a6478;
+    font-weight: 400;
+  }
+  .comco-install .status-badge {
+    flex-shrink: 0;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .comco-install .status-badge.done { background: #d7f2e2; color: #1f6b43; }
+  .comco-install .status-badge.pending { background: #fff1c7; color: #8a6b00; }
+  .comco-install .status-badge.blocked { background: #e8edf5; color: #6b7280; }
+  .comco-install .seed-highlight {
+    border: 2px solid #fdd428;
+    box-shadow: 0 10px 30px rgba(253, 212, 40, 0.18);
+  }
+  .comco-install .hint {
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #eef4ff;
+    color: #2a3855;
+    font-size: 0.9rem;
+  }
 </style>
+
+@php
+  $status = $status ?? [];
+  $counts = $status['counts'] ?? [];
+  $databaseReady = (bool) ($status['databaseReady'] ?? false);
+  $contentSeeded = (bool) ($status['contentSeeded'] ?? false);
+  $postsSeeded = (bool) ($status['postsSeeded'] ?? false);
+@endphp
 
 <div class="comco-install">
   @if (is_array($notice))
@@ -86,6 +165,74 @@
       {{ $notice['body'] ?? '' }}
     </div>
   @endif
+
+  <div class="card">
+    <h2>État de l'installation</h2>
+    <p>Suivi des étapes essentielles. Les seeders ne peuvent s'exécuter qu'après les migrations.</p>
+    <ul class="status-list">
+      <li class="status-item {{ ($status['databaseReady'] ?? false) ? 'is-done' : 'is-pending' }}">
+        <div>
+          <span class="status-label">Base de données</span>
+          <span class="status-detail">Tables migrées et prêtes pour les seeders.</span>
+        </div>
+        <span class="status-badge {{ ($status['databaseReady'] ?? false) ? 'done' : 'pending' }}">
+          {{ ($status['databaseReady'] ?? false) ? 'OK' : 'En attente' }}
+        </span>
+      </li>
+      <li class="status-item {{ $contentSeeded ? 'is-done' : ($databaseReady ? 'is-pending' : 'is-blocked') }}">
+        <div>
+          <span class="status-label">Contenus institutionnels</span>
+          <span class="status-detail">
+            @if ($contentSeeded)
+              {{ $counts['pages'] ?? 0 }} pages, {{ $counts['homeBlocks'] ?? 0 }} blocs accueil, {{ $counts['navigationItems'] ?? 0 }} liens menu, {{ $counts['eServices'] ?? 0 }} e-services.
+            @elseif ($databaseReady)
+              Seeder non exécuté — le site utilise encore les valeurs de repli.
+            @else
+              Exécutez d'abord les migrations.
+            @endif
+          </span>
+        </div>
+        <span class="status-badge {{ $contentSeeded ? 'done' : ($databaseReady ? 'pending' : 'blocked') }}">
+          {{ $contentSeeded ? 'Importé' : ($databaseReady ? 'À faire' : 'Bloqué') }}
+        </span>
+      </li>
+      <li class="status-item {{ $postsSeeded ? 'is-done' : ($databaseReady ? 'is-pending' : 'is-blocked') }}">
+        <div>
+          <span class="status-label">Articles d'actualité</span>
+          <span class="status-detail">
+            @if ($postsSeeded)
+              {{ $counts['posts'] ?? 0 }} article(s) de démonstration en base.
+            @elseif ($databaseReady)
+              Seeder articles non exécuté.
+            @else
+              Exécutez d'abord les migrations.
+            @endif
+          </span>
+        </div>
+        <span class="status-badge {{ $postsSeeded ? 'done' : ($databaseReady ? 'pending' : 'blocked') }}">
+          {{ $postsSeeded ? 'Importé' : ($databaseReady ? 'À faire' : 'Bloqué') }}
+        </span>
+      </li>
+      <li class="status-item {{ ($status['storageLinked'] ?? false) ? 'is-done' : 'is-pending' }}">
+        <div>
+          <span class="status-label">Lien storage</span>
+          <span class="status-detail">Accès public aux fichiers téléversés.</span>
+        </div>
+        <span class="status-badge {{ ($status['storageLinked'] ?? false) ? 'done' : 'pending' }}">
+          {{ ($status['storageLinked'] ?? false) ? 'OK' : 'À faire' }}
+        </span>
+      </li>
+      <li class="status-item {{ ($status['superAdminExists'] ?? false) ? 'is-done' : 'is-pending' }}">
+        <div>
+          <span class="status-label">Super administrateur</span>
+          <span class="status-detail">Compte principal du panneau Filament.</span>
+        </div>
+        <span class="status-badge {{ ($status['superAdminExists'] ?? false) ? 'done' : 'pending' }}">
+          {{ ($status['superAdminExists'] ?? false) ? 'Créé' : 'À faire' }}
+        </span>
+      </li>
+    </ul>
+  </div>
 
   @if ($requiresInstallation)
     <div class="header-actions">
@@ -100,7 +247,7 @@
 
   <div class="card">
     <h2>Étapes système</h2>
-    <p>Prépare le serveur : migrations (avec import automatique des contenus si la base est vide), lien storage et cache Laravel.</p>
+    <p>Prépare le serveur : migrations (import auto des contenus si la base est vide), lien storage et cache Laravel.</p>
     <div class="actions">
       <a class="btn btn-primary" href="{{ $adminPrefix }}/install/migrate" onclick="return confirm('Exécuter les migrations ?');">Exécuter les migrations</a>
       <a class="btn btn-primary" href="{{ $adminPrefix }}/install/storage-link" onclick="return confirm('Créer le lien storage ?');">Créer le lien storage</a>
@@ -108,12 +255,36 @@
     </div>
   </div>
 
-  <div class="card">
-    <h2>Contenus de démonstration</h2>
-    <p>Les contenus institutionnels sont importés automatiquement lors de la première migration ou via « Tout installer ». Utilisez ces boutons pour forcer une réimportation (mise à jour sans doublon).</p>
+  <div class="card seed-highlight">
+    <h2>Seeders — contenus dynamiques</h2>
+    <p>Importe en base les pages, la navigation, l'accueil, le contact, les e-services et les articles. Indispensable pour que le site soit modifiable depuis Filament.</p>
+
+    @if (! $databaseReady)
+      <p class="hint">Les boutons seeders seront actifs après l'exécution des migrations.</p>
+    @elseif ($contentSeeded && $postsSeeded)
+      <p class="hint">Les seeders ont déjà été exécutés. Vous pouvez relancer un import pour mettre à jour les contenus sans créer de doublons.</p>
+    @elseif ($contentSeeded)
+      <p class="hint">Les contenus institutionnels sont importés. Il reste à importer les articles d'actualité si besoin.</p>
+    @else
+      <p class="hint">Aucun seeder détecté en base : cliquez sur un bouton ci-dessous pour rendre le site dynamique.</p>
+    @endif
+
     <div class="actions">
-      <a class="btn btn-primary" href="{{ $adminPrefix }}/install/seed-content" onclick="return confirm('Importer tous les contenus institutionnels ?');">Importer les contenus du site</a>
-      <a class="btn btn-secondary" href="{{ $adminPrefix }}/install/seed-posts" onclick="return confirm('Importer les articles de démonstration ?');">Importer les articles d'actualité</a>
+      @if ($databaseReady)
+        <a class="btn btn-warning" href="{{ $adminPrefix }}/install/seed-all" onclick="return confirm('Exécuter tous les seeders (contenus + articles) ?');">
+          Exécuter tous les seeders
+        </a>
+        <a class="btn btn-primary" href="{{ $adminPrefix }}/install/seed-content" onclick="return confirm('Importer tous les contenus institutionnels ?');">
+          {{ $contentSeeded ? 'Réimporter les contenus' : 'Importer les contenus du site' }}
+        </a>
+        <a class="btn btn-secondary" href="{{ $adminPrefix }}/install/seed-posts" onclick="return confirm('Importer les articles de démonstration ?');">
+          {{ $postsSeeded ? 'Réimporter les articles' : 'Importer les articles d\'actualité' }}
+        </a>
+      @else
+        <span class="btn btn-disabled">Exécuter tous les seeders</span>
+        <span class="btn btn-disabled">Importer les contenus du site</span>
+        <span class="btn btn-disabled">Importer les articles d'actualité</span>
+      @endif
     </div>
   </div>
 

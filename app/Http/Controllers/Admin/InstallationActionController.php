@@ -116,6 +116,22 @@ class InstallationActionController extends Controller
     }
 
     /**
+     * Importe les contenus institutionnels et les articles de démonstration.
+     */
+    public function seedAll(): RedirectResponse
+    {
+        $this->ensureAccess();
+
+        try {
+            $message = SiteInstaller::runAllSeeders();
+        } catch (\Throwable $exception) {
+            return $this->backToInstallation('error', 'Import des seeders impossible', $exception->getMessage());
+        }
+
+        return $this->backToInstallation('success', 'Seeders exécutés', $message);
+    }
+
+    /**
      * Finalise le déploiement et redirige vers le tableau de bord.
      */
     public function launch(): RedirectResponse

@@ -17,6 +17,7 @@ Route::prefix('admin/install')
         Route::get('optimize', [InstallationActionController::class, 'optimize'])->name('optimize');
         Route::get('seed-posts', [InstallationActionController::class, 'seedPosts'])->name('seed-posts');
         Route::get('seed-content', [InstallationActionController::class, 'seedContent'])->name('seed-content');
+        Route::get('seed-all', [InstallationActionController::class, 'seedAll'])->name('seed-all');
         Route::get('run-all', [InstallationActionController::class, 'runAll'])->name('run-all');
         Route::get('launch', [InstallationActionController::class, 'launch'])->name('launch');
         Route::post('save-configuration', [InstallationPageController::class, 'saveConfiguration'])->name('save-configuration');
@@ -33,6 +34,7 @@ Route::prefix('public/admin')->group(function (): void {
         Route::get('optimize', [InstallationActionController::class, 'optimize']);
         Route::get('seed-posts', [InstallationActionController::class, 'seedPosts']);
         Route::get('seed-content', [InstallationActionController::class, 'seedContent']);
+        Route::get('seed-all', [InstallationActionController::class, 'seedAll']);
         Route::get('run-all', [InstallationActionController::class, 'runAll']);
         Route::get('launch', [InstallationActionController::class, 'launch']);
         Route::post('save-configuration', [InstallationPageController::class, 'saveConfiguration']);
