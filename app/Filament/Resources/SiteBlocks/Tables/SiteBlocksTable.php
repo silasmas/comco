@@ -31,13 +31,17 @@ class SiteBlocksTable
                     ->label('Libellé')
                     ->searchable()
                     ->limit(40),
+                TextColumn::make('block_key')
+                    ->label('Clé')
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('block_type')
                     ->label('Type')
-                    ->formatStateUsing(fn (string $state): string => SiteBlock::blockTypeLabels()[$state] ?? $state)
+                    ->formatStateUsing(fn (?string $state): string => SiteBlock::blockTypeLabels()[$state ?? ''] ?? ($state ?? '—'))
                     ->sortable(),
-                TextColumn::make('payload.title')
+                TextColumn::make('content_title')
                     ->label('Titre')
-                    ->state(fn (SiteBlock $record): string => (string) ($record->payload['title'] ?? $record->payload['name'] ?? ''))
+                    ->state(fn (SiteBlock $record): string => (string) ($record->payload['title'] ?? $record->payload['name'] ?? $record->payload['section_title'] ?? ''))
                     ->limit(40),
                 TextColumn::make('sort_order')
                     ->label('Ordre')

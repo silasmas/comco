@@ -7,6 +7,8 @@ use App\Models\SiteBlock;
 use App\Support\HomePageContent;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -90,8 +92,70 @@ class ManageHomePromos extends Page
             'taloText' => $content->taloPromo()['text'],
             'funFactLineOne' => $content->funFactHeader()['line_one'],
             'funFactLineTwo' => $content->funFactHeader()['line_two'],
-            'whyChooseImage' => $content->whyChooseImage()['image'],
+            'whyChooseImage' => self::uploadedImageState($content->whyChooseImage()['image'] ?? ''),
+            'whyChooseImageLegacy' => self::legacyImagePath($content->whyChooseImage()['image'] ?? ''),
+            'taloImage' => self::uploadedImageState($content->taloPromo()['image'] ?? ''),
+            'taloImageLegacy' => self::legacyImagePath($content->taloPromo()['image'] ?? ''),
         ]);
+    }
+
+    /**
+     * Retourne le chemin utilisable par FileUpload (storage public uniquement).
+     *
+     * @param  string  $imagePath  Chemin enregistré dans le bloc
+     * @return string|null Chemin relatif au disque public
+     */
+    private static function uploadedImageState(string $imagePath): ?string
+    {
+        if ($imagePath === '') {
+            return null;
+        }
+
+        if (str_starts_with($imagePath, 'site-blocks/')) {
+            return $imagePath;
+        }
+
+        return null;
+    }
+
+    /**
+     * Conserve le chemin d'une image héritée (assets COMCO) si aucun upload n'existe.
+     *
+     * @param  string  $imagePath  Chemin enregistré dans le bloc
+     * @return string|null Chemin legacy ou null
+     */
+    private static function legacyImagePath(string $imagePath): ?string
+    {
+        if ($imagePath === '' || str_starts_with($imagePath, 'site-blocks/')) {
+            return null;
+        }
+
+        return $imagePath;
+    }
+
+    /**
+     * Résout le chemin d'image final à enregistrer dans le payload.
+     *
+     * @param  mixed  $uploadedPath  Chemin téléversé via Filament
+     * @param  string|null  $legacyPath  Chemin hérité des assets COMCO
+     * @param  string  $defaultPath  Valeur par défaut si rien n'est fourni
+     * @return string Chemin final de l'image
+     */
+    private function resolveImagePath(mixed $uploadedPath, ?string $legacyPath, string $defaultPath): string
+    {
+        if (is_array($uploadedPath)) {
+            $uploadedPath = $uploadedPath[0] ?? null;
+        }
+
+        if (filled($uploadedPath)) {
+            return (string) $uploadedPath;
+        }
+
+        if (filled($legacyPath)) {
+            return (string) $legacyPath;
+        }
+
+        return $defaultPath;
     }
 
     /**
@@ -160,6 +224,13 @@ class ManageHomePromos extends Page
                     ->schema([
                         TextInput::make('taloTitle')->label('Titre')->required(),
                         Textarea::make('taloText')->label('Texte')->rows(3)->required()->columnSpanFull(),
+                        FileUpload::make('taloImage')
+                            ->label('Image TALO')
+                            ->image()
+                            ->directory('site-blocks/home/promos')
+                            ->disk('public')
+                            ->columnSpanFull(),
+                        Hidden::make('taloImageLegacy'),
                     ]),
                 Section::make('Section chiffres clés')
                     ->schema([
@@ -168,10 +239,14 @@ class ManageHomePromos extends Page
                     ]),
                 Section::make('Image « Pourquoi la COMCO »')
                     ->schema([
-                        TextInput::make('whyChooseImage')
-                            ->label('Chemin de l\'image')
-                            ->helperText('Ex. img4.jpg dans /assets/')
-                            ->required(),
+                        FileUpload::make('whyChooseImage')
+                            ->label('Image')
+                            ->image()
+                            ->directory('site-blocks/home/promos')
+                            ->disk('public')
+                            ->helperText('Téléversez une image JPG ou PNG. Elle remplacera le visuel affiché dans la section « Pourquoi la COMCO ».')
+                            ->columnSpanFull(),
+                        Hidden::make('whyChooseImageLegacy'),
                     ]),
             ]);
     }
@@ -208,7 +283,8 @@ class ManageHomePromos extends Page
         $this->savePromo('talo_promo', 'Promotion TALO', [
             'title' => $data['taloTitle'],
             'text' => $data['taloText'],
-            'image' => 'talo.jpg',
+            'image' => $this->resolveImagePath($data['taloImage'] ?? null, $data['taloImageLegacy'] ?? null, 'talo.jpg'),
+            'image_source' => 'comco',
         ]);
 
         $this->savePromo('fun_fact_header', 'En-tête chiffres clés', [
@@ -217,7 +293,7 @@ class ManageHomePromos extends Page
         ]);
 
         $this->savePromo('why_choose_image', 'Image Pourquoi la COMCO', [
-            'image' => $data['whyChooseImage'],
+            'image' => $this->resolveImagePath($data['whyChooseImage'] ?? null, $data['whyChooseImageLegacy'] ?? null, 'img4.jpg'),
             'image_source' => 'comco',
         ]);
 
