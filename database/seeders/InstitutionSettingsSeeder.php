@@ -15,6 +15,6 @@ class InstitutionSettingsSeeder extends Seeder
      */
     public function run(): void
     {
-        InstitutionSettings::persist(InstitutionSettings::forForm());
+        InstitutionSettings::seedDefaultsIfMissing();
     }
 }

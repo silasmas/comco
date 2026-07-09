@@ -80,6 +80,50 @@ class InstitutionSettings
     }
 
     /**
+     * Retourne les données initiales du formulaire depuis config/institution.php.
+     *
+     * @return array<string, mixed> Valeurs par défaut de l'institution
+     */
+    public static function defaultFormFromConfig(): array
+    {
+        $config = config('institution', []);
+
+        return [
+            'name' => $config['name'] ?? '',
+            'fullName' => $config['fullName'] ?? '',
+            'shortName' => $config['shortName'] ?? '',
+            'tagline' => $config['tagline'] ?? '',
+            'contactEmail' => $config['contact']['email'] ?? '',
+            'contactPhone' => $config['contact']['phone'] ?? '',
+            'contactAddress' => $config['contact']['address'] ?? '',
+            'contactMapEmbedUrl' => $config['contact']['mapEmbedUrl'] ?? '',
+            'contactMapLinkUrl' => $config['contact']['mapLinkUrl'] ?? '',
+            'socialTwitter' => $config['social']['twitter'] ?? '',
+            'socialFacebook' => $config['social']['facebook'] ?? '',
+            'socialLinkedin' => $config['social']['linkedin'] ?? '',
+            'socialYoutube' => $config['social']['youtube'] ?? '',
+            'seoTitleSuffix' => $config['seo']['titleSuffix'] ?? '',
+            'seoDefaultDescription' => $config['seo']['defaultDescription'] ?? '',
+        ];
+    }
+
+    /**
+     * Enregistre les paramètres institutionnels par défaut si la table est vide.
+     */
+    public static function seedDefaultsIfMissing(): void
+    {
+        if (! Schema::hasTable('site_settings')) {
+            return;
+        }
+
+        if (SiteSetting::query()->exists()) {
+            return;
+        }
+
+        self::persist(self::defaultFormFromConfig());
+    }
+
+    /**
      * Applique les paramètres dynamiques à la configuration Laravel.
      */
     public static function applyToConfig(): void

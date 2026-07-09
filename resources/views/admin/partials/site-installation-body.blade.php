@@ -92,7 +92,7 @@
       <a class="btn btn-success" href="{{ $adminPrefix }}/install/launch" onclick="return confirm('Mettre le site en ligne ? Assurez-vous d\'avoir exécuté les migrations et créé le super administrateur.');">
         Mettre le site en ligne
       </a>
-      <a class="btn btn-warning" href="{{ $adminPrefix }}/install/run-all" onclick="return confirm('Exécuter migrations, lien storage et optimisation ?');">
+      <a class="btn btn-warning" href="{{ $adminPrefix }}/install/run-all" onclick="return confirm('Exécuter migrations, contenus, lien storage et optimisation ?');">
         Tout installer
       </a>
     </div>
@@ -100,7 +100,7 @@
 
   <div class="card">
     <h2>Étapes système</h2>
-    <p>Prépare le serveur : migrations, lien storage, cache Laravel et contenus de démonstration. Chaque action recharge cette page.</p>
+    <p>Prépare le serveur : migrations (avec import automatique des contenus si la base est vide), lien storage et cache Laravel.</p>
     <div class="actions">
       <a class="btn btn-primary" href="{{ $adminPrefix }}/install/migrate" onclick="return confirm('Exécuter les migrations ?');">Exécuter les migrations</a>
       <a class="btn btn-primary" href="{{ $adminPrefix }}/install/storage-link" onclick="return confirm('Créer le lien storage ?');">Créer le lien storage</a>
@@ -110,7 +110,7 @@
 
   <div class="card">
     <h2>Contenus de démonstration</h2>
-    <p>Importe les pages CMS, la navigation, l'accueil, le contact, les e-services et les médias attachés. Les contenus existants sont mis à jour sans doublon.</p>
+    <p>Les contenus institutionnels sont importés automatiquement lors de la première migration ou via « Tout installer ». Utilisez ces boutons pour forcer une réimportation (mise à jour sans doublon).</p>
     <div class="actions">
       <a class="btn btn-primary" href="{{ $adminPrefix }}/install/seed-content" onclick="return confirm('Importer tous les contenus institutionnels ?');">Importer les contenus du site</a>
       <a class="btn btn-secondary" href="{{ $adminPrefix }}/install/seed-posts" onclick="return confirm('Importer les articles de démonstration ?');">Importer les articles d'actualité</a>

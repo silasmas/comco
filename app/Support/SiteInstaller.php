@@ -2,8 +2,10 @@
 
 namespace App\Support;
 
+use App\Models\Page;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Opérations d'installation et de mise en production du site COMCO.
@@ -19,7 +21,13 @@ class SiteInstaller
     {
         Artisan::call('migrate', ['--force' => true]);
 
-        return trim(Artisan::output()) ?: 'Migrations exécutées avec succès.';
+        $message = trim(Artisan::output()) ?: 'Migrations exécutées avec succès.';
+
+        if (self::needsDefaultContentSeeding()) {
+            $message .= ' | '.self::runContentSeeders();
+        }
+
+        return $message;
     }
 
     /**
@@ -127,24 +135,24 @@ class SiteInstaller
             throw new \RuntimeException('Exécutez d\'abord les migrations avant d\'importer les contenus.');
         }
 
-        $seeders = [
-            'Database\\Seeders\\InstitutionSeeder',
-            'Database\\Seeders\\InstitutionSettingsSeeder',
-            'Database\\Seeders\\NavigationSeeder',
-            'Database\\Seeders\\HomeContentSeeder',
-            'Database\\Seeders\\ContactContentSeeder',
-            'Database\\Seeders\\PageAttachmentsSeeder',
-            'Database\\Seeders\\EServiceDefinitionSeeder',
-        ];
-
-        foreach ($seeders as $seederClass) {
-            Artisan::call('db:seed', [
-                '--class' => $seederClass,
-                '--force' => true,
-            ]);
-        }
+        Artisan::call('db:seed', [
+            '--class' => 'Database\\Seeders\\SiteContentSeeder',
+            '--force' => true,
+        ]);
 
         return trim(Artisan::output()) ?: 'Contenus institutionnels importés avec succès.';
+    }
+
+    /**
+     * Indique si les contenus de base doivent être importés automatiquement.
+     */
+    public static function needsDefaultContentSeeding(): bool
+    {
+        if (! Schema::hasTable('pages')) {
+            return false;
+        }
+
+        return Page::query()->count() === 0;
     }
 
     /**

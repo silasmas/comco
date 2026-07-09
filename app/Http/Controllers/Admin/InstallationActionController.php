@@ -73,6 +73,7 @@ class InstallationActionController extends Controller
             $messages = [
                 SiteInstaller::runMigrations(),
                 SiteInstaller::createStorageLink(),
+                SiteInstaller::runContentSeeders(),
                 SiteInstaller::optimizeApplication(full: false),
             ];
         } catch (\Throwable $exception) {
