@@ -10,6 +10,7 @@ use App\Support\SiteDeploymentState;
 use Database\Seeders\HomeContentSeeder;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -60,5 +61,39 @@ class SiteBlocksTableTest extends TestCase
 
         $this->assertSame('siteBlocksPage', $component->instance()->getTablePaginationPageName());
         $this->assertTrue($component->instance()->isTableLoaded());
+    }
+
+    /**
+     * Vérifie que la pagination Laravel n'est pas cassée par le scope de page publique.
+     */
+    public function test_home_blocks_pagination_returns_rows_on_first_page(): void
+    {
+        $this->seed(HomeContentSeeder::class);
+
+        /** @var LengthAwarePaginator $paginator */
+        $paginator = SiteBlock::query()
+            ->wherePublicPage(SiteBlock::PAGE_HOME)
+            ->paginate(perPage: 50, page: 1);
+
+        $this->assertGreaterThan(0, $paginator->count());
+        $this->assertSame(48, $paginator->total());
+
+        $admin = User::factory()->create([
+            'is_super_admin' => true,
+        ]);
+
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+
+        $instance = Livewire::actingAs($admin)
+            ->test(ListSiteBlocks::class)
+            ->instance();
+
+        $instance->flushCachedTableRecords();
+
+        /** @var LengthAwarePaginator $records */
+        $records = $instance->getTableRecords();
+
+        $this->assertGreaterThan(0, $records->count());
+        $this->assertSame(48, $records->total());
     }
 }

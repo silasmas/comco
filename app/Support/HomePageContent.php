@@ -30,7 +30,7 @@ class HomePageContent
         }
 
         $blocks = SiteBlock::query()
-            ->forPage(SiteBlock::PAGE_HOME)
+            ->wherePublicPage(SiteBlock::PAGE_HOME)
             ->active()
             ->orderBy('sort_order')
             ->orderBy('id')

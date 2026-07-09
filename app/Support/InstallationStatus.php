@@ -40,8 +40,8 @@ class InstallationStatus
     {
         return (bool) SiteDeploymentState::whenDatabaseReady(function (): bool {
             return Page::query()->exists()
-                && SiteBlock::query()->forPage(SiteBlock::PAGE_HOME)->exists()
-                && SiteBlock::query()->forPage(SiteBlock::PAGE_CONTACT)->exists()
+                && SiteBlock::query()->wherePublicPage(SiteBlock::PAGE_HOME)->exists()
+                && SiteBlock::query()->wherePublicPage(SiteBlock::PAGE_CONTACT)->exists()
                 && NavigationItem::query()->exists()
                 && EServiceDefinition::query()->exists();
         }, false);
@@ -68,8 +68,8 @@ class InstallationStatus
         return SiteDeploymentState::whenDatabaseReady(
             fn (): array => [
                 'pages' => Page::query()->count(),
-                'homeBlocks' => SiteBlock::query()->forPage(SiteBlock::PAGE_HOME)->count(),
-                'contactBlocks' => SiteBlock::query()->forPage(SiteBlock::PAGE_CONTACT)->count(),
+                'homeBlocks' => SiteBlock::query()->wherePublicPage(SiteBlock::PAGE_HOME)->count(),
+                'contactBlocks' => SiteBlock::query()->wherePublicPage(SiteBlock::PAGE_CONTACT)->count(),
                 'navigationItems' => NavigationItem::query()->count(),
                 'eServices' => EServiceDefinition::query()->count(),
                 'settings' => SiteSetting::query()->count(),

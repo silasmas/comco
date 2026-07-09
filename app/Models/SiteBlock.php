@@ -129,11 +129,14 @@ class SiteBlock extends Model
     /**
      * Scope pour filtrer par page publique.
      *
+     * Ne pas nommer ce scope « forPage » : Laravel utilise déjà forPage()
+     * en interne pour paginer les résultats des tableaux Filament.
+     *
      * @param  Builder<SiteBlock>  $query  Requête Eloquent
      * @param  string  $page  Identifiant de page
      * @return Builder<SiteBlock> Requête filtrée
      */
-    public function scopeForPage(Builder $query, string $page): Builder
+    public function scopeWherePublicPage(Builder $query, string $page): Builder
     {
         return $query->where('page', $page);
     }

@@ -30,7 +30,7 @@ class ContactPageContent
         }
 
         $blocks = SiteBlock::query()
-            ->forPage(SiteBlock::PAGE_CONTACT)
+            ->wherePublicPage(SiteBlock::PAGE_CONTACT)
             ->active()
             ->orderBy('sort_order')
             ->orderBy('id')
