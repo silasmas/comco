@@ -35,6 +35,22 @@
   line-height: 1;
 }
 
+.comco-ministry-link {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 0.75rem;
+  margin-left: auto;
+  line-height: 1;
+}
+
+@media (min-width: 992px) {
+  .comco-ministry-link {
+    margin-top: 0;
+    margin-left: 1rem;
+  }
+}
+
 .theme-slider .slide-subtitle {
   color: var(--elixir-warning, #fdd428) !important;
 }

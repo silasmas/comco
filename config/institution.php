@@ -38,6 +38,11 @@ return [
       'Site officiel de la Commission de la Concurrence (COMCO) - République Démocratique du Congo.'
     ),
   ],
+  'ministry' => [
+    'name' => env('INSTITUTION_MINISTRY_NAME', 'Ministère des Finances'),
+    'logo' => env('INSTITUTION_MINISTRY_LOGO', 'logo-minfinances.png'),
+    'url' => env('INSTITUTION_MINISTRY_URL', 'https://finances.gouv.cd'),
+  ],
   'homeTabs' => [
     'actualite' => 'Notre actualité',
     'une' => 'A la une',

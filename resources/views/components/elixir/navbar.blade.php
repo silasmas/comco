@@ -24,8 +24,8 @@
           </span>
         </span>
       </button>
-      <div class="collapse navbar-collapse" id="primaryNavbarCollapse">
-        <ul class="navbar-nav py-3 py-lg-0 ms-lg-n1 align-items-lg-center">
+      <div class="collapse navbar-collapse align-items-lg-center" id="primaryNavbarCollapse">
+        <ul class="navbar-nav py-3 py-lg-0 ms-lg-n1 me-lg-auto align-items-lg-center">
           @foreach ($mainMenu as $item)
             <li class="nav-item @if(isset($item['children'])) dropdown @endif">
               @if (isset($item['children']))
@@ -58,6 +58,19 @@
             </li>
           @endforeach
         </ul>
+        <a
+          class="comco-ministry-link"
+          href="{{ config('institution.ministry.url') }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="{{ config('institution.ministry.name') }}"
+        >
+          <img
+            src="{{ comcoAsset(config('institution.ministry.logo')) }}"
+            alt="{{ config('institution.ministry.name') }}"
+            class="comco-logo"
+          >
+        </a>
       </div>
     </nav>
   </div>
