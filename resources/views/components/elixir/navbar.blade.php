@@ -6,11 +6,26 @@
 <div class="sticky-top navbar-elixir">
   <div class="container">
     <nav class="navbar navbar-expand-lg align-items-lg-center py-lg-2">
-      <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
-        <img src="{{ comcoAsset('logo01.png') }}" alt="{{ config('institution.fullName') }}" class="comco-logo">
-      </a>
+      <div class="d-flex align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
+          <img src="{{ comcoAsset('logo01.png') }}" alt="{{ config('institution.fullName') }}" class="comco-logo">
+        </a>
+        <a
+          class="comco-ministry-link comco-ministry-link--mobile d-lg-none"
+          href="{{ config('institution.ministry.url') }}"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="{{ config('institution.ministry.name') }}"
+        >
+          <img
+            src="{{ comcoAsset(config('institution.ministry.logo')) }}"
+            alt="{{ config('institution.ministry.name') }}"
+            class="comco-logo"
+          >
+        </a>
+      </div>
       <button
-        class="navbar-toggler p-0"
+        class="navbar-toggler p-0 ms-auto"
         type="button"
         data-bs-toggle="collapse"
         data-bs-target="#primaryNavbarCollapse"
@@ -59,7 +74,7 @@
           @endforeach
         </ul>
         <a
-          class="comco-ministry-link"
+          class="comco-ministry-link comco-ministry-link--desktop d-none d-lg-inline-flex"
           href="{{ config('institution.ministry.url') }}"
           target="_blank"
           rel="noopener noreferrer"
