@@ -20,7 +20,7 @@
           <img
             src="{{ comcoAsset(config('institution.ministry.logo')) }}"
             alt="{{ config('institution.ministry.name') }}"
-            class="comco-logo"
+            class="comco-ministry-logo"
           >
         </a>
       </div>
@@ -83,7 +83,7 @@
           <img
             src="{{ comcoAsset(config('institution.ministry.logo')) }}"
             alt="{{ config('institution.ministry.name') }}"
-            class="comco-logo"
+            class="comco-ministry-logo"
           >
         </a>
       </div>

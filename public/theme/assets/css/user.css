@@ -35,6 +35,13 @@
   line-height: 1;
 }
 
+.comco-ministry-logo {
+  display: block;
+  height: 50px;
+  width: auto;
+  max-width: none;
+}
+
 .comco-ministry-link {
   display: inline-flex;
   align-items: center;
@@ -53,6 +60,10 @@
 @media (min-width: 992px) {
   .navbar-brand {
     margin-right: 1.5rem;
+  }
+
+  .comco-ministry-logo {
+    height: 58px;
   }
 }
 
