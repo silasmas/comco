@@ -39,9 +39,9 @@ return [
     ),
   ],
   'ministry' => [
-    'name' => env('INSTITUTION_MINISTRY_NAME', 'Ministère des Finances'),
-    'logo' => env('INSTITUTION_MINISTRY_LOGO', 'logo-minfinances.png'),
-    'url' => env('INSTITUTION_MINISTRY_URL', 'https://finances.gouv.cd'),
+    'name' => env('INSTITUTION_MINISTRY_NAME', 'Ministère de l\'Économie Nationale'),
+    'logo' => env('INSTITUTION_MINISTRY_LOGO', 'logo-min-economie.png'),
+    'url' => env('INSTITUTION_MINISTRY_URL', 'https://economie.gouv.cd'),
   ],
   'homeTabs' => [
     'actualite' => 'Notre actualité',
