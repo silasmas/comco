@@ -35,13 +35,6 @@
   line-height: 1;
 }
 
-.comco-ministry-logo {
-  display: block;
-  height: 42px;
-  width: auto;
-  max-width: none;
-}
-
 .comco-ministry-link {
   display: inline-flex;
   align-items: center;
