@@ -37,7 +37,7 @@
 
 .comco-ministry-logo {
   display: block;
-  height: 50px;
+  height: 42px;
   width: auto;
   max-width: none;
 }
@@ -60,10 +60,6 @@
 @media (min-width: 992px) {
   .navbar-brand {
     margin-right: 1.5rem;
-  }
-
-  .comco-ministry-logo {
-    height: 58px;
   }
 }
 
