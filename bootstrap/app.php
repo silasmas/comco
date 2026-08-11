@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\ShowDeploymentPage;
+use App\Http\Middleware\ShowMaintenancePage;
 use App\Support\SiteDeploymentState;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
@@ -15,7 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->redirectGuestsTo('/admin/login');
         $middleware->prepend(ShowDeploymentPage::class);
+        // Après StartSession pour autoriser le bypass des admins authentifiés.
+        $middleware->web(append: [
+            ShowMaintenancePage::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
@@ -26,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
             return SiteDeploymentState::fallbackResponse($request);
         });
 
-        $exceptions->render(function (\PDOException $exception, Request $request) {
+        $exceptions->render(function (PDOException $exception, Request $request) {
             return SiteDeploymentState::fallbackResponse($request);
         });
     })->create();

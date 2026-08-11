@@ -9,6 +9,10 @@ use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PostController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/maintenance-preview', function () {
+    return redirect()->route('home');
+})->middleware('auth')->name('maintenance.preview');
+
 Route::prefix('admin/install')
     ->name('comco.install.')
     ->group(function (): void {
