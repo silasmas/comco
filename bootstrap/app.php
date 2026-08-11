@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo('/admin/login');
         $middleware->prepend(ShowDeploymentPage::class);
-        // Après StartSession pour autoriser le bypass des admins authentifiés.
+        // Apres StartSession pour autoriser le bypass des admins authentifies.
         $middleware->web(append: [
             ShowMaintenancePage::class,
         ]);
