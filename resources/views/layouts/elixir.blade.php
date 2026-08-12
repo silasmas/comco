@@ -27,6 +27,14 @@
     @livewireStyles
   </head>
   <body>
+    @if (! empty($maintenancePreviewActive))
+      <div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#8a6d00;color:#fff8dc;text-align:center;padding:10px 16px;font-weight:600;font-size:0.9rem;">
+        Mode prévisualisation admin — les visiteurs voient toujours la page de maintenance.
+        <a href="{{ route('maintenance.preview.exit') }}" style="color:#fff;margin-left:12px;text-decoration:underline;">Quitter</a>
+      </div>
+      <div style="height:42px;"></div>
+    @endif
+
     <a href="#top" class="visually-hidden-focusable btn btn-primary position-absolute top-0 start-0 m-3">
       Aller au contenu principal
     </a>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ShowMaintenancePage;
 use App\Http\Controllers\Admin\InstallationActionController;
 use App\Http\Controllers\Admin\InstallationPageController;
 use App\Http\Controllers\Public\ContactController;
@@ -7,15 +8,33 @@ use App\Http\Controllers\Public\ForumController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PostController;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/maintenance-preview', function () {
-    session([
-        \App\Http\Middleware\ShowMaintenancePage::PREVIEW_SESSION_KEY => true,
-    ]);
+    session([ShowMaintenancePage::PREVIEW_SESSION_KEY => true]);
+
+    Cookie::queue(cookie(
+        ShowMaintenancePage::PREVIEW_COOKIE,
+        '1',
+        120,
+        '/',
+        null,
+        config('session.secure', true),
+        true,
+        false,
+        'lax',
+    ));
 
     return redirect()->route('home');
 })->middleware('auth')->name('maintenance.preview');
+
+Route::get('/maintenance-preview/exit', function () {
+    session()->forget(ShowMaintenancePage::PREVIEW_SESSION_KEY);
+    Cookie::queue(Cookie::forget(ShowMaintenancePage::PREVIEW_COOKIE));
+
+    return redirect()->route('home');
+})->middleware('auth')->name('maintenance.preview.exit');
 
 Route::prefix('admin/install')
     ->name('comco.install.')

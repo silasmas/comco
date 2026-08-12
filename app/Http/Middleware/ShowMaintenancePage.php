@@ -15,6 +15,8 @@ class ShowMaintenancePage
 {
   public const PREVIEW_SESSION_KEY = 'maintenance.preview_bypass';
 
+  public const PREVIEW_COOKIE = 'comco_maint_preview';
+
   /**
    * Intercepte les requêtes publiques pendant la maintenance.
    *
@@ -29,6 +31,10 @@ class ShowMaintenancePage
     }
 
     if ($this->shouldBypass($request)) {
+      if ($this->hasPreviewBypass($request)) {
+        view()->share('maintenancePreviewActive', true);
+      }
+
       return $next($request);
     }
 
@@ -38,14 +44,11 @@ class ShowMaintenancePage
       'isPreview' => false,
       'institution' => config('institution.shortName', 'COMCO'),
       'contactEmail' => config('institution.contact.email'),
-    ], 503);
+    ], 503)->header('Retry-After', '3600');
   }
 
   /**
    * Indique si la requête doit ignorer la page de maintenance.
-   *
-   * L'admin, Livewire et les assets restent accessibles. Le site public
-   * réel n'est visible que via le bypass de prévisualisation explicite.
    *
    * @param  Request  $request  Requête HTTP entrante
    * @return bool True si la requête ne doit pas être bloquée
@@ -75,11 +78,31 @@ class ShowMaintenancePage
       'public/admin/*',
       'up',
       'maintenance-preview',
+      'maintenance-preview/*',
     )) {
       return true;
     }
 
-    return Auth::check() && $request->session()->get(self::PREVIEW_SESSION_KEY) === true;
+    return $this->hasPreviewBypass($request);
+  }
+
+  /**
+   * Indique si l'admin a activé la prévisualisation du vrai site.
+   *
+   * @param  Request  $request  Requête HTTP entrante
+   * @return bool True si session ou cookie de preview présent
+   */
+  private function hasPreviewBypass(Request $request): bool
+  {
+    if (! Auth::check()) {
+      return false;
+    }
+
+    if ($request->session()->get(self::PREVIEW_SESSION_KEY) === true) {
+      return true;
+    }
+
+    return (string) $request->cookie(self::PREVIEW_COOKIE) === '1';
   }
 
   /**

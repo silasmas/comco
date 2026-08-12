@@ -112,11 +112,36 @@ class MaintenanceModeTest extends TestCase
 
     $response->assertRedirect(route('home'));
     $response->assertSessionHas(ShowMaintenancePage::PREVIEW_SESSION_KEY, true);
+    $response->assertCookie(ShowMaintenancePage::PREVIEW_COOKIE);
 
-    $home = $this->actingAs($admin)->get('/');
+    $home = $this->actingAs($admin)
+      ->withSession([ShowMaintenancePage::PREVIEW_SESSION_KEY => true])
+      ->get('/');
 
     $home->assertOk();
     $home->assertDontSee('Site temporairement indisponible', false);
+    $home->assertSee('Mode prévisualisation admin', false);
+  }
+
+  /**
+   * Vérifie que quitter la prévisualisation retire le bypass.
+   */
+  public function test_exit_preview_restores_maintenance_page(): void
+  {
+    MaintenanceMode::enable();
+
+    $admin = User::factory()->create([
+      'is_super_admin' => true,
+    ]);
+
+    $this->actingAs($admin)
+      ->withSession([ShowMaintenancePage::PREVIEW_SESSION_KEY => true])
+      ->get(route('maintenance.preview.exit'))
+      ->assertRedirect(route('home'));
+
+    $home = $this->actingAs($admin)->get('/');
+
+    $home->assertStatus(503);
   }
 
   /**
@@ -139,5 +164,17 @@ class MaintenanceModeTest extends TestCase
     $response = $this->get('/theme/assets/css/theme.min.css');
 
     $this->assertNotSame(503, $response->status());
+  }
+
+  /**
+   * Vérifie que le toggle désactive bien le mode même avec une valeur booléenne false.
+   */
+  public function test_disable_toggle_persists_false_state(): void
+  {
+    MaintenanceMode::update(['enabled' => true]);
+    $this->assertTrue(MaintenanceMode::isEnabled());
+
+    MaintenanceMode::update(['enabled' => false]);
+    $this->assertFalse(MaintenanceMode::isEnabled());
   }
 }

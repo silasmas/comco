@@ -89,7 +89,19 @@ class ManageMaintenanceMode extends Page
                 ->icon(Heroicon::OutlinedEye)
                 ->url(route('maintenance.preview'))
                 ->openUrlInNewTab()
-                ->tooltip('Ouvre le site public réel (sans page de maintenance) dans un nouvel onglet.'),
+                ->tooltip('Ouvre le vrai site public (bypass admin) dans un nouvel onglet pendant 2 heures.'),
+            Action::make('previewMaintenance')
+                ->label('Voir la page maintenance')
+                ->icon(Heroicon::OutlinedWrenchScrewdriver)
+                ->url(url('/'))
+                ->openUrlInNewTab()
+                ->tooltip('Ouvre le site public tel que vu par les visiteurs (page maintenance si active).'),
+            Action::make('exitPreview')
+                ->label('Quitter la prévisualisation')
+                ->icon(Heroicon::OutlinedXMark)
+                ->url(route('maintenance.preview.exit'))
+                ->color('gray')
+                ->tooltip('Désactive le bypass de prévisualisation du site public.'),
         ];
     }
 

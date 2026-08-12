@@ -103,7 +103,8 @@ class MaintenanceMode
         }
 
         if (array_key_exists('enabled', $data)) {
-            SiteSetting::store(self::KEY_ENABLED, ! empty($data['enabled']) ? '1' : '0');
+            $enabled = filter_var($data['enabled'], FILTER_VALIDATE_BOOLEAN);
+            SiteSetting::store(self::KEY_ENABLED, $enabled ? '1' : '0');
         }
 
         if (array_key_exists('title', $data)) {
