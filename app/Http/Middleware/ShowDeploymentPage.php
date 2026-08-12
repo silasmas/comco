@@ -24,16 +24,25 @@ class ShowDeploymentPage
       return $next($request);
     }
 
-    if ($request->is(
-      'admin',
-      'admin/*',
-      'admin/install',
-      'admin/install/*',
-      'public/admin',
-      'public/admin/*',
-      'up',
-      'livewire/*',
-    )) {
+    $path = $request->path();
+
+    if (
+      str_starts_with($path, 'livewire-')
+      || str_starts_with($path, 'livewire/')
+      || $request->hasHeader('X-Livewire')
+      || $request->is(
+        'admin',
+        'admin/*',
+        'admin/install',
+        'admin/install/*',
+        'public/admin',
+        'public/admin/*',
+        'up',
+        'css/*',
+        'js/*',
+        'fonts/*',
+      )
+    ) {
       return $next($request);
     }
 

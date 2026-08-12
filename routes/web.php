@@ -10,6 +10,10 @@ use App\Http\Controllers\Public\PostController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/maintenance-preview', function () {
+    session([
+        \App\Http\Middleware\ShowMaintenancePage::PREVIEW_SESSION_KEY => true,
+    ]);
+
     return redirect()->route('home');
 })->middleware('auth')->name('maintenance.preview');
 
