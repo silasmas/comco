@@ -7,7 +7,11 @@
 
 declare(strict_types=1);
 
-$root = is_file(__DIR__ . '/artisan') ? __DIR__ : dirname(__DIR__);
+$root = $argv[1] ?? getcwd();
+if (! is_file($root . '/artisan')) {
+  fwrite(STDERR, "Racine Laravel invalide: {$root}\nUsage: php deploy-maintenance-once.php /chemin/vers/projet\n");
+  exit(1);
+}
 $base = 'https://raw.githubusercontent.com/silasmas/comco/main/';
 
 $files = [
