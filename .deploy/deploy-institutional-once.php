@@ -100,6 +100,12 @@ foreach ($files as $relative) {
   downloadFile($base.$relative, $root.'/'.$relative);
 }
 
+// Vider les caches AVANT les seeders pour lire la nouvelle config.
+runArtisan($root, 'config:clear');
+runArtisan($root, 'cache:clear');
+runArtisan($root, 'route:clear');
+runArtisan($root, 'view:clear');
+
 require $root.'/vendor/autoload.php';
 $app = require $root.'/bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
@@ -112,9 +118,9 @@ echo "OK address updated\n";
 runArtisan($root, 'db:seed --class=NavigationSeeder --force');
 runArtisan($root, 'db:seed --class=InstitutionSeeder --force');
 runArtisan($root, 'db:seed --class=HomeContentSeeder --force');
-runArtisan($root, 'route:clear');
-runArtisan($root, 'view:clear');
+
 runArtisan($root, 'config:clear');
 runArtisan($root, 'cache:clear');
+runArtisan($root, 'view:clear');
 
 echo "DONE\n";
