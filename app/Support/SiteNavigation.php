@@ -58,12 +58,15 @@ class SiteNavigation
         $sections = NavigationItem::query()
             ->where('menu', NavigationItem::MENU_MAIN)
             ->whereNull('parent_id')
-            ->where('link_type', NavigationItem::LINK_GROUP)
+            ->whereIn('link_type', [NavigationItem::LINK_GROUP, NavigationItem::LINK_SECTION])
             ->active()
             ->orderBy('sort_order')
-            ->pluck('label', 'section')
-            ->filter(fn (string $label, ?string $section): bool => filled($section))
+            ->get(['label', 'section'])
+            ->filter(fn (NavigationItem $item): bool => filled($item->section))
+            ->mapWithKeys(fn (NavigationItem $item): array => [(string) $item->section => (string) $item->label])
             ->all();
+
+        $sections = array_merge(config('navigation.sections', []), $sections);
 
         if ($sections === []) {
             return config('navigation.sections', []);

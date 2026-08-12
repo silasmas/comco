@@ -13,8 +13,8 @@
 @section('content')
   <section class="bg-100">
     <div class="container">
-      <div class="overflow-hidden mb-4" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-        <div data-zanim-xs='{"delay":0}'>
+      <div class="overflow-hidden mb-4">
+        <div>
           @if ($post->author)
             <span class="d-inline-block text-500">{{ $post->author }}</span>
           @endif
@@ -22,7 +22,7 @@
             <span class="d-inline-block text-500"> · {{ $post->published_at->format('d/m/Y') }}</span>
           @endif
         </div>
-        <h4 data-zanim-xs='{"delay":0.1}'>{{ $post->title }}</h4>
+        <h4>{{ $post->title }}</h4>
       </div>
 
       <div class="row">

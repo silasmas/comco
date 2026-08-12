@@ -23,24 +23,24 @@
             <a href="{{ route('posts.show', $post->slug) }}">
               <img class="card-img-top" src="{{ postImage($post->featured_image) }}" alt="{{ $post->title }}">
             </a>
-            <div class="card-body" data-zanim-timeline="{}" data-zanim-trigger="scroll">
+            <div class="card-body">
               <div class="overflow-hidden">
                 <a class="text-decoration-none" href="{{ route('posts.show', $post->slug) }}">
-                  <h5 class="text-primary" data-zanim-xs='{"delay":0}'>{{ $post->title }}</h5>
+                  <h5 class="text-primary">{{ $post->title }}</h5>
                 </a>
               </div>
               @if ($post->category)
                 <div class="overflow-hidden">
-                  <p class="text-500" data-zanim-xs='{"delay":0.1}'>{{ $post->category }}</p>
+                  <p class="text-500">{{ $post->category }}</p>
                 </div>
               @endif
               @if ($post->excerpt)
                 <div class="overflow-hidden">
-                  <p class="mt-3" data-zanim-xs='{"delay":0.2}'>{{ \Illuminate\Support\Str::limit($post->excerpt, 100) }}</p>
+                  <p class="mt-3">{{ \Illuminate\Support\Str::limit($post->excerpt, 100) }}</p>
                 </div>
               @endif
               <div class="overflow-hidden">
-                <div class="d-inline-block" data-zanim-xs='{"delay":0.3}'>
+                <div class="d-inline-block">
                   <a class="d-flex align-items-center text-primary text-decoration-none" href="{{ route('posts.show', $post->slug) }}">
                     Lire la suite
                     <span class="ms-2 fw-medium">&xrarr;</span>

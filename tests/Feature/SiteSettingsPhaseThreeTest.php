@@ -96,6 +96,31 @@ class SiteSettingsPhaseThreeTest extends TestCase
     }
 
     /**
+     * Vérifie que le menu institutionnel refondu est seedé correctement.
+     */
+    public function test_navigation_follows_institutional_structure(): void
+    {
+        $this->seed(NavigationSeeder::class);
+        SiteNavigation::applyToConfig();
+
+        $labels = collect(config('navigation.main'))->pluck('label')->all();
+
+        $this->assertSame([
+            'Accueil',
+            'Présentation',
+            'Actualités',
+            'Nos textes et lois',
+            'E-services',
+            'Nos galeries',
+            'Nous contacter',
+            'Plan du site',
+        ], $labels);
+        $this->assertNotContains('Forum', $labels);
+        $this->assertNotContains('Qui sommes-nous', $labels);
+        $this->assertNotContains('Médias', $labels);
+    }
+
+    /**
      * Vérifie qu'un élément de navigation inactif est exclu du menu.
      */
     public function test_inactive_navigation_items_are_hidden(): void
@@ -103,13 +128,28 @@ class SiteSettingsPhaseThreeTest extends TestCase
         $this->seed(NavigationSeeder::class);
 
         NavigationItem::query()
-            ->where('label', 'Forum')
+            ->where('label', 'Plan du site')
             ->update(['is_active' => false]);
 
         SiteNavigation::applyToConfig();
 
         $labels = collect(config('navigation.main'))->pluck('label')->all();
 
-        $this->assertNotContains('Forum', $labels);
+        $this->assertNotContains('Plan du site', $labels);
+    }
+
+    /**
+     * Vérifie que la page Plan du site est accessible.
+     */
+    public function test_sitemap_page_is_available(): void
+    {
+        $this->seed(NavigationSeeder::class);
+
+        $response = $this->get('/plan-du-site');
+
+        $response->assertOk();
+        $response->assertSee('Plan du site', false);
+        $response->assertSee('Présentation', false);
+        $response->assertSee('E-services', false);
     }
 }

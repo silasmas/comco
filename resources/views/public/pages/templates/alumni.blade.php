@@ -11,7 +11,7 @@
     @if ($page->teamMembers->isNotEmpty())
       <div class="text-center mb-5">
         <h3 class="fs-2 fs-md-3">Équipe & partenaires</h3>
-        <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
+        <hr class="short">
       </div>
 
       <div class="row justify-content-center">

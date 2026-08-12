@@ -15,9 +15,9 @@
     <script src="{{ themeAsset('vendors/overlayscrollbars/OverlayScrollbars.min.js') }}"></script>
 
     <link href="{{ themeAsset('vendors/hamburgers/hamburgers.min.css') }}" rel="stylesheet">
-    <link href="{{ themeAsset('vendors/loaders.css/loaders.min.css') }}" rel="stylesheet">
     <link href="{{ themeAsset('assets/css/theme.min.css') }}" rel="stylesheet">
     <link href="{{ themeAsset('assets/css/user.min.css') }}" rel="stylesheet">
+    <link href="{{ themeAsset('assets/css/comco-institutional.css') }}" rel="stylesheet">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,18 +45,6 @@
     @yield('page-header')
 
     <main class="main" id="top">
-      <div class="preloader" id="preloader">
-        <div class="loader">
-          <div class="line-scale">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </div>
-      </div>
-
       @yield('content')
     </main>
 

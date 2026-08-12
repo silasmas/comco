@@ -159,12 +159,17 @@ class HomeContentSeeder extends Seeder
      */
     private function seedList(string $blockType, array $items, string $labelPrefix): void
     {
+        $activeKeys = [];
+
         foreach ($items as $index => $payload) {
+            $blockKey = $blockType.'-'.($index + 1);
+            $activeKeys[] = $blockKey;
+
             SiteBlock::query()->updateOrCreate(
                 [
                     'page' => SiteBlock::PAGE_HOME,
                     'block_type' => $blockType,
-                    'block_key' => $blockType.'-'.($index + 1),
+                    'block_key' => $blockKey,
                 ],
                 [
                     'label' => $labelPrefix.' '.($index + 1),
@@ -174,6 +179,16 @@ class HomeContentSeeder extends Seeder
                 ],
             );
         }
+
+        SiteBlock::query()
+            ->where('page', SiteBlock::PAGE_HOME)
+            ->where('block_type', $blockType)
+            ->when(
+                $activeKeys !== [],
+                fn ($query) => $query->whereNotIn('block_key', $activeKeys),
+                fn ($query) => $query,
+            )
+            ->update(['is_active' => false]);
     }
 
     /**

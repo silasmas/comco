@@ -15,7 +15,12 @@ return [
   'contact' => [
     'email' => env('INSTITUTION_EMAIL', 'contact@comco.gouv.cd'),
     'phone' => env('INSTITUTION_PHONE', '+243 892 150 000'),
-    'address' => env('INSTITUTION_ADDRESS', 'Avenue Ouganda, n°4216, Quartier des Cliniques, Kinshasa-Gombe'),
+    'address' => env(
+      'INSTITUTION_ADDRESS',
+      'Avenue Ouganda, n°4216, Quartier des Cliniques, Kinshasa-Gombe, République démocratique du Congo'
+    ),
+    'city' => env('INSTITUTION_CITY', 'Kinshasa-Gombe'),
+    'country' => env('INSTITUTION_COUNTRY', 'République démocratique du Congo'),
     'mapEmbedUrl' => env(
       'INSTITUTION_MAP_EMBED_URL',
       'https://maps.google.com/maps?q=Avenue+Ouganda+4216+Quartier+des+Cliniques+Kinshasa-Gombe+Democratic+Republic+of+the+Congo&hl=fr&z=18&output=embed'
@@ -53,16 +58,6 @@ return [
       'title' => 'Bienvenue à la COMCO',
       'text' => 'Nous veillons à ce qu\'aucune entreprise ne domine injustement le marché.',
       'image' => '1.jpg.jpeg',
-    ],
-    [
-      'title' => 'Liberté des prix et concurrence',
-      'text' => 'La Commission de la Concurrence protège l\'économie congolaise.',
-      'image' => '2.jpg.jpeg',
-    ],
-    [
-      'title' => 'Surveillance des marchés',
-      'text' => 'Contrôle, sensibilisation et application du cadre juridique en RDC.',
-      'image' => '3.jpg.jpeg',
     ],
     [
       'title' => 'Protection du consommateur',

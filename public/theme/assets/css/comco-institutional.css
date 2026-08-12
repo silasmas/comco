@@ -1,0 +1,61 @@
+/**
+ * Sobriété institutionnelle COMCO — overlays du thème Elixir.
+ */
+
+.preloader {
+  display: none !important;
+}
+
+.comco-hero {
+  min-height: 0;
+  max-height: none;
+}
+
+.comco-hero,
+.comco-hero .swiper-slide,
+.comco-hero .bg-holder {
+  min-height: 22rem;
+}
+
+.comco-hero__inner {
+  min-height: 22rem;
+}
+
+@media (min-width: 768px) {
+  .comco-hero,
+  .comco-hero .swiper-slide,
+  .comco-hero .bg-holder,
+  .comco-hero__inner {
+    min-height: 28rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .comco-hero,
+  .comco-hero .swiper-slide,
+  .comco-hero .bg-holder,
+  .comco-hero__inner {
+    min-height: 32rem;
+  }
+}
+
+.comco-page-header {
+  position: relative;
+  overflow: hidden;
+}
+
+.comco-page-header .bg-holder {
+  background-size: cover;
+}
+
+.comco-gallery-thumb {
+  transition: none;
+}
+
+.comco-gallery-link:hover .comco-gallery-thumb {
+  transform: none;
+}
+
+.comco-video-band {
+  max-height: 22rem;
+}

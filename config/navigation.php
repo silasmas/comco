@@ -1,7 +1,10 @@
 <?php
 
 /**
- * Structure de navigation du site COMCO (documents client + réunion IT 2024).
+ * Structure de navigation du site COMCO
+ * (arborescence institutionnelle — rapport de synthèse IT).
+ *
+ * Les clés `section` / `slug` restent stables pour ne pas casser les URLs CMS.
  */
 return [
   'main' => [
@@ -10,78 +13,81 @@ return [
       'route' => 'home',
     ],
     [
-      'label' => 'Qui sommes-nous',
+      'label' => 'Présentation',
       'section' => 'qui-sommes-nous',
       'children' => [
-        ['label' => 'Présentation', 'slug' => 'presentation'],
-        ['label' => 'Notre mandat', 'slug' => 'notre-mandat'],
-        ['label' => 'Missions & Services', 'slug' => 'missions-services'],
-        ['label' => 'Partenaires', 'slug' => 'partenaires'],
+        ['label' => 'Mandat', 'slug' => 'notre-mandat'],
+        ['label' => 'Mission', 'slug' => 'missions-services'],
         ['label' => 'Coordination', 'slug' => 'coordination'],
+        ['label' => 'Partenaires', 'slug' => 'partenaires'],
+        ['label' => 'Équipe', 'slug' => 'equipe'],
       ],
     ],
     [
-      'label' => 'Centre d\'information',
+      'label' => 'Actualités',
+      'section' => 'centre-information',
+      'slug' => 'actualites',
+    ],
+    [
+      'label' => 'Nos textes et lois',
       'section' => 'centre-information',
       'children' => [
-        ['label' => 'Actualités', 'slug' => 'actualites'],
-        ['label' => 'Concurrence & consommateurs', 'slug' => 'concurrence-consommateurs'],
-        ['label' => 'Cadre juridique', 'slug' => 'cadre-juridique'],
-        ['label' => 'Documentation diverse', 'slug' => 'documentation-diverse'],
-      ],
-    ],
-    [
-      'label' => 'Médias',
-      'section' => 'medias',
-      'children' => [
-        ['label' => 'Galerie Photo', 'slug' => 'galerie-photo'],
-        ['label' => 'Vidéothèque', 'slug' => 'videotheque'],
+        ['label' => 'Lois', 'slug' => 'cadre-juridique'],
+        ['label' => 'Décrets', 'slug' => 'decrets'],
+        ['label' => 'Autres textes réglementaires', 'slug' => 'documentation-diverse'],
       ],
     ],
     [
       'label' => 'E-services',
       'section' => 'e-services',
       'children' => [
-        ['label' => 'Déposer une fusion', 'slug' => 'deposer-fusion'],
-        ['label' => 'Déposer une exemption', 'slug' => 'deposer-exemption'],
-        ['label' => 'Plainte de service', 'slug' => 'plainte-service'],
-        ['label' => 'Plainte consommateur', 'slug' => 'plainte-consommateur'],
-        ['label' => 'Signaler une pratique', 'slug' => 'signaler-pratique'],
+        ['label' => 'Dépôt de plainte', 'slug' => 'plainte-consommateur'],
+        ['label' => 'Dénonciation', 'slug' => 'signaler-pratique'],
+        ['label' => 'Fusions', 'slug' => 'deposer-fusion'],
+        ['label' => 'Exemptions', 'slug' => 'deposer-exemption'],
         ['label' => 'Produits dangereux', 'slug' => 'produits-dangereux'],
-        ['label' => 'Manuels d\'utilisation', 'slug' => 'manuels-utilisation'],
       ],
     ],
     [
-      'label' => 'Forum',
-      'route' => 'forum.index',
+      'label' => 'Nos galeries',
+      'section' => 'medias',
+      'children' => [
+        ['label' => 'Photos', 'slug' => 'galerie-photo'],
+        ['label' => 'Vidéos', 'slug' => 'videotheque'],
+      ],
     ],
     [
-      'label' => 'Contact',
+      'label' => 'Nous contacter',
       'route' => 'contact',
+    ],
+    [
+      'label' => 'Plan du site',
+      'route' => 'sitemap',
     ],
   ],
   'footer' => [
     'navigation' => [
       ['label' => 'Accueil', 'route' => 'home'],
-      ['label' => 'Contact', 'route' => 'contact'],
+      ['label' => 'Nous contacter', 'route' => 'contact'],
+      ['label' => 'Plan du site', 'route' => 'sitemap'],
       ['label' => 'Ministère de l\'Economie', 'url' => 'https://economie.gouv.cd'],
     ],
     'eServices' => [
-      ['label' => 'Déposer une fusion', 'section' => 'e-services', 'slug' => 'deposer-fusion'],
-      ['label' => 'Plainte consommateur', 'section' => 'e-services', 'slug' => 'plainte-consommateur'],
-      ['label' => 'Signaler une pratique', 'section' => 'e-services', 'slug' => 'signaler-pratique'],
+      ['label' => 'Fusions', 'section' => 'e-services', 'slug' => 'deposer-fusion'],
+      ['label' => 'Dépôt de plainte', 'section' => 'e-services', 'slug' => 'plainte-consommateur'],
+      ['label' => 'Dénonciation', 'section' => 'e-services', 'slug' => 'signaler-pratique'],
     ],
     'quickLinks' => [
-      ['label' => 'Cadre juridique', 'section' => 'centre-information', 'slug' => 'cadre-juridique'],
-      ['label' => 'Forum', 'route' => 'forum.index'],
+      ['label' => 'Nos textes et lois', 'section' => 'centre-information', 'slug' => 'cadre-juridique'],
       ['label' => 'Actualités', 'section' => 'centre-information', 'slug' => 'actualites'],
-      ['label' => 'Présentation COMCO', 'section' => 'qui-sommes-nous', 'slug' => 'presentation'],
+      ['label' => 'Présentation', 'section' => 'qui-sommes-nous', 'slug' => 'presentation'],
+      ['label' => 'Nos galeries', 'section' => 'medias', 'slug' => 'galerie-photo'],
     ],
   ],
   'sections' => [
-    'qui-sommes-nous' => 'Qui sommes-nous',
-    'centre-information' => 'Centre d\'information',
-    'medias' => 'Médias',
+    'qui-sommes-nous' => 'Présentation',
+    'centre-information' => 'Nos textes et lois',
+    'medias' => 'Nos galeries',
     'e-services' => 'E-services',
   ],
 ];

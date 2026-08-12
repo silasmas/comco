@@ -6,29 +6,28 @@
 
 @push('scripts')
   <script src="{{ themeAsset('vendors/bigpicture/BigPicture.js') }}"></script>
-  <script src="{{ themeAsset('vendors/countup/countUp.umd.js') }}"></script>
   <script src="{{ themeAsset('vendors/swiper/swiper-bundle.min.js') }}"></script>
 @endpush
 
 @section('content')
   {{-- Slider hero (index.html) --}}
   <section class="py-0">
-    <div class="swiper theme-slider min-vh-100" data-swiper='{"loop":true,"allowTouchMove":false,"autoplay":{"delay":5000},"effect":"fade","speed":800}'>
+    <div class="swiper theme-slider comco-hero" data-swiper='{"loop":true,"allowTouchMove":true,"autoplay":false,"effect":"fade","speed":400}'>
       <div class="swiper-wrapper">
         @foreach ($homeContent->slider() as $slide)
-          <div class="swiper-slide" data-zanim-timeline="{}">
+          <div class="swiper-slide">
             <div class="bg-holder" style="background-image:url({{ blockAsset($slide) }});"></div>
             <div class="container">
-              <div class="row min-vh-100 py-8 align-items-center" data-inertia='{"weight":1.5}'>
+              <div class="row comco-hero__inner py-6 align-items-center">
                 <div class="col-sm-8 col-lg-7 px-5 px-sm-3">
                   <div class="overflow-hidden">
-                    <h1 class="fs-4 fs-md-5 lh-1 text-white" data-zanim-xs='{"delay":0}'>{{ $slide['title'] }}</h1>
+                    <h1 class="fs-4 fs-md-5 lh-1 text-white">{{ $slide['title'] }}</h1>
                   </div>
                   <div class="overflow-hidden">
-                    <p class="slide-subtitle text-warning pt-4 mb-5 fs-1 fs-md-2 lh-xs" data-zanim-xs='{"delay":0.1}'>{{ $slide['text'] }}</p>
+                    <p class="slide-subtitle text-warning pt-4 mb-5 fs-1 fs-md-2 lh-xs">{{ $slide['text'] }}</p>
                   </div>
                   <div class="overflow-hidden">
-                    <div data-zanim-xs='{"delay":0.2}'>
+                    <div>
                       <a class="btn btn-warning me-3 mt-3" href="{{ route('sections.show', ['section' => 'qui-sommes-nous', 'slug' => 'presentation']) }}">
                         En savoir plus<span class="fas fa-chevron-right ms-2"></span>
                       </a>
@@ -57,15 +56,15 @@
         <div class="col-10 col-md-6">
           <h3 class="fs-2 fs-lg-3">Bienvenue à la {{ config('institution.shortName') }}</h3>
           <p class="px-lg-4 mt-3">{{ $homeContent->tagline() }}</p>
-          <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
+          <hr class="short">
         </div>
       </div>
       <div class="row mt-4 mt-md-5">
         @foreach ($homeContent->welcomeItems() as $item)
-          <div class="col-sm-6 col-lg-3 mt-4" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-            <div class="ring-icon mx-auto" data-zanim-xs='{"delay":0}'><span class="{{ $item['icon'] }}"></span></div>
-            <h5 class="mt-4" data-zanim-xs='{"delay":0.1}'>{{ $item['title'] }}</h5>
-            <p class="mb-0 mt-3 px-3" data-zanim-xs='{"delay":0.2}'>{{ $item['desc'] }}</p>
+          <div class="col-sm-6 col-lg-3 mt-4">
+            <div class="ring-icon mx-auto"><span class="{{ $item['icon'] }}"></span></div>
+            <h5 class="mt-4">{{ $item['title'] }}</h5>
+            <p class="mb-0 mt-3 px-3">{{ $item['desc'] }}</p>
           </div>
         @endforeach
       </div>
@@ -101,14 +100,12 @@
     <div class="container">
       <div class="row flex-center text-center pb-6">
         <div class="col-12">
-          <div class="position-relative mt-4 py-5 py-md-11">
+            <div class="position-relative mt-4 py-5 py-md-7 comco-video-band">
             <div class="bg-holder rounded-3" style="background-image:url({{ blockAsset($homeContent->latestVideo()) }});"></div>
             <button
               class="btn-elixir-play"
               type="button"
               data-bigpicture='{"ytSrc":"{{ $homeContent->latestVideo()['youtube'] ?? '' }}"}'
-              data-zanim-trigger="scroll"
-              data-zanim-xs='{"from":{"opacity":0,"scale":0.8},"to":{"opacity":1,"scale":1},"duration":1}'
             >
               <span class="fas fa-play fs-1"></span>
             </button>
@@ -117,9 +114,9 @@
       </div>
       <div class="row">
         @foreach ($homeContent->storyItems() as $story)
-          <div class="col-sm-6 col-lg-4 mt-3 mt-lg-0 px-4 px-sm-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-            <h5 data-zanim-xs='{"delay":0}'><span class="text-primary me-3 {{ $story['icon'] }}"></span>{{ $story['title'] }}</h5>
-            <p class="mt-3 pe-3 pe-lg-5" data-zanim-xs='{"delay":0.1}'>{{ $story['text'] }}</p>
+          <div class="col-sm-6 col-lg-4 mt-3 mt-lg-0 px-4 px-sm-3">
+            <h5><span class="text-primary me-3 {{ $story['icon'] }}"></span>{{ $story['title'] }}</h5>
+            <p class="mt-3 pe-3 pe-lg-5">{{ $story['text'] }}</p>
           </div>
         @endforeach
       </div>
@@ -131,24 +128,24 @@
     <div class="container">
       <div class="text-center mb-6">
         <h3 class="fs-2 fs-md-3">Nos missions</h3>
-        <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
+        <hr class="short">
       </div>
       @foreach ($homeContent->services() as $service)
         <div class="row g-0 position-relative mb-4 mb-lg-0">
-          <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative @if($service['reverse'] ?? false) order-lg-2 @endif" style="min-height:400px;">
+          <div class="col-lg-6 py-3 py-lg-0 mb-0 position-relative @if($service['reverse'] ?? false) order-lg-2 @endif" style="min-height:240px;">
             <div class="bg-holder rounded-ts-lg rounded-te-lg rounded-lg-te-0 @if($service['reverse'] ?? false) rounded-lg-ts-0 @endif" style="background-image:url({{ blockAsset($service) }});"></div>
           </div>
           <div class="col-lg-6 px-lg-5 py-lg-6 p-4 my-lg-0 bg-white rounded-bs-lg rounded-lg-bs-0 rounded-be-lg @if($service['reverse'] ?? false) rounded-lg-be-0 @else rounded-lg-be-0 rounded-lg-te-lg @endif">
             <div class="elixir-caret d-none d-lg-block"></div>
             <div class="d-flex align-items-center h-100">
-              <div data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                <div class="overflow-hidden"><h5 data-zanim-xs='{"delay":0}'>{{ $service['title'] }}</h5></div>
-                <div class="overflow-hidden"><p class="mt-3" data-zanim-xs='{"delay":0.1}'>{{ $service['text'] }}</p></div>
+              <div>
+                <div class="overflow-hidden"><h5>{{ $service['title'] }}</h5></div>
+                <div class="overflow-hidden"><p class="mt-3">{{ $service['text'] }}</p></div>
                 <div class="overflow-hidden">
-                  <div data-zanim-xs='{"delay":0.2}'>
+                  <div>
                     <a class="d-flex align-items-center" href="{{ route('sections.show', $service['link']) }}">
                       En savoir plus
-                      <div class="overflow-hidden ms-2"><span class="d-inline-block" data-zanim-xs='{"from":{"opacity":0,"x":-30},"to":{"opacity":1,"x":0},"delay":0.8}'>&xrarr;</span></div>
+                      <div class="overflow-hidden ms-2"><span class="d-inline-block">&xrarr;</span></div>
                     </a>
                   </div>
                 </div>
@@ -165,17 +162,17 @@
     <div class="container">
       <div class="text-center mb-7">
         <h3 class="fs-2 fs-md-3">Pourquoi la COMCO</h3>
-        <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
+        <hr class="short">
       </div>
       <div class="row">
         <div class="col-lg-6 pe-lg-3">
           @php $whyChooseImage = $homeContent->whyChooseImage(); @endphp
           <img class="rounded-3 img-fluid" src="{{ blockAsset($whyChooseImage) }}" alt="Commission de la Concurrence">
         </div>
-        <div class="col-lg-6 px-lg-5 mt-6 mt-lg-0" data-zanim-timeline="{}" data-zanim-trigger="scroll">
+        <div class="col-lg-6 px-lg-5 mt-6 mt-lg-0">
           @foreach ($homeContent->whyChoose() as $item)
             <div class="overflow-hidden">
-              <div class="px-4 px-sm-0 @if(!$loop->first) mt-5 @endif" data-zanim-xs='{"delay":0}'>
+              <div class="px-4 px-sm-0 @if(!$loop->first) mt-5 @endif">
                 <h5 class="fs-0 fs-lg-1">
                   <span class="{{ $item['icon'] }} fs-1 me-2" data-fa-transform="{{ $item['transform'] }}"></span>{{ $item['title'] }}
                 </h5>
@@ -208,15 +205,15 @@
     <div class="container">
       <div class="text-center">
         <h3 class="fs-2 fs-md-3">Nos ressources</h3>
-        <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
+        <hr class="short">
       </div>
       <div class="row">
         @foreach ($homeContent->features() as $feature)
-          <div class="col-md-6 col-lg-4 mt-4" data-zanim-timeline="{}" data-zanim-trigger="scroll">
+          <div class="col-md-6 col-lg-4 mt-4">
             <div class="px-3 py-4 px-lg-4">
-              <div class="overflow-hidden"><img src="{{ themeAsset('assets/img/icons/' . $feature['icon']) }}" alt="icon" height="37" data-zanim-xs='{"delay":0}'></div>
-              <div class="overflow-hidden"><h5 class="mt-3" data-zanim-xs='{"delay":0.1}'>{{ $feature['title'] }}</h5></div>
-              <div class="overflow-hidden"><p class="mb-0" data-zanim-xs='{"delay":0.2}'>{{ $feature['text'] }}</p></div>
+              <div class="overflow-hidden"><img src="{{ themeAsset('assets/img/icons/' . $feature['icon']) }}" alt="icon" height="37"></div>
+              <div class="overflow-hidden"><h5 class="mt-3">{{ $feature['title'] }}</h5></div>
+              <div class="overflow-hidden"><p class="mb-0">{{ $feature['text'] }}</p></div>
             </div>
           </div>
         @endforeach
@@ -267,9 +264,9 @@
           <h2 class="text-warning fs-3 fs-lg-4">{{ $funFactHeader['line_one'] }}<br><span class="text-white">{{ $funFactHeader['line_two'] }}</span></h2>
           <div class="row mt-4 pe-lg-10">
             @foreach ($homeContent->funFacts() as $fact)
-              <div class="overflow-hidden col-6 col-md-3" data-zanim-timeline="{}" data-zanim-trigger="scroll">
-                <div class="fs-3 fs-lg-4 mb-0 fw-bold text-white mt-lg-5 mt-3 lh-xs" data-zanim-xs='{"delay":0.1}' data-countup='{"endValue":{{ $fact['value'] }}}'>{{ $fact['value'] }}</div>
-                <h6 class="fs-0 text-white" data-zanim-xs='{"delay":0.2}'>{{ $fact['label'] }}</h6>
+              <div class="overflow-hidden col-6 col-md-3">
+                <div class="fs-3 fs-lg-4 mb-0 fw-bold text-white mt-lg-5 mt-3 lh-xs"value'] }}}'>{{ $fact['value'] }}</div>
+                <h6 class="fs-0 text-white">{{ $fact['label'] }}</h6>
               </div>
             @endforeach
           </div>
@@ -283,7 +280,7 @@
     <div class="container">
       <div class="text-center mb-6">
         <h3 class="fs-2 fs-md-3">Actualités &amp; activités</h3>
-        <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
+        <hr class="short">
       </div>
       <ul class="nav nav-tabs justify-content-center border-0 mb-5 comco-tab-pane" role="tablist">
         @foreach ($homeContent->homeTabs() as $key => $label)
@@ -339,9 +336,9 @@
     <div class="container">
       <div class="text-center mb-5">
         <h3 class="fs-2 fs-md-3">Témoignages</h3>
-        <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
+        <hr class="short">
       </div>
-      <div class="swiper theme-slider" data-swiper='{"loop":true,"slidesPerView":1,"autoplay":{"delay":5000}}'>
+      <div class="swiper theme-slider" data-swiper='{"loop":true,"slidesPerView":1,"autoplay":false}'>
         <div class="swiper-wrapper">
           @foreach ($homeContent->testimonials() as $testimonial)
             <div class="swiper-slide">
@@ -369,10 +366,10 @@
   {{-- Partenaires --}}
   <div class="bg-200 py-6">
     <div class="container">
-      <div class="row align-items-center" data-zanim-timeline="{}" data-zanim-trigger="scroll">
+      <div class="row align-items-center">
         @foreach ($homeContent->partners() as $partner)
           <div class="col-4 col-md-2 my-3 overflow-hidden">
-            <img class="img-fluid" src="{{ blockAsset($partner, 'logo', 'theme') }}" alt="{{ $partner['name'] ?? '' }}" data-zanim-xs="{}">
+            <img class="img-fluid" src="{{ blockAsset($partner, 'logo', 'theme') }}" alt="{{ $partner['name'] ?? '' }}">
           </div>
         @endforeach
       </div>

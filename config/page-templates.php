@@ -12,12 +12,14 @@ return [
     'missions-services' => 'service',
     'partenaires' => 'alumni',
     'coordination' => 'alumni',
+    'equipe' => 'alumni',
   ],
 
   'centre-information' => [
     'actualites' => 'newsroom',
     'concurrence-consommateurs' => 'service',
     'cadre-juridique' => 'legal',
+    'decrets' => 'legal',
     'documentation-diverse' => 'blank',
   ],
 

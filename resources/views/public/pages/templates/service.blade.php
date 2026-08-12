@@ -4,9 +4,9 @@
       <div class="col-lg-6 pe-lg-3">
         <img class="rounded-3 img-fluid" src="{{ themeAsset('assets/img/why-choose-us.jpg') }}" alt="{{ $page->title }}">
       </div>
-      <div class="col-lg-6 px-lg-5 mt-6 mt-lg-0" data-zanim-timeline="{}" data-zanim-trigger="scroll">
+      <div class="col-lg-6 px-lg-5 mt-6 mt-lg-0">
         <div class="overflow-hidden">
-          <div class="px-4 px-sm-0" data-zanim-xs='{"delay":0}'>
+          <div class="px-4 px-sm-0">
             <h5 class="fs-0 fs-lg-1">{{ $page->title }}</h5>
             @if ($page->excerpt)
               <p class="mt-3">{{ $page->excerpt }}</p>

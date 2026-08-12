@@ -11,6 +11,7 @@
         <p class="lh-lg mb-0">&copy; {{ date('Y') }} {{ config('institution.shortName') }} / RDC. Tous droits réservés.</p>
       </div>
       <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <p class="mb-1">{{ config('institution.contact.address') }}</p>
         <p class="mb-1">{{ config('institution.contact.email') }}</p>
         <p class="mb-0">{{ config('institution.contact.phone') }}</p>
       </div>

@@ -18,7 +18,7 @@
     <div class="row mt-2">
       <div class="col">
         <h3 class="text-center fs-2 fs-md-3">{{ $page->title }}</h3>
-        <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll">
+        <hr class="short">
       </div>
       <div class="col-12">
         <div class="bg-white px-3 mt-4 px-lg-5 py-5 rounded-3 content-page">
@@ -36,7 +36,7 @@
         <h4 class="text-white mb-0">Pour des marchés libres, transparents et équitables.</h4>
       </div>
       <div class="col-md-auto mt-4 mt-md-0">
-        <a class="btn btn-light rounded-pill" href="{{ route('sections.show', ['section' => 'centre-information', 'slug' => 'cadre-juridique']) }}">Cadre juridique</a>
+        <a class="btn btn-light rounded-pill" href="{{ route('sections.show', ['section' => 'centre-information', 'slug' => 'cadre-juridique']) }}">Nos textes et lois</a>
       </div>
     </div>
   </div>

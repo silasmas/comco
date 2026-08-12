@@ -8,6 +8,7 @@ use App\Http\Controllers\Public\ForumController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PostController;
+use App\Http\Controllers\Public\SitemapController;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 
@@ -71,6 +72,7 @@ Route::prefix('public/admin')->group(function (): void {
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
+Route::get('/plan-du-site', [SitemapController::class, 'show'])->name('sitemap');
 Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
 Route::get('/forum/{slug}', [ForumController::class, 'show'])->name('forum.show');
 Route::get('/actualites/{slug}', [PostController::class, 'show'])->name('posts.show');

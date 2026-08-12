@@ -28,7 +28,7 @@ return [
 HTML,
     ],
     'notre-mandat' => [
-      'title' => 'Notre mandat',
+      'title' => 'Mandat',
       'excerpt' => 'Application de la Loi n° 18-020 du 09 juillet 2018 relative à la liberté des prix et à la concurrence.',
       'body' => <<<'HTML'
 <p>Le mandat de la Commission de la Concurrence (COMCO) est d'appliquer la <strong>Loi n° 18-020 du 09 juillet 2018</strong> relative à la liberté des prix et à la concurrence, afin d'améliorer le bien-être des Congolais en promouvant et protégeant une concurrence effective sur les marchés et en prévenant les pratiques commerciales trompeuses dans toute la République Démocratique du Congo.</p>
@@ -41,7 +41,7 @@ HTML,
 HTML,
     ],
     'missions-services' => [
-      'title' => 'Missions & Services',
+      'title' => 'Mission',
       'excerpt' => 'Prévention des pratiques anticoncurrentielles, contrôle des concentrations et protection des consommateurs.',
       'body' => <<<'HTML'
 <h5>Missions et pouvoirs</h5>
@@ -82,6 +82,21 @@ HTML,
 <p><em>Les profils détaillés des membres de la coordination seront publiés après validation par le service communication.</em></p>
 HTML,
     ],
+    'equipe' => [
+      'title' => 'Équipe',
+      'excerpt' => 'Organisation et équipes de la Commission de la Concurrence.',
+      'body' => <<<'HTML'
+<p>La COMCO s'appuie sur une organisation structurée pour assurer ses missions de régulation de la concurrence et de protection des consommateurs sur l'ensemble du territoire national.</p>
+<ul>
+  <li>Coordination nationale</li>
+  <li>Conseil technique</li>
+  <li>Collège des analystes</li>
+  <li>Corps des enquêteurs</li>
+  <li>Représentations provinciales</li>
+</ul>
+<p><em>Les fiches détaillées des membres de l'équipe seront publiées après validation par le service communication.</em></p>
+HTML,
+    ],
   ],
   'centre-information' => [
     'actualites' => [
@@ -103,7 +118,7 @@ HTML,
 HTML,
     ],
     'cadre-juridique' => [
-      'title' => 'Cadre juridique',
+      'title' => 'Lois',
       'excerpt' => 'Loi n° 18-020 du 09 juillet 2018 relative à la liberté des prix et à la concurrence.',
       'body' => <<<'HTML'
 <h5>Loi n° 18-020 du 09 juillet 2018</h5>
@@ -117,9 +132,17 @@ HTML,
 <p>Les textes législatifs de référence sont disponibles en lecture en ligne et en téléchargement PDF dans la section documentaire de cette page.</p>
 HTML,
     ],
+    'decrets' => [
+      'title' => 'Décrets',
+      'excerpt' => 'Décrets et textes d\'application relatifs à la liberté des prix et à la concurrence.',
+      'body' => <<<'HTML'
+<p>Cette rubrique regroupe les décrets et textes d'application pris en vertu de la législation sur la liberté des prix et la concurrence en République démocratique du Congo.</p>
+<p><em>Les documents officiels seront publiés au fur et à mesure de leur validation par les services compétents.</em></p>
+HTML,
+    ],
     'documentation-diverse' => [
-      'title' => 'Documentation diverse',
-      'excerpt' => 'Rapports, guides et documents institutionnels de la COMCO.',
+      'title' => 'Autres textes réglementaires',
+      'excerpt' => 'Rapports, guides et autres textes réglementaires de la COMCO.',
       'body' => <<<'HTML'
 <p>Cette rubrique regroupe l'ensemble des documents institutionnels, rapports d'activités, guides pratiques et publications de la COMCO et de ses partenaires dans le domaine de la concurrence.</p>
 HTML,
@@ -127,14 +150,14 @@ HTML,
   ],
   'medias' => [
     'galerie-photo' => [
-      'title' => 'Galerie Photo',
+      'title' => 'Photos',
       'excerpt' => 'Images des activités et opérations de la COMCO sur le terrain.',
       'body' => <<<'HTML'
 <p>Consultez la galerie photographique des activités de la COMCO : ateliers, opérations de contrôle, sensibilisations et cérémonies institutionnelles.</p>
 HTML,
     ],
     'videotheque' => [
-      'title' => 'Vidéothèque',
+      'title' => 'Vidéos',
       'excerpt' => 'Vidéos des opérations et communications de la COMCO.',
       'body' => <<<'HTML'
 <p>Retrouvez les vidéos officielles de la COMCO, notamment les opérations de contrôle menées en partenariat avec les institutions nationales.</p>
