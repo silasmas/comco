@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^(www\.)?comcordc\.org$ [NC]
+RewriteRule ^(.*)$ https://comcordc.cd/$1 [R=301,L]

@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^(.*)$ https://comcordc.cd/$1 [R=301,L]

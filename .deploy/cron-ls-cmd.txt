@@ -1,0 +1,1 @@
+php -r 'echo implode("\n", scandir("/home/u911414181/domains/comcordc.org/public_html"));'

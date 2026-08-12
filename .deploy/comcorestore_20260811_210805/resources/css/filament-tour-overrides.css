@@ -1,0 +1,62 @@
+/**
+ * COMCO — correctifs visite guidée (Shepherd.js / filament-tour).
+ * Limite la hauteur de la bulle et affiche un scroll si le contenu déborde.
+ */
+
+.shepherd-theme-custom.shepherd-element {
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+}
+
+.shepherd-theme-custom .shepherd-content {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+  min-height: 0;
+}
+
+.shepherd-theme-custom .shepherd-header {
+  flex-shrink: 0;
+}
+
+.shepherd-theme-custom .shepherd-text {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  direction: ltr;
+  text-align: left;
+  scrollbar-gutter: stable;
+}
+
+.shepherd-theme-custom .shepherd-footer {
+  flex-shrink: 0;
+}
+
+.shepherd-theme-custom .shepherd-text::-webkit-scrollbar {
+  width: 8px;
+}
+
+.shepherd-theme-custom .shepherd-text::-webkit-scrollbar-track {
+  background: rgba(0, 61, 165, 0.06);
+  border-radius: 999px;
+}
+
+.shepherd-theme-custom .shepherd-text::-webkit-scrollbar-thumb {
+  background: rgba(0, 61, 165, 0.28);
+  border-radius: 999px;
+}
+
+.shepherd-theme-custom .shepherd-text::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 61, 165, 0.42);
+}
+
+@media (max-width: 640px) {
+  .shepherd-theme-custom.shepherd-element,
+  .shepherd-theme-custom .shepherd-content {
+    max-height: calc(100vh - 1.5rem);
+  }
+}

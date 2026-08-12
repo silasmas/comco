@@ -1,0 +1,1 @@
+php -r '$p="/home/u911414181/domains/comcordc.org/public_html/index.php";file_put_contents($p,base64_decode("PD9waHAgcmVxdWlyZSBfX0RJUl9fIC4gIi9wdWJsaWMvaW5kZXgucGhwIjs="));echo file_exists($p)?"YES":"NO";'

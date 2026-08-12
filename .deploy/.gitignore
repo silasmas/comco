@@ -1,0 +1,4 @@
+# Hostinger deployment artifacts (do not commit secrets)
+*.local.json
+env.production
+*.zip
