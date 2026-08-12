@@ -78,7 +78,7 @@ if ($code !== 0) {
 
 @unlink($tmpZip);
 passthru('rm -rf ' . escapeshellarg($tmpExtract));
-@unlink(__FILE__);
 
 $css = $themeDir . '/assets/css/theme.min.css';
 echo 'OK theme installé: ' . $css . ' (' . filesize($css) . " octets)\n";
+echo "Supprimez install-theme-once.php manuellement après vérification.\n";
