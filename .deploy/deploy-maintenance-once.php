@@ -55,6 +55,23 @@ foreach ($files as $relative) {
   download($base . $relative, $root . '/' . $relative);
 }
 
-passthru('cd ' . escapeshellarg($root) . ' && php artisan route:clear && php artisan view:clear && php artisan config:clear', $code);
-echo $code === 0 ? "Caches cleared\n" : "Cache clear warning\n";
+foreach (['route:clear', 'view:clear', 'config:clear'] as $artisanCommand) {
+  $descriptor = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+  $process = proc_open(
+    'php artisan ' . $artisanCommand,
+    $descriptor,
+    $pipes,
+    $root
+  );
+  if (is_resource($process)) {
+    stream_get_contents($pipes[1]);
+    stream_get_contents($pipes[2]);
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    $code = proc_close($process);
+    echo $code === 0 ? "OK artisan {$artisanCommand}\n" : "WARN artisan {$artisanCommand}\n";
+  } else {
+    echo "WARN unable to run artisan {$artisanCommand}\n";
+  }
+}
 echo "DONE\n";
