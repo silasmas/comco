@@ -3,7 +3,8 @@
  */
 
 .navbar-elixir {
-  margin-bottom: -3.688rem;
+  margin-bottom: 0;
+  background-color: #fff;
 }
 
 .navbar-elixir .navbar {
