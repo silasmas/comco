@@ -306,7 +306,7 @@ a.comco-lift-card:focus-visible .comco-lift-card__inner {
 }
 
 .comco-lift-card__media {
-  height: 11rem;
+  height: 14.5rem;
   background: #eef1f7;
   overflow: hidden;
 }
@@ -315,6 +315,7 @@ a.comco-lift-card:focus-visible .comco-lift-card__inner {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top center;
   display: block;
 }
 
@@ -395,13 +396,14 @@ a.comco-lift-card:focus-visible .comco-lift-card__inner {
   border-radius: 1rem;
   overflow: hidden;
   background: #eef1f7;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 5;
 }
 
 .comco-coord-detail__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top center;
   display: block;
 }
 
