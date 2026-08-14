@@ -11,4 +11,5 @@ return [
     'newsroom' => 'Actualités',
     'legal' => 'Cadre juridique (PDF)',
     'gallery' => 'Galerie photo',
+    'presentation-hub' => 'Présentation (sidebar + contenu)',
 ];

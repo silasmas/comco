@@ -40,34 +40,35 @@
 }
 
 .comco-page-title {
-  padding-top: 2.5rem;
-  padding-bottom: 1.25rem;
+  padding-top: 1.15rem;
+  padding-bottom: 0.65rem;
   border-bottom: 1px solid #e8ebf0;
   background: #fff;
 }
 
 .comco-page-title__heading {
   margin: 0;
-  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-size: clamp(1.35rem, 1.8vw, 1.75rem);
   font-weight: 700;
   color: #2a3855;
   line-height: 1.25;
 }
 
 .comco-presentation {
-  padding-top: 2rem;
-  padding-bottom: 3.5rem;
+  padding-top: 1.25rem;
+  padding-bottom: 3rem;
 }
 
-/* Sidebar type Eden */
+/* Sidebar type Eden (carte) */
 .comco-side-nav {
   position: sticky;
   top: 6.25rem;
   background: #fff;
   border: 1px solid #e7eaf0;
   border-radius: 1rem;
-  box-shadow: 0 10px 30px rgba(24, 39, 75, 0.06);
+  box-shadow: 0 12px 32px rgba(24, 39, 75, 0.08);
   padding: 1rem;
+  isolation: isolate;
 }
 
 .comco-side-nav__brand {
@@ -135,57 +136,87 @@
   gap: 0.75rem;
   padding: 0.7rem 0.85rem;
   border-radius: 0.65rem;
-  color: #4b5565;
-  text-decoration: none;
+  color: #4b5565 !important;
+  text-decoration: none !important;
   font-weight: 600;
   font-size: 0.95rem;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .comco-side-nav__link span.fas,
-.comco-side-nav__link span.far {
+.comco-side-nav__link span.far,
+.comco-side-nav__link svg {
   width: 1.1rem;
   text-align: center;
   opacity: 0.9;
+  flex-shrink: 0;
 }
 
 .comco-side-nav__link:hover {
   background: #f3f5f9;
-  color: #1f2937;
+  color: #1f2937 !important;
 }
 
 .comco-side-nav__link.is-active {
-  background: #2f6fed;
-  color: #fff;
+  background: #2f6fed !important;
+  color: #fff !important;
 }
 
 .comco-side-nav__link.is-active:hover {
-  background: #2563eb;
-  color: #fff;
+  background: #2563eb !important;
+  color: #fff !important;
 }
 
-/* Overview Présentation */
+.comco-side-nav__link.is-active span.fas,
+.comco-side-nav__link.is-active span.far,
+.comco-side-nav__link.is-active svg {
+  color: #fff !important;
+  opacity: 1;
+}
+
+/* Overview Présentation : image au-dessus, texte dessous centré */
+.comco-overview {
+  max-width: 44rem;
+  margin: 0 auto;
+  text-align: center;
+  clear: both;
+}
+
 .comco-overview__media {
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto 1.5rem;
   border-radius: 1rem;
   overflow: hidden;
   box-shadow: 0 12px 28px rgba(24, 39, 75, 0.08);
   background: #eef1f7;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 16 / 10;
+  position: relative;
+  z-index: 1;
 }
 
 .comco-overview__image {
   width: 100%;
   height: 100%;
+  max-height: 18rem;
   object-fit: cover;
   display: block;
+  float: none !important;
+  position: static !important;
 }
 
 .comco-overview__lead {
-  margin: 0 0 1rem;
+  margin: 0 0 1.25rem;
   color: #2a3855;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  line-height: 1.55;
+  line-height: 1.6;
+}
+
+.comco-overview__body.content-page {
+  text-align: center;
+  clear: both;
+  overflow: hidden;
 }
 
 .comco-overview__body.content-page > *:first-child {
@@ -195,13 +226,43 @@
 .comco-overview__body.content-page h4,
 .comco-overview__body.content-page h5 {
   color: #2a3855;
-  margin-top: 1.35rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.65rem;
+  font-weight: 700;
 }
 
-.comco-overview__body.content-page p,
+.comco-overview__body.content-page p {
+  color: #4b5565;
+  line-height: 1.75;
+  margin-bottom: 1rem;
+  max-width: 40rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.comco-overview__body.content-page ul,
+.comco-overview__body.content-page ol {
+  display: inline-block;
+  text-align: left;
+  margin: 0 auto 1rem;
+  padding-left: 1.25rem;
+  max-width: 36rem;
+}
+
 .comco-overview__body.content-page li {
   color: #4b5565;
   line-height: 1.7;
+  margin-bottom: 0.35rem;
+}
+
+.comco-overview__body.content-page img {
+  float: none !important;
+  display: block;
+  max-width: min(100%, 28rem);
+  height: auto;
+  margin: 1.25rem auto;
+  border-radius: 0.75rem;
+  position: static !important;
 }
 
 /* Cards Coordination / sous-pages */
@@ -393,6 +454,7 @@ a.comco-lift-card:focus-visible .comco-lift-card__inner {
   }
 
   .comco-overview__media {
+    max-width: 100%;
     aspect-ratio: 16 / 10;
   }
 }

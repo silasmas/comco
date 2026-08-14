@@ -27,7 +27,27 @@ class GalleryItemsRelationManager extends RelationManager
     protected static ?string $title = 'Galerie photo';
 
     /**
-     * Affiche l'onglet uniquement pour les pages au gabarit galerie.
+     * Titre de l'onglet selon le gabarit (couverture Présentation ou galerie).
+     *
+     * @param  Model  $ownerRecord  Page CMS parente
+     * @param  string  $pageClass  Classe de page Filament
+     * @return string Titre affiché
+     */
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        if (
+            $ownerRecord instanceof Page
+            && pageTemplate($ownerRecord->section ?? '', $ownerRecord->slug, $ownerRecord->template) === 'presentation-hub'
+            && ($ownerRecord->slug ?? '') === 'presentation'
+        ) {
+            return 'Image de couverture';
+        }
+
+        return 'Galerie photo';
+    }
+
+    /**
+     * Affiche l'onglet pour la galerie ou la page Présentation (image de couverture).
      *
      * @param  Page  $ownerRecord  Page CMS parente
      * @return bool True si l'onglet est visible
@@ -38,7 +58,13 @@ class GalleryItemsRelationManager extends RelationManager
             return false;
         }
 
-        return pageTemplate($ownerRecord->section ?? '', $ownerRecord->slug, $ownerRecord->template) === 'gallery';
+        $template = pageTemplate($ownerRecord->section ?? '', $ownerRecord->slug, $ownerRecord->template);
+
+        if ($template === 'gallery') {
+            return true;
+        }
+
+        return $template === 'presentation-hub' && ($ownerRecord->slug ?? '') === 'presentation';
     }
 
     /**
@@ -56,6 +82,7 @@ class GalleryItemsRelationManager extends RelationManager
                     ->image()
                     ->directory('pages/gallery')
                     ->disk('public')
+                    ->helperText('Sur Présentation, la première image active sert de couverture (affichée au-dessus du texte).')
                     ->required(),
                 TextInput::make('caption')
                     ->label('Légende')

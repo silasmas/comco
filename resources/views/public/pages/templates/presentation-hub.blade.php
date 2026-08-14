@@ -57,7 +57,7 @@
             <ul class="comco-side-nav__list">
               <li>
                 <a
-                  class="comco-side-nav__link @if($isOverview) is-active @endif"
+                  class="comco-side-nav__link{{ $isOverview ? ' is-active' : '' }}"
                   href="{{ route('sections.show', ['section' => 'qui-sommes-nous', 'slug' => 'presentation']) }}"
                 >
                   <span class="{{ $sidebarIcons['presentation'] }}" aria-hidden="true"></span>
@@ -73,7 +73,7 @@
                 @php $childSlug = $child['slug'] ?? ''; @endphp
                 <li>
                   <a
-                    class="comco-side-nav__link @if(($page->slug ?? '') === $childSlug) is-active @endif"
+                    class="comco-side-nav__link{{ ($page->slug ?? '') === $childSlug ? ' is-active' : '' }}"
                     href="{{ NavigationUrl::resolveChild(['section' => 'qui-sommes-nous'], $child) }}"
                   >
                     <span class="{{ $sidebarIcons[$childSlug] ?? 'fas fa-circle' }}" aria-hidden="true"></span>
@@ -88,27 +88,23 @@
 
       <div class="col-lg-9">
         @if ($isOverview)
-          <div class="comco-overview">
-            <div class="row g-4 align-items-center">
-              <div class="col-md-5">
-                <div class="comco-overview__media">
-                  <img
-                    class="comco-overview__image"
-                    src="{{ $coverImage ? pageAsset($coverImage->image, $coverImage->image_source) : themeAsset('assets/img/background-2.jpg') }}"
-                    alt="{{ $page->title }}"
-                  >
-                </div>
-              </div>
-              <div class="col-md-7">
-                @if ($page->excerpt)
-                  <p class="comco-overview__lead">{{ $page->excerpt }}</p>
-                @endif
-                <div class="comco-overview__body content-page">
-                  {!! $page->body !!}
-                </div>
-              </div>
+          <article class="comco-overview">
+            <div class="comco-overview__media">
+              <img
+                class="comco-overview__image"
+                src="{{ $coverImage ? pageAsset($coverImage->image, $coverImage->image_source) : themeAsset('assets/img/background-2.jpg') }}"
+                alt="{{ $coverImage->caption ?? $page->title }}"
+              >
             </div>
-          </div>
+
+            @if ($page->excerpt)
+              <p class="comco-overview__lead">{{ $page->excerpt }}</p>
+            @endif
+
+            <div class="comco-overview__body content-page">
+              {!! $page->body !!}
+            </div>
+          </article>
         @else
           @if ($page->excerpt)
             <p class="comco-overview__lead mb-4">{{ $page->excerpt }}</p>

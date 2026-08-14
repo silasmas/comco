@@ -49,14 +49,17 @@ class PageForm
                             ->nullable(),
                     ]),
                 Section::make('Contenu')
+                    ->description('Pour la page Présentation : le chapô et le texte s\'affichent sous l\'image de couverture (onglet dédié en bas de fiche).')
                     ->schema([
                         Textarea::make('excerpt')
                             ->label('Chapô / extrait')
                             ->rows(3)
+                            ->helperText('Texte d\'introduction affiché sous l\'image sur la page Présentation.')
                             ->columnSpanFull(),
                         RichEditor::make('body')
                             ->label('Contenu principal')
                             ->fileAttachmentsDirectory('pages/content')
+                            ->helperText('Paragraphes, titres et listes. Préférez l\'onglet « Image de couverture » pour la photo principale.')
                             ->columnSpanFull(),
                     ]),
                 Section::make('Formulaire en ligne')

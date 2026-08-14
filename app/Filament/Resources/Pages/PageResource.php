@@ -44,6 +44,7 @@ class PageResource extends Resource
         'Gérer la galerie, l\'équipe ou les PDF juridiques via les onglets en bas de fiche (selon le gabarit)',
         'Consulter le statut du formulaire en ligne pour les pages de la section E-services',
         'Ajouter ou configurer un formulaire e-service depuis les boutons en en-tête de fiche',
+        'Pour Présentation : modifier le chapô, le texte et l\'image de couverture (onglet dédié)',
         'Contrôler la publication (brouillon / publiée) et les métadonnées SEO (titre et description)',
         'Prévisualiser la page publique via le bouton « Voir la page publique »',
     ];

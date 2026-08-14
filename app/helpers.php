@@ -10,7 +10,15 @@ use App\Support\SiteNavigation;
  */
 function themeAsset(string $path): string
 {
-    return asset('theme/'.ltrim($path, '/'));
+    $relative = 'theme/'.ltrim($path, '/');
+    $url = asset($relative);
+    $fullPath = public_path($relative);
+
+    if (is_file($fullPath)) {
+        return $url.'?v='.filemtime($fullPath);
+    }
+
+    return $url;
 }
 
 /**

@@ -19,6 +19,7 @@ class PageAttachmentsSeeder extends Seeder
     public function run(): void
     {
         $this->seedGallery();
+        $this->seedPresentationCover();
         $this->seedTeamMembers();
         $this->seedLegalDocuments();
     }
@@ -63,6 +64,34 @@ class PageAttachmentsSeeder extends Seeder
                 ],
             );
         }
+    }
+
+    /**
+     * Assigne une image de couverture à la page Présentation.
+     */
+    private function seedPresentationCover(): void
+    {
+        $page = Page::query()
+            ->where('section', 'qui-sommes-nous')
+            ->where('slug', 'presentation')
+            ->first();
+
+        if ($page === null) {
+            return;
+        }
+
+        PageGalleryItem::query()->updateOrCreate(
+            [
+                'page_id' => $page->id,
+                'image' => 'background-2.jpg',
+            ],
+            [
+                'image_source' => 'theme',
+                'caption' => 'Présentation de la COMCO',
+                'sort_order' => 0,
+                'is_active' => true,
+            ],
+        );
     }
 
     /**

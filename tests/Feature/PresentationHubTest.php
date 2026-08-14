@@ -40,6 +40,8 @@ class PresentationHubTest extends TestCase
 
     $response->assertOk();
     $response->assertSee('comco-side-nav', false);
+    $response->assertSee('comco-overview__media', false);
+    $response->assertSee('comco-side-nav__link is-active', false);
     $response->assertSee('Mandat', false);
     $response->assertSee('Coordination', false);
     $response->assertSee('Commission de la Concurrence', false);
