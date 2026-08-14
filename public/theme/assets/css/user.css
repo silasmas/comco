@@ -100,7 +100,8 @@
 
 .theme-slider .bg-holder {
   background-position: center center;
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .comco-alert-box {

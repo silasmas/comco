@@ -10,30 +10,38 @@
 @endpush
 
 @section('content')
-  {{-- Slider hero (index.html) --}}
+  {{-- Slider hero — images affichées en entier (sans crop) --}}
   <section class="py-0">
     <div class="swiper theme-slider comco-hero" data-swiper='{"loop":true,"allowTouchMove":true,"autoplay":false,"effect":"fade","speed":400}'>
       <div class="swiper-wrapper">
         @foreach ($homeContent->slider() as $slide)
           <div class="swiper-slide">
-            <div class="bg-holder" style="background-image:url({{ blockAsset($slide) }});"></div>
-            <div class="container">
-              <div class="row comco-hero__inner py-6 align-items-center">
-                <div class="col-sm-8 col-lg-7 px-5 px-sm-3">
-                  <div class="overflow-hidden">
-                    <h1 class="fs-4 fs-md-5 lh-1 text-white">{{ $slide['title'] }}</h1>
-                  </div>
-                  <div class="overflow-hidden">
-                    <p class="slide-subtitle text-warning pt-4 mb-5 fs-1 fs-md-2 lh-xs">{{ $slide['text'] }}</p>
-                  </div>
-                  <div class="overflow-hidden">
-                    <div>
-                      <a class="btn btn-warning me-3 mt-3" href="{{ route('sections.show', ['section' => 'qui-sommes-nous', 'slug' => 'presentation']) }}">
-                        En savoir plus<span class="fas fa-chevron-right ms-2"></span>
-                      </a>
-                      <a class="btn btn-danger mt-3" href="{{ route('sections.show', ['section' => 'e-services', 'slug' => 'signaler-pratique']) }}">
-                        Signaler une pratique<span class="fas fa-exclamation-triangle ms-2"></span>
-                      </a>
+            <div class="comco-hero__frame">
+              <img
+                class="comco-hero__image"
+                src="{{ blockAsset($slide) }}"
+                alt="{{ $slide['title'] }}"
+              >
+              <div class="comco-hero__content">
+                <div class="container">
+                  <div class="row comco-hero__inner align-items-center">
+                    <div class="col-sm-8 col-lg-7 px-5 px-sm-3">
+                      <div class="overflow-hidden">
+                        <h1 class="fs-4 fs-md-5 lh-sm text-white">{{ $slide['title'] }}</h1>
+                      </div>
+                      <div class="overflow-hidden">
+                        <p class="slide-subtitle text-warning pt-4 mb-5 fs-1 fs-md-2 lh-xs">{{ $slide['text'] }}</p>
+                      </div>
+                      <div class="overflow-hidden">
+                        <div>
+                          <a class="btn btn-warning me-3 mt-3" href="{{ route('sections.show', ['section' => 'qui-sommes-nous', 'slug' => 'presentation']) }}">
+                            En savoir plus<span class="fas fa-chevron-right ms-2"></span>
+                          </a>
+                          <a class="btn btn-danger mt-3" href="{{ route('sections.show', ['section' => 'e-services', 'slug' => 'signaler-pratique']) }}">
+                            Signaler une pratique<span class="fas fa-exclamation-triangle ms-2"></span>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
