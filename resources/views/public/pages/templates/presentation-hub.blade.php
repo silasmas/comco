@@ -4,7 +4,7 @@
 
   $isOverview = ($page->slug ?? '') === 'presentation';
   $sidebarItems = collect(config('navigation.main', []))
-    ->first(fn (array $item): bool => ($item['section'] ?? null) === 'qui-sommes-nous' && ! empty($item['sidebar']));
+    ->first(fn (array $item): bool => ($item['section'] ?? null) === 'qui-sommes-nous');
   $sidebarChildren = $sidebarItems['children'] ?? [];
   $coverImage = $page->galleryItems->first();
   $cards = $page->slug === 'coordination'
