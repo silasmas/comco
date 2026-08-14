@@ -5,7 +5,7 @@
 @endphp
 
 @section('page-header')
-  <x-elixir.page-header title="Plan du site" :breadcrumb="[['label' => 'Plan du site']]" />
+  <x-elixir.page-title title="Plan du site" />
 @endsection
 
 @section('content')

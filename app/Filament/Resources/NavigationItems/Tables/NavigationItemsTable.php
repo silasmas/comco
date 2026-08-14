@@ -6,8 +6,8 @@ use App\Models\NavigationItem;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
@@ -43,9 +43,10 @@ class NavigationItemsTable
                 TextColumn::make('sort_order')
                     ->label('Ordre')
                     ->sortable(),
-                IconColumn::make('is_active')
+                ToggleColumn::make('is_active')
                     ->label('Actif')
-                    ->boolean(),
+                    ->onColor('success')
+                    ->offColor('danger'),
             ])
             ->filters([
                 SelectFilter::make('menu')

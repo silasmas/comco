@@ -23,6 +23,8 @@ class PageTeamMember extends Model
         'text',
         'image',
         'image_source',
+        'link_url',
+        'link_label',
         'sort_order',
         'is_active',
     ];

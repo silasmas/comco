@@ -21,7 +21,7 @@
 @endphp
 
 @section('page-header')
-  <x-elixir.page-header :title="$page->title" :breadcrumb="$breadcrumb" />
+  <x-elixir.page-title :title="$page->title" />
 @endsection
 
 @section('content')

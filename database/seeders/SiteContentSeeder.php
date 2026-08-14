@@ -24,6 +24,7 @@ class SiteContentSeeder extends Seeder
             HomeContentSeeder::class,
             ContactContentSeeder::class,
             PageAttachmentsSeeder::class,
+            CoordinationMemberSeeder::class,
             EServiceDefinitionSeeder::class,
         ]);
 

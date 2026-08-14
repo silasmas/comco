@@ -150,11 +150,18 @@ class NavigationItem extends Model
         }
 
         if ($this->link_type === self::LINK_GROUP && filled($this->section)) {
-            return [
+            $item = [
                 'label' => $this->label,
                 'section' => $this->section,
                 'children' => $this->children->map(fn (self $child): array => $child->toChildNavArray())->all(),
             ];
+
+            if (filled($this->slug)) {
+                $item['slug'] = $this->slug;
+                $item['sidebar'] = true;
+            }
+
+            return $item;
         }
 
         return [

@@ -15,6 +15,8 @@ return [
     [
       'label' => 'Présentation',
       'section' => 'qui-sommes-nous',
+      'slug' => 'presentation',
+      'sidebar' => true,
       'children' => [
         ['label' => 'Mandat', 'slug' => 'notre-mandat'],
         ['label' => 'Mission', 'slug' => 'missions-services'],

@@ -47,6 +47,7 @@ class NavigationSeeder extends Seeder
           'label' => $item['label'],
           'link_type' => NavigationItem::LINK_GROUP,
           'section' => $item['section'],
+          'slug' => $item['slug'] ?? null,
           'sort_order' => $index,
           'is_active' => true,
         ]);

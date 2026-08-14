@@ -7,12 +7,12 @@ return [
   'default' => 'blank',
 
   'qui-sommes-nous' => [
-    'presentation' => 'about',
-    'notre-mandat' => 'about',
-    'missions-services' => 'service',
-    'partenaires' => 'alumni',
-    'coordination' => 'alumni',
-    'equipe' => 'alumni',
+    'presentation' => 'presentation-hub',
+    'notre-mandat' => 'presentation-hub',
+    'missions-services' => 'presentation-hub',
+    'partenaires' => 'presentation-hub',
+    'coordination' => 'presentation-hub',
+    'equipe' => 'presentation-hub',
   ],
 
   'centre-information' => [

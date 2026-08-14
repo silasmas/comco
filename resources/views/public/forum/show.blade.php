@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('page-header')
-  <x-elixir.page-header :title="$topic->title" :breadcrumb="[['label' => 'Forum', 'url' => route('forum.index')], ['label' => $topic->title]]" />
+  <x-elixir.page-title :title="$topic->title" />
 @endsection
 
 @section('content')

@@ -118,6 +118,11 @@ class SiteSettingsPhaseThreeTest extends TestCase
         $this->assertNotContains('Forum', $labels);
         $this->assertNotContains('Qui sommes-nous', $labels);
         $this->assertNotContains('Médias', $labels);
+
+        $presentation = collect(config('navigation.main'))->firstWhere('label', 'Présentation');
+        $this->assertTrue((bool) ($presentation['sidebar'] ?? false));
+        $this->assertSame('presentation', $presentation['slug'] ?? null);
+        $this->assertNotEmpty($presentation['children'] ?? []);
     }
 
     /**

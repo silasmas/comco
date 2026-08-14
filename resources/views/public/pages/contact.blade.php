@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('page-header')
-  <x-elixir.page-header title="Contact" :breadcrumb="[['label' => 'Contact']]" />
+  <x-elixir.page-title title="Contact" />
 @endsection
 
 @section('content')

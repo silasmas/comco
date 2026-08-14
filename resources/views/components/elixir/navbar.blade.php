@@ -42,8 +42,19 @@
       <div class="collapse navbar-collapse align-items-lg-center" id="primaryNavbarCollapse">
         <ul class="navbar-nav py-3 py-lg-0 ms-lg-n1 me-lg-auto align-items-lg-center">
           @foreach ($mainMenu as $item)
-            <li class="nav-item @if(isset($item['children'])) dropdown @endif">
-              @if (isset($item['children']))
+            @php
+              $usesSidebar = ! empty($item['sidebar']) && isset($item['section'], $item['slug']);
+              $hasDropdown = isset($item['children']) && ! $usesSidebar;
+            @endphp
+            <li class="nav-item @if($hasDropdown) dropdown @endif">
+              @if ($usesSidebar)
+                <a
+                  class="nav-link @if(request()->is($item['section'].'*')) active @endif"
+                  href="{{ NavigationUrl::resolve($item) }}"
+                >
+                  {{ $item['label'] }}
+                </a>
+              @elseif ($hasDropdown)
                 <a
                   class="nav-link dropdown-toggle dropdown-indicator"
                   href="javascript:void(0)"

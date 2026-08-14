@@ -1,13 +1,7 @@
 @extends('layouts.public')
 
 @section('page-header')
-  <x-elixir.page-header
-    :title="$post->title"
-    :breadcrumb="[
-      ['label' => 'Centre d\'information', 'url' => route('sections.show', ['section' => 'centre-information', 'slug' => 'actualites'])],
-      ['label' => $post->title],
-    ]"
-  />
+  <x-elixir.page-title :title="$post->title" />
 @endsection
 
 @section('content')

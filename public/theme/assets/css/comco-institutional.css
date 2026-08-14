@@ -39,13 +39,117 @@
   }
 }
 
-.comco-page-header {
-  position: relative;
-  overflow: hidden;
+.comco-page-title {
+  padding-top: 2.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #e8ebf0;
+  background: #fff;
 }
 
-.comco-page-header .bg-holder {
-  background-size: cover;
+.comco-page-title__heading {
+  margin: 0;
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-weight: 700;
+  color: #2a3855;
+  line-height: 1.25;
+}
+
+.comco-presentation {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.comco-presentation__sidebar {
+  position: sticky;
+  top: 6.5rem;
+  align-self: flex-start;
+  background: #f7f8fb;
+  border: 1px solid #e4e7ee;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+
+.comco-presentation__nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.comco-presentation__nav-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  color: #2a3855;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.comco-presentation__nav-link:hover {
+  background: #eef1f7;
+  color: #2a3855;
+}
+
+.comco-presentation__nav-link.is-active {
+  background: #2a3855;
+  color: #fff;
+}
+
+.comco-presentation__overview-image {
+  width: 100%;
+  max-height: 22rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.comco-presentation-card {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+  height: 100%;
+  background: #fff;
+  border: 1px solid #e4e7ee;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  padding: 0.85rem;
+}
+
+.comco-presentation-card__image {
+  width: 96px;
+  min-width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 0.375rem;
+  background: #eef1f7;
+}
+
+.comco-presentation-card__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.comco-presentation-card__title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2a3855;
+}
+
+.comco-presentation-card__summary {
+  margin: 0;
+  flex: 1;
+  color: #5c6578;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.comco-presentation-card__link {
+  margin-top: 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
 }
 
 .comco-gallery-thumb {
@@ -58,4 +162,11 @@
 
 .comco-video-band {
   max-height: 22rem;
+}
+
+@media (max-width: 991.98px) {
+  .comco-presentation__sidebar {
+    position: static;
+    margin-bottom: 1.5rem;
+  }
 }

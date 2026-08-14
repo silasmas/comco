@@ -28,7 +28,7 @@ class TeamMembersRelationManager extends RelationManager
     protected static ?string $title = 'Équipe & partenaires';
 
     /**
-     * Affiche l'onglet uniquement pour les pages au gabarit alumni.
+     * Affiche l'onglet pour les sous-pages Présentation (hors Coordination).
      *
      * @param  Page  $ownerRecord  Page CMS parente
      * @return bool True si l'onglet est visible
@@ -39,7 +39,11 @@ class TeamMembersRelationManager extends RelationManager
             return false;
         }
 
-        return pageTemplate($ownerRecord->section ?? '', $ownerRecord->slug, $ownerRecord->template) === 'alumni';
+        if (($ownerRecord->section ?? null) !== 'qui-sommes-nous') {
+            return pageTemplate($ownerRecord->section ?? '', $ownerRecord->slug, $ownerRecord->template) === 'alumni';
+        }
+
+        return ! in_array($ownerRecord->slug, ['presentation', 'coordination'], true);
     }
 
     /**
@@ -66,6 +70,14 @@ class TeamMembersRelationManager extends RelationManager
                     ->image()
                     ->directory('pages/team')
                     ->disk('public'),
+                TextInput::make('link_url')
+                    ->label('Lien « Voir plus »')
+                    ->url()
+                    ->maxLength(255),
+                TextInput::make('link_label')
+                    ->label('Libellé du lien')
+                    ->placeholder('Voir plus')
+                    ->maxLength(100),
                 TextInput::make('sort_order')
                     ->label('Ordre')
                     ->numeric()
