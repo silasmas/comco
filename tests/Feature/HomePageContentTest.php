@@ -70,4 +70,36 @@ class HomePageContentTest extends TestCase
         $response->assertOk();
         $response->assertSee(config('institution.shortName'), false);
     }
+
+    /**
+     * Vérifie qu'une rubrique désactivée disparaît de la page d'accueil.
+     */
+    public function test_disabled_home_section_is_hidden(): void
+    {
+        SiteBlock::query()->create([
+            'page' => SiteBlock::PAGE_HOME,
+            'block_type' => SiteBlock::TYPE_SETTING,
+            'block_key' => HomePageContent::SECTION_VISIBILITY_KEY,
+            'label' => 'Visibilité des rubriques',
+            'payload' => [
+                'value' => array_merge(
+                    HomePageContent::defaultSectionVisibility(),
+                    ['partners' => false, 'testimonials' => false]
+                ),
+            ],
+            'sort_order' => 0,
+            'is_active' => true,
+        ]);
+
+        $content = HomePageContent::resolve();
+
+        $this->assertFalse($content->sectionEnabled('partners'));
+        $this->assertFalse($content->sectionEnabled('testimonials'));
+        $this->assertTrue($content->sectionEnabled('slider'));
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertDontSee('>Témoignages</h3>', false);
+    }
 }

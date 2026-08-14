@@ -11,12 +11,86 @@ use Illuminate\Support\Facades\Schema;
  */
 class HomePageContent
 {
+    public const SECTION_VISIBILITY_KEY = 'section_visibility';
+
     /**
      * @param  Collection<int, SiteBlock>  $blocks  Blocs actifs de la page d'accueil
      */
     public function __construct(
         private readonly Collection $blocks,
     ) {}
+
+    /**
+     * Libellés des rubriques activables sur la page d'accueil.
+     *
+     * @return array<string, string> Clé technique => libellé admin
+     */
+    public static function sectionLabels(): array
+    {
+        return [
+            'slider' => 'Slider / bannière',
+            'welcome' => 'Bienvenue',
+            'alert' => 'Alerte signalement',
+            'story' => 'Histoire & vidéo',
+            'missions' => 'Nos missions',
+            'why_choose' => 'Pourquoi la COMCO',
+            'contact_cta' => 'Bandeau contact',
+            'features' => 'Nos ressources',
+            'legislation_talo' => 'Législation & TALO',
+            'fun_facts' => 'Chiffres clés',
+            'news' => 'Actualités & activités',
+            'testimonials' => 'Témoignages',
+            'partners' => 'Partenaires',
+        ];
+    }
+
+    /**
+     * Visibilité par défaut (toutes les rubriques actives).
+     *
+     * @return array<string, bool>
+     */
+    public static function defaultSectionVisibility(): array
+    {
+        return array_map(static fn (): bool => true, self::sectionLabels());
+    }
+
+    /**
+     * Indique si une rubrique de la page d'accueil doit être affichée.
+     *
+     * @param  string  $key  Clé de rubrique
+     * @return bool True si la rubrique est active
+     */
+    public function sectionEnabled(string $key): bool
+    {
+        $visibility = $this->sectionVisibility();
+
+        return (bool) ($visibility[$key] ?? true);
+    }
+
+    /**
+     * Retourne la carte de visibilité des rubriques d'accueil.
+     *
+     * @return array<string, bool>
+     */
+    public function sectionVisibility(): array
+    {
+        $defaults = self::defaultSectionVisibility();
+        $stored = $this->setting(self::SECTION_VISIBILITY_KEY, $defaults);
+
+        if (! is_array($stored)) {
+            return $defaults;
+        }
+
+        $merged = $defaults;
+
+        foreach ($stored as $key => $enabled) {
+            if (array_key_exists((string) $key, $merged)) {
+                $merged[(string) $key] = (bool) $enabled;
+            }
+        }
+
+        return $merged;
+    }
 
     /**
      * Charge le contenu de la page d'accueil depuis la base ou la configuration.
