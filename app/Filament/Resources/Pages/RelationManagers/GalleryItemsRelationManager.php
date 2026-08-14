@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Pages\RelationManagers;
 
 use App\Models\Page;
+use App\Support\CroppableImageUpload;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -77,13 +78,15 @@ class GalleryItemsRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                FileUpload::make('image')
-                    ->label('Image')
-                    ->image()
-                    ->directory('pages/gallery')
-                    ->disk('public')
-                    ->helperText('Sur Présentation, la première image active sert de couverture (affichée au-dessus du texte).')
-                    ->required(),
+                CroppableImageUpload::apply(
+                    FileUpload::make('image')
+                        ->label('Image')
+                        ->directory('pages/gallery')
+                        ->disk('public')
+                        ->helperText('Sur Présentation, la première image active sert de couverture. Rognez via l\'éditeur : pas d\'agrandissement, qualité conservée.')
+                        ->required(),
+                    [null, '16:9', '4:3', '1:1', '4:5']
+                ),
                 TextInput::make('caption')
                     ->label('Légende')
                     ->maxLength(255),

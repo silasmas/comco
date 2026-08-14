@@ -18,52 +18,16 @@
   min-height: 0;
   max-height: none;
   margin-top: 0;
-  background: #14233f;
 }
 
-.comco-hero .swiper-slide {
-  min-height: 0;
-  height: auto;
-}
-
-.comco-hero__frame {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #14233f;
-  min-height: 16rem;
-  overflow: hidden;
-}
-
-.comco-hero__image {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: min(70vh, 36rem);
-  object-fit: contain;
-  object-position: center center;
-}
-
-.comco-hero__content {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  background: linear-gradient(90deg, rgba(20, 35, 63, 0.72) 0%, rgba(20, 35, 63, 0.35) 48%, rgba(20, 35, 63, 0.1) 100%);
-  pointer-events: none;
-}
-
-.comco-hero__content .container,
-.comco-hero__content a,
-.comco-hero__content .btn {
-  pointer-events: auto;
+.comco-hero,
+.comco-hero .swiper-slide,
+.comco-hero .bg-holder {
+  min-height: 22rem;
 }
 
 .comco-hero__inner {
-  min-height: 0;
-  padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
+  min-height: 22rem;
 }
 
 .comco-hero__inner h1 {
@@ -72,18 +36,20 @@
 }
 
 @media (min-width: 768px) {
-  .comco-hero__frame {
-    min-height: 22rem;
-  }
-
-  .comco-hero__image {
-    max-height: min(72vh, 40rem);
+  .comco-hero,
+  .comco-hero .swiper-slide,
+  .comco-hero .bg-holder,
+  .comco-hero__inner {
+    min-height: 28rem;
   }
 }
 
 @media (min-width: 1200px) {
-  .comco-hero__image {
-    max-height: min(75vh, 44rem);
+  .comco-hero,
+  .comco-hero .swiper-slide,
+  .comco-hero .bg-holder,
+  .comco-hero__inner {
+    min-height: 32rem;
   }
 }
 

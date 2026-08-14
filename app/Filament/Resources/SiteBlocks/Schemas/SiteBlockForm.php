@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\SiteBlocks\Schemas;
 
 use App\Models\SiteBlock;
+use App\Support\CroppableImageUpload;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
@@ -136,12 +137,15 @@ class SiteBlockForm
             TextInput::make('payload.logo')
                 ->label('Chemin du logo')
                 ->visible(fn ($get): bool => self::hasField($get('block_type'), 'logo')),
-            FileUpload::make('payload.uploaded_image')
-                ->label('Téléverser une image')
-                ->image()
-                ->directory('site-blocks/home')
-                ->disk('public')
-                ->visible(fn ($get): bool => self::hasField($get('block_type'), 'image')),
+            CroppableImageUpload::apply(
+                FileUpload::make('payload.uploaded_image')
+                    ->label('Téléverser une image')
+                    ->directory('site-blocks/home')
+                    ->disk('public')
+                    ->helperText('Ouvrez l\'éditeur après l\'upload pour rogner (ex. 16:9). Le rognage ne grossit jamais l\'image et conserve la qualité.')
+                    ->visible(fn ($get): bool => self::hasField($get('block_type'), 'image')),
+                [null, '16:9', '21:9', '3:2', '4:3']
+            ),
             Textarea::make('payload.value')
                 ->label('Valeur du paramètre')
                 ->rows(3)
