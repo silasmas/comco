@@ -57,9 +57,9 @@ class PageForm
                             ->helperText('Texte d\'introduction affiché sous l\'image sur la page Présentation.')
                             ->columnSpanFull(),
                         RichEditor::make('body')
-                            ->label('Contenu principal')
+                            ->label('Contenu principal / description')
                             ->fileAttachmentsDirectory('pages/content')
-                            ->helperText('Paragraphes, titres et listes. Préférez l\'onglet « Image de couverture » pour la photo principale.')
+                            ->helperText('Paragraphes, titres et listes. Bouton « Justifier » disponible dans la barre d\'outils.')
                             ->columnSpanFull(),
                     ]),
                 Section::make('Formulaire en ligne')

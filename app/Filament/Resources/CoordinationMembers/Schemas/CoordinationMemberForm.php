@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CoordinationMembers\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -37,10 +38,9 @@ class CoordinationMemberForm
               ->label('Résumé')
               ->rows(3)
               ->columnSpanFull(),
-            Textarea::make('body')
-              ->label('Contenu détaillé')
-              ->rows(6)
-              ->helperText('Affiché sur la page de détail de la fiche.')
+            RichEditor::make('body')
+              ->label('Contenu détaillé / description')
+              ->helperText('Affiché sur la page de détail. Utilisez « Justifier » dans la barre d\'outils pour aligner le texte.')
               ->columnSpanFull(),
             CroppableImageUpload::apply(
               FileUpload::make('image')

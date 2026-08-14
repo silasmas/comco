@@ -6,6 +6,7 @@ use App\Support\EServiceRegistry;
 use App\Support\InstitutionSettings;
 use App\Support\SiteDeploymentState;
 use App\Support\SiteNavigation;
+use Filament\Forms\Components\RichEditor;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
@@ -38,6 +39,10 @@ class AppServiceProvider extends ServiceProvider
             if (! array_key_exists('errors', $view->getData())) {
                 $view->with('errors', session()->get('errors', new ViewErrorBag));
             }
+        });
+
+        RichEditor::configureUsing(function (RichEditor $editor): void {
+            $editor->enableToolbarButtons(['alignJustify']);
         });
     }
 }

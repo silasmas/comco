@@ -3,11 +3,12 @@
 namespace App\Filament\Resources\Pages\RelationManagers;
 
 use App\Models\Page;
+use App\Support\CroppableImageUpload;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -61,15 +62,17 @@ class TeamMembersRelationManager extends RelationManager
                     ->required(),
                 TextInput::make('role')
                     ->label('Fonction / rôle'),
-                Textarea::make('text')
-                    ->label('Description')
-                    ->rows(4)
+                RichEditor::make('text')
+                    ->label('Texte de description')
+                    ->helperText('Bouton « Justifier » disponible dans la barre d\'outils.')
                     ->columnSpanFull(),
-                FileUpload::make('image')
-                    ->label('Photo')
-                    ->image()
-                    ->directory('pages/team')
-                    ->disk('public'),
+                CroppableImageUpload::apply(
+                    FileUpload::make('image')
+                        ->label('Photo')
+                        ->directory('pages/team')
+                        ->disk('public'),
+                    [null, '4:5', '3:4', '1:1']
+                ),
                 TextInput::make('link_url')
                     ->label('Lien « Voir plus »')
                     ->url()

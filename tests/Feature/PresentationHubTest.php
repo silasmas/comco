@@ -87,6 +87,21 @@ class PresentationHubTest extends TestCase
   }
 
   /**
+   * Vérifie que la page Mission affiche le corps éditorial.
+   */
+  public function test_mission_page_renders_body_content(): void
+  {
+    $this->seedPresentation();
+
+    $response = $this->get('/qui-sommes-nous/missions-services');
+
+    $response->assertOk();
+    $response->assertSee('Missions et pouvoirs', false);
+    $response->assertSee('comco-hub-body', false);
+    $response->assertDontSee('sera publié prochainement', false);
+  }
+
+  /**
    * Vérifie qu'un menu peut être désactivé via is_active.
    */
   public function test_navigation_toggle_hides_inactive_item(): void

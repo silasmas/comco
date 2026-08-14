@@ -73,7 +73,7 @@ class SiteBlockForm
                 ->label('Titre')
                 ->visible(fn ($get): bool => self::hasField($get('block_type'), 'title')),
             Textarea::make('payload.text')
-                ->label('Texte')
+                ->label('Texte de description')
                 ->rows(4)
                 ->columnSpanFull()
                 ->visible(fn ($get): bool => self::hasField($get('block_type'), 'text')),

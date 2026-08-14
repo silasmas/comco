@@ -285,6 +285,26 @@
   position: static !important;
 }
 
+.comco-hub-body.content-page {
+  max-width: 46rem;
+  color: #4b5565;
+  line-height: 1.75;
+}
+
+.comco-hub-body.content-page h4,
+.comco-hub-body.content-page h5 {
+  color: #2a3855;
+  margin-top: 1.35rem;
+  margin-bottom: 0.65rem;
+  font-weight: 700;
+  letter-spacing: normal;
+}
+
+.content-page [style*="text-align: justify"],
+.content-page [style*="text-align:justify"] {
+  text-align: justify !important;
+}
+
 /* Cards Coordination / sous-pages */
 .comco-lift-card {
   display: block;

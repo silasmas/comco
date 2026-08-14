@@ -106,79 +106,90 @@
             </div>
           </article>
         @else
+          @php
+            $isCardHub = in_array($page->slug ?? '', ['coordination', 'partenaires', 'equipe'], true);
+            $hasCards = $cards->isNotEmpty();
+          @endphp
+
           @if ($page->excerpt)
             <p class="comco-overview__lead mb-4">{{ $page->excerpt }}</p>
-          @elseif ($page->body)
-            <div class="content-page mb-4">
+          @endif
+
+          @if ($page->body)
+            <div class="content-page comco-hub-body mb-4">
               {!! $page->body !!}
             </div>
           @endif
 
-          <div class="row g-4">
-            @forelse ($cards as $card)
-              @php
-                $cardIsCoordination = $card instanceof CoordinationMember;
-                $title = $cardIsCoordination ? $card->title : $card->name;
-                $summary = $cardIsCoordination ? $card->summary : ($card->text ?: $card->role);
-                $image = $card->image;
-                $imageSource = $card->image_source ?? 'theme';
-                $detailUrl = $cardIsCoordination
-                  ? route('coordination.show', $card)
-                  : ($card->link_url ?? null);
-                $linkLabel = $cardIsCoordination
-                  ? ($card->link_label ?: 'En détail')
-                  : (($card->link_label ?? null) ?: 'Voir plus');
-              @endphp
-              <div class="col-md-6 col-xl-4">
-                @if ($detailUrl)
-                  <a class="comco-lift-card text-decoration-none" href="{{ $detailUrl }}">
-                    <article class="comco-lift-card__inner">
-                      <div class="comco-lift-card__media">
-                        @if ($image)
-                          <img src="{{ pageAsset($image, $imageSource) }}" alt="{{ $title }}">
-                        @else
-                          <div class="comco-lift-card__placeholder" aria-hidden="true">
-                            <span class="fas fa-users"></span>
-                          </div>
-                        @endif
-                      </div>
-                      <div class="comco-lift-card__body">
-                        <h3 class="comco-lift-card__title">{{ $title }}</h3>
-                        @if ($summary)
-                          <p class="comco-lift-card__summary">{{ \Illuminate\Support\Str::limit(strip_tags($summary), 120) }}</p>
-                        @endif
-                        <span class="comco-lift-card__cta">{{ $linkLabel }} <span aria-hidden="true">→</span></span>
+          @if ($isCardHub || $hasCards)
+            <div class="row g-4">
+              @forelse ($cards as $card)
+                @php
+                  $cardIsCoordination = $card instanceof CoordinationMember;
+                  $title = $cardIsCoordination ? $card->title : $card->name;
+                  $summary = $cardIsCoordination ? $card->summary : ($card->text ?: $card->role);
+                  $image = $card->image;
+                  $imageSource = $card->image_source ?? 'theme';
+                  $detailUrl = $cardIsCoordination
+                    ? route('coordination.show', $card)
+                    : ($card->link_url ?? null);
+                  $linkLabel = $cardIsCoordination
+                    ? ($card->link_label ?: 'En détail')
+                    : (($card->link_label ?? null) ?: 'Voir plus');
+                @endphp
+                <div class="col-md-6 col-xl-4">
+                  @if ($detailUrl)
+                    <a class="comco-lift-card text-decoration-none" href="{{ $detailUrl }}">
+                      <article class="comco-lift-card__inner">
+                        <div class="comco-lift-card__media">
+                          @if ($image)
+                            <img src="{{ pageAsset($image, $imageSource) }}" alt="{{ $title }}">
+                          @else
+                            <div class="comco-lift-card__placeholder" aria-hidden="true">
+                              <span class="fas fa-users"></span>
+                            </div>
+                          @endif
+                        </div>
+                        <div class="comco-lift-card__body">
+                          <h3 class="comco-lift-card__title">{{ $title }}</h3>
+                          @if ($summary)
+                            <p class="comco-lift-card__summary">{{ \Illuminate\Support\Str::limit(strip_tags($summary), 120) }}</p>
+                          @endif
+                          <span class="comco-lift-card__cta">{{ $linkLabel }} <span aria-hidden="true">→</span></span>
+                        </div>
+                      </article>
+                    </a>
+                  @else
+                    <article class="comco-lift-card comco-lift-card--static">
+                      <div class="comco-lift-card__inner">
+                        <div class="comco-lift-card__media">
+                          @if ($image)
+                            <img src="{{ pageAsset($image, $imageSource) }}" alt="{{ $title }}">
+                          @else
+                            <div class="comco-lift-card__placeholder" aria-hidden="true">
+                              <span class="fas fa-users"></span>
+                            </div>
+                          @endif
+                        </div>
+                        <div class="comco-lift-card__body">
+                          <h3 class="comco-lift-card__title">{{ $title }}</h3>
+                          @if ($summary)
+                            <p class="comco-lift-card__summary">{{ \Illuminate\Support\Str::limit(strip_tags($summary), 120) }}</p>
+                          @endif
+                        </div>
                       </div>
                     </article>
-                  </a>
-                @else
-                  <article class="comco-lift-card comco-lift-card--static">
-                    <div class="comco-lift-card__inner">
-                      <div class="comco-lift-card__media">
-                        @if ($image)
-                          <img src="{{ pageAsset($image, $imageSource) }}" alt="{{ $title }}">
-                        @else
-                          <div class="comco-lift-card__placeholder" aria-hidden="true">
-                            <span class="fas fa-users"></span>
-                          </div>
-                        @endif
-                      </div>
-                      <div class="comco-lift-card__body">
-                        <h3 class="comco-lift-card__title">{{ $title }}</h3>
-                        @if ($summary)
-                          <p class="comco-lift-card__summary">{{ \Illuminate\Support\Str::limit(strip_tags($summary), 120) }}</p>
-                        @endif
-                      </div>
-                    </div>
-                  </article>
-                @endif
-              </div>
-            @empty
-              <div class="col-12">
-                <p class="text-500 mb-0">Le contenu de cette rubrique sera publié prochainement.</p>
-              </div>
-            @endforelse
-          </div>
+                  @endif
+                </div>
+              @empty
+                @unless (filled($page->body) || filled($page->excerpt))
+                  <div class="col-12">
+                    <p class="text-500 mb-0">Le contenu de cette rubrique sera publié prochainement.</p>
+                  </div>
+                @endunless
+              @endforelse
+            </div>
+          @endif
         @endif
       </div>
     </div>

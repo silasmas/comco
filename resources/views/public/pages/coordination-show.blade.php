@@ -37,7 +37,7 @@
             @endif
             @if ($member->body)
               <div class="comco-coord-detail__body content-page">
-                {!! nl2br(e($member->body)) !!}
+                {!! str_contains((string) $member->body, '<') ? $member->body : nl2br(e($member->body)) !!}
               </div>
             @endif
             @if ($member->link_url)
