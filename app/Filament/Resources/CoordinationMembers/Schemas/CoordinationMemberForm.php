@@ -34,7 +34,12 @@ class CoordinationMemberForm
               ->columnSpanFull(),
             Textarea::make('summary')
               ->label('Résumé')
-              ->rows(4)
+              ->rows(3)
+              ->columnSpanFull(),
+            Textarea::make('body')
+              ->label('Contenu détaillé')
+              ->rows(6)
+              ->helperText('Affiché sur la page de détail de la fiche.')
               ->columnSpanFull(),
             FileUpload::make('image')
               ->label('Image')

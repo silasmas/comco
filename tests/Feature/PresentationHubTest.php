@@ -39,7 +39,7 @@ class PresentationHubTest extends TestCase
     $response = $this->get('/qui-sommes-nous/presentation');
 
     $response->assertOk();
-    $response->assertSee('comco-presentation__sidebar', false);
+    $response->assertSee('comco-side-nav', false);
     $response->assertSee('Mandat', false);
     $response->assertSee('Coordination', false);
     $response->assertSee('Commission de la Concurrence', false);
@@ -52,9 +52,10 @@ class PresentationHubTest extends TestCase
   {
     $this->seedPresentation();
 
-    CoordinationMember::query()->create([
+    $member = CoordinationMember::query()->create([
       'title' => 'Fiche test coordination',
       'summary' => 'Résumé de test pour la grille.',
+      'body' => 'Contenu détaillé de test.',
       'sort_order' => 99,
       'is_active' => true,
     ]);
@@ -63,7 +64,24 @@ class PresentationHubTest extends TestCase
 
     $response->assertOk();
     $response->assertSee('Fiche test coordination', false);
-    $response->assertSee('comco-presentation-card', false);
+    $response->assertSee('comco-lift-card', false);
+    $response->assertSee(route('coordination.show', $member), false);
+  }
+
+  /**
+   * Vérifie la page de détail d'une fiche Coordination.
+   */
+  public function test_coordination_detail_page_is_available(): void
+  {
+    $this->seedPresentation();
+
+    $member = CoordinationMember::query()->firstOrFail();
+
+    $response = $this->get(route('coordination.show', $member));
+
+    $response->assertOk();
+    $response->assertSee($member->title, false);
+    $response->assertSee('Retour à la Coordination', false);
   }
 
   /**

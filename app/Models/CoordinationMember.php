@@ -18,6 +18,7 @@ class CoordinationMember extends Model
   protected $fillable = [
     'title',
     'summary',
+    'body',
     'image',
     'image_source',
     'link_url',

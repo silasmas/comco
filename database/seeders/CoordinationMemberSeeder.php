@@ -58,6 +58,7 @@ class CoordinationMemberSeeder extends Seeder
       [
         'title' => 'Coordination nationale',
         'summary' => 'Direction stratégique et pilotage opérationnel de la Commission de la Concurrence.',
+        'body' => "La coordination nationale assure le pilotage stratégique de la COMCO.\n\nElle oriente les priorités institutionnelles, supervise les representations provinciales et veille à la cohérence des actions de régulation sur l'ensemble du territoire.",
         'image' => 'portrait-1.jpg',
         'image_source' => 'theme',
         'link_label' => 'En détail',
@@ -66,6 +67,7 @@ class CoordinationMemberSeeder extends Seeder
       [
         'title' => 'Conseil technique',
         'summary' => 'Appui analytique et recommandations techniques pour les dossiers de concurrence.',
+        'body' => "Le conseil technique apporte une expertise spécialisée sur les dossiers complexes.\n\nIl formule des recommandations destinées à éclairer les décisions de la Commission en matière de concurrence et de protection des consommateurs.",
         'image' => 'portrait-2.jpg',
         'image_source' => 'theme',
         'link_label' => 'En détail',
@@ -74,6 +76,7 @@ class CoordinationMemberSeeder extends Seeder
       [
         'title' => 'Collège des analystes',
         'summary' => 'Évaluation des marchés, concentrations et pratiques anticoncurrentielles.',
+        'body' => "Le collège des analystes étudie les marchés et les opérations de concentration.\n\nSes analyses contribuent à détecter les pratiques restrictives et à proposer des mesures adaptées.",
         'image' => 'portrait-3.jpg',
         'image_source' => 'theme',
         'link_label' => 'En détail',
@@ -82,6 +85,7 @@ class CoordinationMemberSeeder extends Seeder
       [
         'title' => 'Corps des enquêteurs',
         'summary' => 'Investigations de terrain et suivi des signalements transmis à la COMCO.',
+        'body' => "Le corps des enquêteurs mène les investigations nécessaires au traitement des signalements.\n\nIl collecte les éléments de preuve et assure le suivi opérationnel des dossiers ouverts.",
         'image' => 'portrait-4.jpg',
         'image_source' => 'theme',
         'link_label' => 'En détail',
@@ -90,6 +94,7 @@ class CoordinationMemberSeeder extends Seeder
       [
         'title' => 'Représentations provinciales',
         'summary' => 'Présence territoriale pour un traitement rapproché des dossiers.',
+        'body' => "Les représentations provinciales rapprochent la COMCO des usagers et opérateurs économiques.\n\nElles facilitent le dépôt des plaintes et le suivi local des dossiers de concurrence.",
         'image' => 'portrait-5.jpg',
         'image_source' => 'theme',
         'link_label' => 'En détail',
@@ -98,6 +103,7 @@ class CoordinationMemberSeeder extends Seeder
       [
         'title' => 'Secrétariat administratif',
         'summary' => 'Organisation des procédures, archivage et suivi administratif des dossiers.',
+        'body' => "Le secrétariat administratif organise le circuit des dossiers et assure leur traçabilité.\n\nIl appuie les services techniques dans la gestion documentaire et le respect des délais de traitement.",
         'image' => 'portrait-6.jpg',
         'image_source' => 'theme',
         'link_label' => 'En détail',
@@ -110,6 +116,7 @@ class CoordinationMemberSeeder extends Seeder
         ['title' => $member['title']],
         [
           'summary' => $member['summary'],
+          'body' => $member['body'] ?? null,
           'image' => $member['image'],
           'image_source' => $member['image_source'],
           'link_url' => $member['link_url'] ?? null,
