@@ -21,8 +21,23 @@
 
       <div class="row">
         <div class="col-lg-8">
-          <div class="card mb-6">
-            <img class="card-img-top" src="{{ postImage($post->featured_image) }}" alt="{{ $post->title }}">
+          <div class="card mb-6 overflow-hidden">
+            @if ($post->hasVideo())
+              <div class="comco-post-media">
+                <video
+                  class="comco-post-media__video"
+                  controls
+                  playsinline
+                  preload="metadata"
+                  poster="{{ postImage($post->featured_image) }}"
+                >
+                  <source src="{{ postVideo($post->featured_video) }}">
+                  Votre navigateur ne prend pas en charge la lecture vidéo.
+                </video>
+              </div>
+            @else
+              <img class="card-img-top" src="{{ postImage($post->featured_image) }}" alt="{{ $post->title }}">
+            @endif
             <div class="card-body p-5 content-page">
               {!! $post->body !!}
             </div>
@@ -34,9 +49,14 @@
             @if ($relatedPosts->isNotEmpty())
               <h5 class="mb-4 text-start">Articles connexes</h5>
               @foreach ($relatedPosts as $related)
-                <div class="card mb-4 text-start">
-                  <a href="{{ route('posts.show', $related->slug) }}">
+                <div class="card mb-4 text-start overflow-hidden">
+                  <a class="comco-post-card-media" href="{{ route('posts.show', $related->slug) }}">
                     <img class="card-img-top" src="{{ postImage($related->featured_image) }}" alt="{{ $related->title }}">
+                    @if ($related->hasVideo())
+                      <span class="comco-post-card-media__play" aria-hidden="true">
+                        <span class="fas fa-play"></span>
+                      </span>
+                    @endif
                   </a>
                   <div class="card-body">
                     <h6 class="mb-2">

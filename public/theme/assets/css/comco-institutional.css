@@ -491,6 +491,60 @@ a.comco-lift-card:focus-visible .comco-lift-card__inner {
   max-height: 22rem;
 }
 
+.comco-post-media {
+  background: #0f172a;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.comco-post-media__video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #0f172a;
+}
+
+.comco-post-card-media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.comco-post-card-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.comco-post-card-media__play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.35);
+  color: #fff;
+  font-size: 1.35rem;
+  transition: background-color 0.2s ease;
+}
+
+.comco-post-card-media:hover .comco-post-card-media__play {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.comco-post-card-media__play .fas {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  background: rgba(47, 111, 237, 0.95);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0.15rem;
+}
+
 @media (max-width: 991.98px) {
   .comco-side-nav {
     position: static;

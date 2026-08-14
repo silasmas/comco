@@ -23,6 +23,7 @@ class Post extends Model
     'excerpt',
     'body',
     'featured_image',
+    'featured_video',
     'meta_title',
     'meta_description',
     'is_published',
@@ -40,6 +41,16 @@ class Post extends Model
       'is_published' => 'boolean',
       'published_at' => 'datetime',
     ];
+  }
+
+  /**
+   * Indique si l'actualité a une vidéo associée.
+   *
+   * @return bool True si une vidéo est définie
+   */
+  public function hasVideo(): bool
+  {
+    return filled($this->featured_video);
   }
 
   /**

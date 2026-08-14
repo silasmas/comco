@@ -19,9 +19,14 @@
     <div class="row g-4">
       @foreach ($posts as $post)
         <div class="col-md-6 col-lg-4">
-          <div class="card h-100">
-            <a href="{{ route('posts.show', $post->slug) }}">
+          <div class="card h-100 overflow-hidden">
+            <a class="comco-post-card-media" href="{{ route('posts.show', $post->slug) }}">
               <img class="card-img-top" src="{{ postImage($post->featured_image) }}" alt="{{ $post->title }}">
+              @if ($post->hasVideo())
+                <span class="comco-post-card-media__play" aria-hidden="true">
+                  <span class="fas fa-play"></span>
+                </span>
+              @endif
             </a>
             <div class="card-body">
               <div class="overflow-hidden">
@@ -56,9 +61,14 @@
     <div class="row g-4">
       @foreach ($posts as $post)
         <div class="col-md-6">
-          <article class="card h-100 shadow-sm">
-            <a href="{{ route('posts.show', $post->slug) }}">
+          <article class="card h-100 shadow-sm overflow-hidden">
+            <a class="comco-post-card-media" href="{{ route('posts.show', $post->slug) }}">
               <img class="card-img-top" src="{{ postImage($post->featured_image) }}" alt="{{ $post->title }}">
+              @if ($post->hasVideo())
+                <span class="comco-post-card-media__play" aria-hidden="true">
+                  <span class="fas fa-play"></span>
+                </span>
+              @endif
             </a>
             <div class="card-body p-4">
               @if ($post->category)

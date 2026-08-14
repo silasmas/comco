@@ -81,6 +81,25 @@ function postImage(?string $path): string
 }
 
 /**
+ * Retourne l'URL publique de la vidéo d'un article.
+ *
+ * @param  string|null  $path  Chemin relatif enregistré sur le post
+ * @return string|null URL publique ou null si absente
+ */
+function postVideo(?string $path): ?string
+{
+    if ($path === null || $path === '') {
+        return null;
+    }
+
+    if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+        return $path;
+    }
+
+    return asset('storage/'.ltrim($path, '/'));
+}
+
+/**
  * Retourne l'URL absolue du logo COMCO pour les emails.
  *
  * @return string URL publique du logo
