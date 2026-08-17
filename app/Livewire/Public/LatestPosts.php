@@ -7,27 +7,36 @@ use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 /**
- * Composant Livewire affichant les derniers articles sur la page d'accueil.
+ * Composant Livewire affichant les derniers articles ou activités.
  */
 class LatestPosts extends Component
 {
   public string $variant = 'grid';
 
   /**
-   * Rendu du composant avec les articles publiés récents.
+   * Type de contenu affiché (news|activity).
+   */
+  public string $contentType = Post::TYPE_NEWS;
+
+  /**
+   * Rendu du composant avec les contenus publiés récents.
    *
    * @return View Vue Blade du composant
    */
   public function render(): View
   {
+    $limit = $this->variant === 'list' ? 5 : ($this->contentType === Post::TYPE_ACTIVITY ? 6 : 3);
+
     $posts = Post::query()
       ->published()
+      ->ofType($this->contentType)
       ->latest('published_at')
-      ->limit($this->variant === 'list' ? 5 : 3)
+      ->limit($limit)
       ->get();
 
     return view('livewire.public.latest-posts', [
       'posts' => $posts,
+      'contentType' => $this->contentType,
     ]);
   }
 }

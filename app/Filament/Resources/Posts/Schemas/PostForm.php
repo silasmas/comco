@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Models\Post;
 use App\Support\CroppableImageUpload;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -13,7 +15,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 /**
- * Schéma de formulaire des actualités COMCO.
+ * Schéma de formulaire des actualités et activités COMCO.
  */
 class PostForm
 {
@@ -30,6 +32,13 @@ class PostForm
         Section::make('Identification')
           ->columns(2)
           ->schema([
+            Select::make('content_type')
+              ->label('Type de contenu')
+              ->options(Post::contentTypeLabels())
+              ->default(Post::TYPE_NEWS)
+              ->required()
+              ->helperText('Les activités apparaissent dans l\'onglet « Nos activités » de l\'accueil.')
+              ->native(false),
             TextInput::make('title')
               ->label('Titre')
               ->required()
@@ -38,7 +47,8 @@ class PostForm
               ->label('Slug')
               ->required(),
             TextInput::make('category')
-              ->label('Catégorie'),
+              ->label('Catégorie')
+              ->helperText('Ex. Sensibilisation, Formation, 2021…'),
             TextInput::make('author')
               ->label('Auteur'),
           ]),
@@ -81,6 +91,7 @@ class PostForm
           ]),
         Section::make('Publication & SEO')
           ->columns(2)
+          ->description('Laissez « Publié » désactivé pour préparer le contenu, puis utilisez Prévisualiser avant mise en ligne.')
           ->schema([
             TextInput::make('meta_title')
               ->label('Titre SEO'),
@@ -88,7 +99,8 @@ class PostForm
               ->label('Description SEO')
               ->columnSpanFull(),
             Toggle::make('is_published')
-              ->label('Publié')
+              ->label('Publié (visible sur le site)')
+              ->helperText('Désactivé = brouillon invisible au public.')
               ->required(),
             DateTimePicker::make('published_at')
               ->label('Date de publication'),

@@ -1,6 +1,12 @@
 <div>
   @if ($posts->isEmpty())
-    <p class="text-500">Aucun article publié pour le moment. Le contenu apparaîtra ici une fois ajouté depuis l'administration.</p>
+    <p class="text-500">
+      @if (($contentType ?? 'news') === 'activity')
+        Aucune activité publiée pour le moment. Ajoutez des activités depuis l'administration (type « Activité »), avec photo et/ou vidéo.
+      @else
+        Aucun article publié pour le moment. Le contenu apparaîtra ici une fois ajouté depuis l'administration.
+      @endif
+    </p>
   @elseif ($variant === 'list')
     <div class="list-group list-group-flush">
       @foreach ($posts as $post)

@@ -23,25 +23,25 @@ class PostResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $navigationLabel = 'Actualités';
+    protected static ?string $navigationLabel = 'Actualités & Activités';
 
     protected static string|null|\UnitEnum $navigationGroup = 'Contenu';
 
     protected static ?int $navigationSort = 1;
 
-    protected static string $resourceDescription = 'Publiez les actualités et communiqués de la COMCO : rédaction, image à la une, vidéo optionnelle, catégorie, extrait et date de publication.';
+    protected static string $resourceDescription = 'Rédigez actualités et activités (années passées incluses) avec image, vidéo optionnelle, brouillon et prévisualisation avant mise en ligne.';
 
     protected static ?string $tourStepId = 'posts';
 
     protected static int $tourStepSort = 10;
 
     protected static array $tourStepFeatures = [
-        'Créer un article avec titre, chapô, corps HTML et catégorie thématique',
+        'Créer une actualité ou une activité avec titre, chapô, corps HTML et catégorie',
         'Téléverser une image à la une (vignette) et une vidéo optionnelle',
+        'Préparer en brouillon puis prévisualiser avant publication sur le site',
+        'Afficher les activités dans l\'onglet « Nos activités » de la page d\'accueil',
         'Programmer ou modifier la date de publication et l\'état publié / brouillon',
-        'Organiser les contenus par catégorie (concurrence, consommateurs, concentrations…)',
-        'Modifier un communiqué existant sans toucher à sa structure URL',
-        'Retrouver les articles récents dans le bloc « À la une » de la page d\'accueil',
+        'Retrouver les articles récents dans le bloc actualités de la page d\'accueil',
     ];
 
     public static function form(Schema $schema): Schema

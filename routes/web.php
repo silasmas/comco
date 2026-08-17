@@ -76,6 +76,9 @@ Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::get('/plan-du-site', [SitemapController::class, 'show'])->name('sitemap');
 Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
 Route::get('/forum/{slug}', [ForumController::class, 'show'])->name('forum.show');
+Route::get('/actualites/{slug}/apercu', [PostController::class, 'preview'])
+    ->middleware('auth')
+    ->name('posts.preview');
 Route::get('/actualites/{slug}', [PostController::class, 'show'])->name('posts.show');
 Route::get('/qui-sommes-nous/coordination/fiche/{member}', [CoordinationController::class, 'show'])
     ->name('coordination.show');

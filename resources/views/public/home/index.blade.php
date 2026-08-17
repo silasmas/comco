@@ -314,7 +314,7 @@
         </ul>
         <div class="tab-content">
           <div class="tab-pane fade show active" id="pane-actualite" role="tabpanel">
-            @livewire('public.latest-posts', ['variant' => 'elixir'])
+            @livewire('public.latest-posts', ['variant' => 'elixir', 'contentType' => 'news'])
           </div>
           <div class="tab-pane fade" id="pane-une" role="tabpanel">
             @php $featured = $homeContent->featured(); @endphp
@@ -335,18 +335,7 @@
             </div>
           </div>
           <div class="tab-pane fade" id="pane-activites" role="tabpanel">
-            <div class="row g-4">
-              @foreach ($homeContent->activities() as $activity)
-                <div class="col-md-6">
-                  <div class="card h-100">
-                    <div class="card-body p-4">
-                      <h5>{{ $activity['title'] }}</h5>
-                      <p class="mb-0 text-500">{{ $activity['text'] }}</p>
-                    </div>
-                  </div>
-                </div>
-              @endforeach
-            </div>
+            @livewire('public.latest-posts', ['variant' => 'elixir', 'contentType' => 'activity'])
           </div>
         </div>
       </div>

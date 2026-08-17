@@ -545,6 +545,10 @@ a.comco-lift-card:focus-visible .comco-lift-card__inner {
   padding-left: 0.15rem;
 }
 
+.comco-preview-banner {
+  border: 1px solid rgba(180, 120, 20, 0.35);
+}
+
 @media (max-width: 991.98px) {
   .comco-side-nav {
     position: static;

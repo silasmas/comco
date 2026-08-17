@@ -7,8 +7,22 @@
 @section('content')
   <section class="bg-100">
     <div class="container">
+      @if (! empty($isPreview))
+        <div class="comco-preview-banner alert alert-warning mb-4" role="status">
+          <strong>Mode prévisualisation</strong>
+          — Ce contenu n’est visible que pour les administrateurs connectés.
+          @if (! $post->is_published)
+            Il est encore en <em>brouillon</em> et n’apparaît pas sur le site public.
+          @endif
+          <a class="alert-link ms-1" href="{{ \App\Filament\Resources\Posts\PostResource::getUrl('edit', ['record' => $post]) }}">Retour à l’édition</a>
+        </div>
+      @endif
+
       <div class="overflow-hidden mb-4">
         <div>
+          @if ($post->isActivity())
+            <span class="badge bg-warning text-primary me-2">Activité</span>
+          @endif
           @if ($post->author)
             <span class="d-inline-block text-500">{{ $post->author }}</span>
           @endif
