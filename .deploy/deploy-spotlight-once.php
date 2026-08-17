@@ -29,30 +29,25 @@ $files = [
 ];
 
 /**
- * Télécharge un fichier distant.
+ * Télécharge un fichier distant via wget (fiable sur Hostinger).
  *
  * @param  string  $url  URL source
  * @param  string  $destination  Chemin local
  */
 function downloadFile(string $url, string $destination): void
 {
-  $context = stream_context_create([
-    'http' => [
-      'follow_location' => 1,
-      'timeout' => 120,
-      'header' => "User-Agent: COMCO-Deploy\r\n",
-    ],
-  ]);
-  $data = @file_get_contents($url, false, $context);
-  if ($data === false || strlen($data) < 20) {
-    throw new RuntimeException('Echec téléchargement: '.$url);
-  }
   $dir = dirname($destination);
   if (! is_dir($dir)) {
     mkdir($dir, 0755, true);
   }
-  file_put_contents($destination, $data);
-  echo 'OK '.$destination.' ('.strlen($data).")\n";
+
+  $command = 'wget -qO '.escapeshellarg($destination).' '.escapeshellarg($url).' 2>&1';
+  exec($command, $output, $code);
+  if ($code !== 0 || ! is_file($destination) || filesize($destination) < 20) {
+    throw new RuntimeException('Echec téléchargement: '.$url.' | '.implode(' ', $output));
+  }
+
+  echo 'OK '.$destination.' ('.filesize($destination).")\n";
 }
 
 /**
