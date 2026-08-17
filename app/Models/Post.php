@@ -14,6 +14,10 @@ class Post extends Model
 
   public const TYPE_ACTIVITY = 'activity';
 
+  public const VIDEO_MODE_NORMAL = 'normal';
+
+  public const VIDEO_MODE_STORY = 'story';
+
   /**
    * Attributs assignables en masse.
    *
@@ -29,11 +33,32 @@ class Post extends Model
     'body',
     'featured_image',
     'featured_video',
+    'spotlight_images',
+    'spotlight_video_mode',
+    'spotlight_text',
     'meta_title',
     'meta_description',
     'is_published',
+    'is_spotlight',
     'published_at',
   ];
+
+  /**
+   * Initialise les événements du modèle.
+   */
+  protected static function booted(): void
+  {
+    static::saved(function (Post $post): void {
+      if (! $post->is_spotlight) {
+        return;
+      }
+
+      static::query()
+        ->whereKeyNot($post->getKey())
+        ->where('is_spotlight', true)
+        ->update(['is_spotlight' => false]);
+    });
+  }
 
   /**
    * Cast des attributs du modèle.
@@ -44,6 +69,8 @@ class Post extends Model
   {
     return [
       'is_published' => 'boolean',
+      'is_spotlight' => 'boolean',
+      'spotlight_images' => 'array',
       'published_at' => 'datetime',
     ];
   }
@@ -62,6 +89,33 @@ class Post extends Model
   }
 
   /**
+   * Libellés des modes d'affichage vidéo en modale.
+   *
+   * @return array<string, string>
+   */
+  public static function spotlightVideoModeLabels(): array
+  {
+    return [
+      self::VIDEO_MODE_NORMAL => 'Vidéo classique (lecteur avec contrôles)',
+      self::VIDEO_MODE_STORY => 'Style story (plein cadre, lecture auto)',
+    ];
+  }
+
+  /**
+   * Retourne le contenu publié actuellement mis en avant, s'il existe.
+   *
+   * @return self|null Post spotlight ou null
+   */
+  public static function currentSpotlight(): ?self
+  {
+    return static::query()
+      ->published()
+      ->where('is_spotlight', true)
+      ->latest('published_at')
+      ->first();
+  }
+
+  /**
    * Indique si le contenu est une activité.
    *
    * @return bool True si type activité
@@ -72,6 +126,16 @@ class Post extends Model
   }
 
   /**
+   * Indique si la vidéo doit s'afficher en mode story.
+   *
+   * @return bool True si mode story
+   */
+  public function usesStoryVideo(): bool
+  {
+    return ($this->spotlight_video_mode ?: self::VIDEO_MODE_NORMAL) === self::VIDEO_MODE_STORY;
+  }
+
+  /**
    * Indique si l'actualité a une vidéo associée.
    *
    * @return bool True si une vidéo est définie
@@ -79,6 +143,44 @@ class Post extends Model
   public function hasVideo(): bool
   {
     return filled($this->featured_video);
+  }
+
+  /**
+   * URLs des images de la modale (galerie ou vignette de secours).
+   *
+   * @return list<string>
+   */
+  public function spotlightImageUrls(): array
+  {
+    $images = is_array($this->spotlight_images) ? $this->spotlight_images : [];
+
+    if ($images === [] && filled($this->featured_image)) {
+      $images = [$this->featured_image];
+    }
+
+    $urls = [];
+    foreach ($images as $path) {
+      if (! filled($path)) {
+        continue;
+      }
+      $urls[] = postImage((string) $path);
+    }
+
+    return array_values($urls);
+  }
+
+  /**
+   * Texte présenté dans la modale de mise en avant.
+   *
+   * @return string Texte de présentation
+   */
+  public function spotlightPresentationText(): string
+  {
+    if (filled($this->spotlight_text)) {
+      return (string) $this->spotlight_text;
+    }
+
+    return (string) ($this->excerpt ?? '');
   }
 
   /**

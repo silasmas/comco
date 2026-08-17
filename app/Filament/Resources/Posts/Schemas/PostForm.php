@@ -12,6 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 /**
@@ -86,7 +87,43 @@ class PostForm
               ->maxSize(102400)
               ->directory('posts/videos')
               ->disk('public')
-              ->helperText('Formats recommandés : MP4 ou WebM (max. ~100 Mo). La vignette ci-dessus s\'affiche avant lecture.')
+              ->live()
+              ->helperText('Formats recommandés : MP4 ou WebM (max. ~100 Mo).')
+              ->columnSpanFull(),
+          ]),
+        Section::make('Mise en avant (modale d\'entrée)')
+          ->description('Une seule mise en avant active à la fois. À l\'arrivée sur le site, une modale présente ce contenu ; après fermeture, un bouton flottant clignotant reste visible.')
+          ->columns(2)
+          ->schema([
+            Toggle::make('is_spotlight')
+              ->label('Mettre en avant sur le site')
+              ->helperText('Affiche la modale dès l\'entrée sur le site public.')
+              ->live()
+              ->columnSpanFull(),
+            Textarea::make('spotlight_text')
+              ->label('Texte de la modale')
+              ->rows(4)
+              ->helperText('Si vide, le chapô est utilisé.')
+              ->visible(fn (Get $get): bool => (bool) $get('is_spotlight'))
+              ->columnSpanFull(),
+            FileUpload::make('spotlight_images')
+              ->label('Images de la modale')
+              ->image()
+              ->multiple()
+              ->reorderable()
+              ->maxFiles(8)
+              ->directory('posts/spotlight')
+              ->disk('public')
+              ->helperText('Une image = fixe ; plusieurs = diaporama. Sinon, la vignette à la une est utilisée.')
+              ->visible(fn (Get $get): bool => (bool) $get('is_spotlight'))
+              ->columnSpanFull(),
+            Select::make('spotlight_video_mode')
+              ->label('Affichage de la vidéo')
+              ->options(Post::spotlightVideoModeLabels())
+              ->default(Post::VIDEO_MODE_NORMAL)
+              ->native(false)
+              ->helperText('Utilise la vidéo téléversée dans la section Médias.')
+              ->visible(fn (Get $get): bool => (bool) $get('is_spotlight') && filled($get('featured_video')))
               ->columnSpanFull(),
           ]),
         Section::make('Publication & SEO')

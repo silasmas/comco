@@ -29,7 +29,7 @@ class PostResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
-    protected static string $resourceDescription = 'Rédigez actualités et activités (années passées incluses) avec image, vidéo optionnelle, brouillon et prévisualisation avant mise en ligne.';
+    protected static string $resourceDescription = 'Rédigez actualités et activités avec image, vidéo, brouillon, prévisualisation et mise en avant (modale d\'entrée + bouton flottant).';
 
     protected static ?string $tourStepId = 'posts';
 
@@ -37,11 +37,11 @@ class PostResource extends Resource
 
     protected static array $tourStepFeatures = [
         'Créer une actualité ou une activité avec titre, chapô, corps HTML et catégorie',
-        'Téléverser une image à la une (vignette) et une vidéo optionnelle',
+        'Téléverser une image à la une, une galerie de mise en avant et une vidéo optionnelle',
+        'Mettre un contenu en avant : modale à l\'entrée du site, puis bouton flottant clignotant',
+        'Choisir l\'affichage vidéo classique ou style story dans la modale',
         'Préparer en brouillon puis prévisualiser avant publication sur le site',
         'Afficher les activités dans l\'onglet « Nos activités » de la page d\'accueil',
-        'Programmer ou modifier la date de publication et l\'état publié / brouillon',
-        'Retrouver les articles récents dans le bloc actualités de la page d\'accueil',
     ];
 
     public static function form(Schema $schema): Schema

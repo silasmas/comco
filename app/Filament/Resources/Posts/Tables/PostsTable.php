@@ -57,6 +57,11 @@ class PostsTable
         IconColumn::make('is_published')
           ->label('Publié')
           ->boolean(),
+        IconColumn::make('is_spotlight')
+          ->label('En avant')
+          ->boolean()
+          ->trueIcon(Heroicon::OutlinedSparkles)
+          ->falseIcon(Heroicon::OutlinedMinus),
         IconColumn::make('featured_video')
           ->label('Vidéo')
           ->boolean()
@@ -79,6 +84,8 @@ class PostsTable
           ->options(Post::contentTypeLabels()),
         TernaryFilter::make('is_published')
           ->label('Publié'),
+        TernaryFilter::make('is_spotlight')
+          ->label('En avant'),
       ])
       ->recordActions([
         Action::make('preview')

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Post;
 use App\Support\EServiceRegistry;
 use App\Support\InstitutionSettings;
 use App\Support\SiteDeploymentState;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\ViewErrorBag;
+use Throwable;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,6 +40,14 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view): void {
             if (! array_key_exists('errors', $view->getData())) {
                 $view->with('errors', session()->get('errors', new ViewErrorBag));
+            }
+        });
+
+        View::composer('layouts.elixir', function ($view): void {
+            try {
+                $view->with('spotlightPost', Post::currentSpotlight());
+            } catch (Throwable) {
+                $view->with('spotlightPost', null);
             }
         });
 

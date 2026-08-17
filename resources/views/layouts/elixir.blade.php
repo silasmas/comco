@@ -50,6 +50,10 @@
 
     <x-toast-container />
 
+    @if (! empty($spotlightPost))
+      <x-spotlight-promo :post="$spotlightPost" />
+    @endif
+
     <x-elixir.pre-footer />
     <x-elixir.footer />
 
