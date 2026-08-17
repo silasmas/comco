@@ -13,7 +13,7 @@ if (! is_file($root.'/artisan')) {
   exit(1);
 }
 
-$base = 'https://cdn.jsdelivr.net/gh/silasmas/comco@main/';
+$base = 'https://cdn.jsdelivr.net/gh/silasmas/comco@7fe8a0f/';
 
 $files = [
   'app/Models/Post.php',
