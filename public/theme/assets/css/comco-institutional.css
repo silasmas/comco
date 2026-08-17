@@ -692,13 +692,22 @@ a.comco-lift-card:focus-visible .comco-lift-card__inner {
 }
 
 .comco-spotlight__title {
-  font-size: 1.25rem;
-  margin-bottom: 0.75rem;
+  margin: 0 0 0.75rem;
+  color: #2a3855;
+  font-size: clamp(1.05rem, 2.4vw, 1.35rem);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: normal !important;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  hyphens: auto;
 }
 
 .comco-spotlight__text {
   color: #64748b;
   margin-bottom: 1rem;
+  line-height: 1.55;
+  letter-spacing: normal;
 }
 
 .comco-spotlight__float {
