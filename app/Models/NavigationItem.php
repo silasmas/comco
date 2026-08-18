@@ -142,6 +142,24 @@ class NavigationItem extends Model
         }
 
         if ($this->link_type === self::LINK_SECTION && filled($this->section) && filled($this->slug)) {
+            $children = $this->relationLoaded('children')
+                ? $this->children
+                : collect();
+
+            // Un parent « Page CMS » avec des enfants doit se comporter comme un groupe sidebar.
+            if ($children->isNotEmpty()) {
+                return [
+                    'label' => $this->label,
+                    'section' => $this->section,
+                    'slug' => $this->slug,
+                    'sidebar' => true,
+                    'children' => $children
+                        ->map(fn (self $child): array => $child->toChildNavArray())
+                        ->values()
+                        ->all(),
+                ];
+            }
+
             return [
                 'label' => $this->label,
                 'section' => $this->section,

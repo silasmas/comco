@@ -59,7 +59,7 @@ class NavigationItemForm
                             ->options(NavigationItem::linkTypeLabels())
                             ->required()
                             ->live()
-                            ->helperText('Page CMS = page créée dans « Pages ». Groupe = parent de sous-liens (déroulant ou latéral). Route = page technique (accueil, contact, forum). URL = lien hors site.'),
+                            ->helperText('Pour une sidebar : préférez « Groupe » avec section + slug hub. Si vous mettez « Page CMS » comme parent avec des enfants, le site les traite aussi comme sidebar.'),
                         TextInput::make('route')
                             ->label('Route Laravel')
                             ->helperText('Nom de route interne. Exemples : home (accueil), contact, forum.index.')
