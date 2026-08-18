@@ -23,16 +23,32 @@
 .comco-hero,
 .comco-hero .swiper-slide,
 .comco-hero .bg-holder {
-  min-height: 22rem;
+  min-height: 28rem;
 }
 
 .comco-hero__inner {
-  min-height: 22rem;
+  min-height: 28rem;
 }
 
-.comco-hero__inner h1 {
+.comco-hero .comco-slide[style*="--comco-slide-min-h"],
+.comco-hero .comco-slide[style*="--comco-slide-min-h"] .bg-holder,
+.comco-hero .comco-slide[style*="--comco-slide-min-h"] .comco-hero__inner {
+  min-height: var(--comco-slide-min-h);
+}
+
+.comco-hero__inner h1,
+.comco-slide__title {
   letter-spacing: normal !important;
   line-height: 1.25 !important;
+}
+
+.comco-slide__text {
+  /* Évite le forçage warning du thème si une couleur custom est définie inline */
+}
+
+.comco-topbar-signal {
+  white-space: nowrap;
+  font-weight: 700;
 }
 
 @media (min-width: 768px) {
@@ -40,7 +56,7 @@
   .comco-hero .swiper-slide,
   .comco-hero .bg-holder,
   .comco-hero__inner {
-    min-height: 28rem;
+    min-height: 36rem;
   }
 }
 
@@ -49,7 +65,7 @@
   .comco-hero .swiper-slide,
   .comco-hero .bg-holder,
   .comco-hero__inner {
-    min-height: 32rem;
+    min-height: 42rem;
   }
 }
 

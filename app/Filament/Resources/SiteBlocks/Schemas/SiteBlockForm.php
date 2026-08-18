@@ -4,6 +4,7 @@ namespace App\Filament\Resources\SiteBlocks\Schemas;
 
 use App\Models\SiteBlock;
 use App\Support\CroppableImageUpload;
+use App\Support\HomeSlideStyle;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
@@ -65,7 +66,102 @@ class SiteBlockForm
                 Section::make('Contenu')
                     ->description('Renseignez uniquement les champs utiles au type choisi. Les autres restent masqués.')
                     ->schema(self::contentFields()),
+                Section::make('Apparence du slide')
+                    ->description('Couleurs, polices, boutons, position et hauteur. Laissez vide pour les valeurs par défaut.')
+                    ->columns(2)
+                    ->visible(fn ($get): bool => $get('block_type') === SiteBlock::TYPE_SLIDER)
+                    ->schema(self::sliderStyleFields()),
             ]);
+    }
+
+    /**
+     * Champs d'apparence spécifiques aux diapositives du slider.
+     *
+     * @return list<Component>
+     */
+    private static function sliderStyleFields(): array
+    {
+        return [
+            TextInput::make('payload.title_color')
+                ->label('Couleur du titre')
+                ->type('color')
+                ->default('#ffffff')
+                ->helperText('Couleur du titre sur l’image.'),
+            TextInput::make('payload.text_color')
+                ->label('Couleur de la description')
+                ->type('color')
+                ->default('#ffc107')
+                ->helperText('Couleur du sous-titre / description.'),
+            Select::make('payload.title_font')
+                ->label('Police du titre')
+                ->options(HomeSlideStyle::fontOptions())
+                ->default('inherit')
+                ->native(false),
+            Select::make('payload.text_font')
+                ->label('Police de la description')
+                ->options(HomeSlideStyle::fontOptions())
+                ->default('inherit')
+                ->native(false),
+            Select::make('payload.content_h_align')
+                ->label('Position horizontale du texte')
+                ->options(HomeSlideStyle::horizontalAlignOptions())
+                ->default('start')
+                ->native(false),
+            Select::make('payload.content_v_align')
+                ->label('Position verticale')
+                ->options(HomeSlideStyle::verticalAlignOptions())
+                ->default('center')
+                ->native(false),
+            Select::make('payload.min_height')
+                ->label('Hauteur du slide')
+                ->options(HomeSlideStyle::heightOptions())
+                ->default('default')
+                ->native(false)
+                ->helperText('Augmente la hauteur visuelle de cette diapositive.')
+                ->columnSpanFull(),
+            Select::make('payload.btn_shape')
+                ->label('Forme des boutons')
+                ->options(HomeSlideStyle::buttonShapeOptions())
+                ->default('rounded')
+                ->native(false),
+            TextInput::make('payload.btn_primary_label')
+                ->label('Bouton 1 — libellé')
+                ->placeholder('En savoir plus')
+                ->helperText('Laissez vide pour masquer ce bouton.'),
+            Select::make('payload.btn_primary_style')
+                ->label('Bouton 1 — style')
+                ->options(HomeSlideStyle::buttonStyleOptions())
+                ->default('warning')
+                ->native(false),
+            TextInput::make('payload.btn_primary_section')
+                ->label('Bouton 1 — section CMS')
+                ->placeholder('qui-sommes-nous'),
+            TextInput::make('payload.btn_primary_slug')
+                ->label('Bouton 1 — slug CMS')
+                ->placeholder('presentation'),
+            TextInput::make('payload.btn_primary_url')
+                ->label('Bouton 1 — URL (prioritaire)')
+                ->url()
+                ->helperText('Si remplie, remplace section/slug.'),
+            TextInput::make('payload.btn_secondary_label')
+                ->label('Bouton 2 — libellé')
+                ->placeholder('(optionnel)')
+                ->helperText('Le signalement rouge est aussi dans la barre du haut. Laissez vide pour ne pas le dupliquer dans le slide.'),
+            Select::make('payload.btn_secondary_style')
+                ->label('Bouton 2 — style')
+                ->options(HomeSlideStyle::buttonStyleOptions())
+                ->default('danger')
+                ->native(false),
+            TextInput::make('payload.btn_secondary_section')
+                ->label('Bouton 2 — section CMS')
+                ->placeholder('e-services'),
+            TextInput::make('payload.btn_secondary_slug')
+                ->label('Bouton 2 — slug CMS')
+                ->placeholder('signaler-pratique'),
+            TextInput::make('payload.btn_secondary_url')
+                ->label('Bouton 2 — URL (prioritaire)')
+                ->url(),
+        ];
     }
 
     /**
@@ -165,7 +261,7 @@ class SiteBlockForm
                     ->label('Téléverser une image')
                     ->directory('site-blocks/home')
                     ->disk('public')
-                    ->helperText('Ouvrez l\'éditeur après l\'upload pour rogner (ex. 16:9). Le rognage ne grossit jamais l\'image et conserve la qualité.')
+                    ->helperText('Ouvrez l\'éditeur après l\'upload pour rogner (ex. 16:9). Le rognage ne grossit jamais l\'image et conserve la qualité. Pour un slide, préférez un format large.')
                     ->visible(fn ($get): bool => self::hasField($get('block_type'), 'image')),
                 [null, '16:9', '21:9', '3:2', '4:3']
             ),

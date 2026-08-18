@@ -16,27 +16,69 @@
       <div class="swiper theme-slider comco-hero" data-swiper='{"loop":true,"allowTouchMove":true,"autoplay":false,"effect":"fade","speed":400}'>
         <div class="swiper-wrapper">
           @foreach ($homeContent->slider() as $slide)
-            <div class="swiper-slide">
+            @php
+              $hAlign = \App\Support\HomeSlideStyle::horizontalAlignClasses($slide['content_h_align'] ?? 'start');
+              $vAlign = \App\Support\HomeSlideStyle::verticalAlignClass($slide['content_v_align'] ?? 'center');
+              $btnShape = \App\Support\HomeSlideStyle::buttonShapeClass($slide['btn_shape'] ?? 'rounded');
+              $minHeight = $slide['min_height'] ?? 'default';
+              $titleColor = $slide['title_color'] ?? '#ffffff';
+              $textColor = $slide['text_color'] ?? '#ffc107';
+              $titleFont = ($slide['title_font'] ?? 'inherit') === 'inherit' ? null : $slide['title_font'];
+              $textFont = ($slide['text_font'] ?? 'inherit') === 'inherit' ? null : $slide['text_font'];
+              $hasCustomPrimary = filled($slide['btn_primary_label'] ?? null)
+                || filled($slide['btn_primary_url'] ?? null)
+                || filled($slide['btn_primary_section'] ?? null);
+              $primaryLabel = $hasCustomPrimary
+                ? ($slide['btn_primary_label'] ?? null)
+                : 'En savoir plus';
+              $primaryStyle = $slide['btn_primary_style'] ?? 'warning';
+              $primaryUrl = $hasCustomPrimary
+                ? \App\Support\HomeSlideStyle::buttonUrl($slide, 'btn_primary')
+                : route('sections.show', ['section' => 'qui-sommes-nous', 'slug' => 'presentation']);
+              $secondaryLabel = $slide['btn_secondary_label'] ?? null;
+              $secondaryStyle = $slide['btn_secondary_style'] ?? 'danger';
+              $secondaryUrl = filled($secondaryLabel)
+                ? \App\Support\HomeSlideStyle::buttonUrl($slide, 'btn_secondary')
+                : null;
+              $heightStyle = ($minHeight !== 'default' && filled($minHeight))
+                ? '--comco-slide-min-h: '.$minHeight.';'
+                : '';
+            @endphp
+            <div class="swiper-slide comco-slide" @if($heightStyle !== '') style="{{ $heightStyle }}" @endif>
               <div class="bg-holder" style="background-image:url({{ blockAsset($slide) }});"></div>
               <div class="container">
-                <div class="row comco-hero__inner py-6 align-items-center">
-                  <div class="col-sm-8 col-lg-7 px-5 px-sm-3">
+                <div class="row comco-hero__inner py-6 {{ $vAlign }}">
+                  <div class="col-sm-8 col-lg-7 px-5 px-sm-3 {{ $hAlign['col'] }} {{ $hAlign['text'] }}">
                     <div class="overflow-hidden">
-                      <h1 class="fs-4 fs-md-5 lh-1 text-white">{{ $slide['title'] }}</h1>
+                      <h1
+                        class="fs-4 fs-md-5 lh-1 comco-slide__title"
+                        style="color: {{ $titleColor }};@if($titleFont) font-family: {{ $titleFont }};@endif"
+                      >{{ $slide['title'] }}</h1>
                     </div>
-                    <div class="overflow-hidden">
-                      <p class="slide-subtitle text-warning pt-4 mb-5 fs-1 fs-md-2 lh-xs">{{ $slide['text'] }}</p>
-                    </div>
-                    <div class="overflow-hidden">
-                      <div>
-                        <a class="btn btn-warning me-3 mt-3" href="{{ route('sections.show', ['section' => 'qui-sommes-nous', 'slug' => 'presentation']) }}">
-                          En savoir plus<span class="fas fa-chevron-right ms-2"></span>
-                        </a>
-                        <a class="btn btn-danger mt-3" href="{{ route('sections.show', ['section' => 'e-services', 'slug' => 'signaler-pratique']) }}">
-                          Signaler une pratique<span class="fas fa-exclamation-triangle ms-2"></span>
-                        </a>
+                    @if (filled($slide['text'] ?? null))
+                      <div class="overflow-hidden">
+                        <p
+                          class="slide-subtitle comco-slide__text pt-4 mb-5 fs-1 fs-md-2 lh-xs"
+                          style="color: {{ $textColor }} !important;@if($textFont) font-family: {{ $textFont }};@endif"
+                        >{{ $slide['text'] }}</p>
                       </div>
-                    </div>
+                    @endif
+                    @if (filled($primaryLabel) || filled($secondaryLabel))
+                      <div class="overflow-hidden">
+                        <div class="comco-slide__actions">
+                          @if (filled($primaryLabel))
+                            <a class="btn btn-{{ $primaryStyle }} {{ $btnShape }} me-3 mt-3" href="{{ $primaryUrl }}">
+                              {{ $primaryLabel }}<span class="fas fa-chevron-right ms-2"></span>
+                            </a>
+                          @endif
+                          @if (filled($secondaryLabel))
+                            <a class="btn btn-{{ $secondaryStyle }} {{ $btnShape }} mt-3" href="{{ $secondaryUrl }}">
+                              {{ $secondaryLabel }}<span class="fas fa-exclamation-triangle ms-2"></span>
+                            </a>
+                          @endif
+                        </div>
+                      </div>
+                    @endif
                   </div>
                 </div>
               </div>
