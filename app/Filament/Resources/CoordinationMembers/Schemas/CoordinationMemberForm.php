@@ -33,10 +33,12 @@ class CoordinationMemberForm
               ->label('Titre')
               ->required()
               ->maxLength(255)
+              ->helperText('Nom de la structure / de la fiche affiché sur le site.')
               ->columnSpanFull(),
             Textarea::make('summary')
               ->label('Résumé')
               ->rows(3)
+              ->helperText('Court texte affiché en aperçu (cartes / listes).')
               ->columnSpanFull(),
             RichEditor::make('body')
               ->label('Contenu détaillé / description')
@@ -54,20 +56,24 @@ class CoordinationMemberForm
             TextInput::make('link_url')
               ->label('Lien « En détail »')
               ->url()
+              ->helperText('URL optionnelle vers une page externe ou interne complète (https://…).')
               ->maxLength(255),
             TextInput::make('link_label')
               ->label('Libellé du lien')
               ->placeholder('En détail')
+              ->helperText('Texte du bouton (ex. En détail). Ignoré si aucune URL n’est renseignée.')
               ->maxLength(100),
             TextInput::make('sort_order')
               ->label('Ordre d\'affichage')
               ->numeric()
               ->default(0)
-              ->required(),
+              ->required()
+              ->helperText('Plus le nombre est petit, plus la fiche apparaît tôt dans la liste.'),
             Toggle::make('is_active')
               ->label('Actif')
               ->default(true)
-              ->required(),
+              ->required()
+              ->helperText('Désactivez pour masquer la fiche sans la supprimer.'),
           ]),
       ]);
   }

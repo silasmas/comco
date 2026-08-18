@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 /**
@@ -25,13 +26,21 @@ class NavigationItemForm
         return $schema
             ->components([
                 Section::make('Élément de menu')
+                    ->description(
+                        'Guide : 1) Créez la page dans « Pages » (même section + slug). '
+                        .'2) Onglet simple → type Page CMS, sans parent. '
+                        .'3) Déroulant → parent type Groupe (section seule), enfants sous ce parent. '
+                        .'4) Menu latéral → parent type Groupe avec section ET slug hub (ex. presentation), puis enfants. '
+                        .'Pieds de page : choisissez le menu pied ; pas de parent.'
+                    )
                     ->columns(2)
                     ->schema([
                         Select::make('menu')
                             ->label('Menu')
                             ->options(NavigationItem::menuLabels())
                             ->required()
-                            ->live(),
+                            ->live()
+                            ->helperText('Menu principal = barre du haut. Les trois « Pied de page » = colonnes du bas du site (navigation, e-services, liens rapides).'),
                         Select::make('parent_id')
                             ->label('Élément parent')
                             ->options(fn (): array => NavigationItem::query()
@@ -39,40 +48,50 @@ class NavigationItemForm
                                 ->whereNull('parent_id')
                                 ->pluck('label', 'id')
                                 ->all())
-                            ->visible(fn ($get): bool => $get('menu') === NavigationItem::MENU_MAIN)
-                            ->nullable(),
+                            ->visible(fn (Get $get): bool => $get('menu') === NavigationItem::MENU_MAIN)
+                            ->nullable()
+                            ->helperText('Laissez vide pour un onglet de premier niveau. Choisissez un groupe parent pour en faire un sous-lien (déroulant ou menu latéral).'),
                         TextInput::make('label')
                             ->label('Libellé')
-                            ->required(),
+                            ->required()
+                            ->helperText('Texte visible dans le menu (ex. Présentation, Contact, Cadre juridique).'),
                         Select::make('link_type')
                             ->label('Type de lien')
                             ->options(NavigationItem::linkTypeLabels())
                             ->required()
-                            ->live(),
+                            ->live()
+                            ->helperText('Page CMS = page créée dans « Pages ». Groupe = parent de sous-liens (déroulant ou latéral). Route = page technique (accueil, contact, forum). URL = lien hors site.'),
                         TextInput::make('route')
                             ->label('Route Laravel')
-                            ->helperText('Ex. home, contact, forum.index')
-                            ->visible(fn ($get): bool => $get('link_type') === NavigationItem::LINK_ROUTE),
+                            ->helperText('Nom de route interne. Exemples : home (accueil), contact, forum.index.')
+                            ->visible(fn (Get $get): bool => $get('link_type') === NavigationItem::LINK_ROUTE),
                         TextInput::make('section')
                             ->label('Section CMS')
-                            ->helperText('Ex. qui-sommes-nous, e-services')
-                            ->visible(fn ($get): bool => in_array($get('link_type'), [NavigationItem::LINK_SECTION, NavigationItem::LINK_GROUP], true)),
+                            ->helperText('Doit correspondre à la section de la page CMS. Ex. : qui-sommes-nous, centre-information, medias, e-services.')
+                            ->visible(fn (Get $get): bool => in_array($get('link_type'), [NavigationItem::LINK_SECTION, NavigationItem::LINK_GROUP], true)),
                         TextInput::make('slug')
                             ->label('Slug de page')
-                            ->visible(fn ($get): bool => $get('link_type') === NavigationItem::LINK_SECTION),
+                            ->helperText(fn (Get $get): string => match ($get('link_type')) {
+                                NavigationItem::LINK_GROUP => 'Obligatoire pour un menu latéral : slug de la page hub (ex. presentation). Sans slug = menu déroulant classique. Avec slug = lien direct + enfants en sidebar.',
+                                default => 'Doit être identique au slug de la page CMS (ex. presentation, missions, cadre-juridique).',
+                            })
+                            ->visible(fn (Get $get): bool => in_array($get('link_type'), [NavigationItem::LINK_SECTION, NavigationItem::LINK_GROUP], true)),
                         TextInput::make('url')
                             ->label('URL externe')
                             ->url()
-                            ->visible(fn ($get): bool => $get('link_type') === NavigationItem::LINK_EXTERNAL),
+                            ->helperText('Adresse complète commençant par https:// (site partenaire, document en ligne, etc.).')
+                            ->visible(fn (Get $get): bool => $get('link_type') === NavigationItem::LINK_EXTERNAL),
                         TextInput::make('sort_order')
                             ->label('Ordre')
                             ->numeric()
                             ->default(0)
-                            ->required(),
+                            ->required()
+                            ->helperText('Position d’affichage (0, 1, 2…). Plus le nombre est petit, plus le lien apparaît tôt.'),
                         Toggle::make('is_active')
                             ->label('Actif')
                             ->default(true)
-                            ->required(),
+                            ->required()
+                            ->helperText('Désactivez pour masquer le lien sur le site sans le supprimer.'),
                     ]),
             ]);
     }

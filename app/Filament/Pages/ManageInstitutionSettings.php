@@ -125,66 +125,85 @@ class ManageInstitutionSettings extends Page
         return $schema
             ->components([
                 Section::make('Identité')
+                    ->description('Informations affichées dans l’en-tête, le pied de page et les mentions institutionnelles.')
                     ->schema([
                         TextInput::make('name')
                             ->label('Nom court')
-                            ->required(),
+                            ->required()
+                            ->helperText('Nom usuel de l’institution (ex. COMCO).'),
                         TextInput::make('fullName')
                             ->label('Nom complet')
-                            ->required(),
+                            ->required()
+                            ->helperText('Dénomination officielle complète.'),
                         TextInput::make('shortName')
                             ->label('Sigle')
-                            ->required(),
+                            ->required()
+                            ->helperText('Abréviation affichée là où l’espace est limité.'),
                         Textarea::make('tagline')
                             ->label('Slogan')
                             ->rows(3)
+                            ->helperText('Phrase d’accroche institutionnelle (optionnelle selon les pages).')
                             ->columnSpanFull(),
                     ]),
                 Section::make('Contact')
+                    ->description('Coordonnées reprises sur la page Contact et dans le pied de page.')
                     ->schema([
                         TextInput::make('contactEmail')
                             ->label('Email')
                             ->email()
-                            ->required(),
+                            ->required()
+                            ->helperText('Adresse de contact principale affichée au public.'),
                         TextInput::make('contactPhone')
                             ->label('Téléphone')
-                            ->required(),
+                            ->required()
+                            ->helperText('Numéro affiché sur le site.'),
                         Textarea::make('contactAddress')
                             ->label('Adresse')
                             ->rows(3)
+                            ->helperText('Adresse postale complète (une ligne ou plusieurs).')
                             ->columnSpanFull(),
                         TextInput::make('contactMapEmbedUrl')
                             ->label('URL embed Google Maps')
                             ->url()
+                            ->helperText('Lien « Intégrer une carte » (iframe) fourni par Google Maps.')
                             ->columnSpanFull(),
                         TextInput::make('contactMapLinkUrl')
                             ->label('Lien Google Maps')
                             ->url()
+                            ->helperText('Lien « Ouvrir dans Google Maps » pour le bouton public.')
                             ->columnSpanFull(),
                     ]),
                 Section::make('Réseaux sociaux')
+                    ->description('Laissez vide un réseau pour masquer son icône sur le site.')
                     ->schema([
                         TextInput::make('socialLinkedin')
                             ->label('LinkedIn')
-                            ->url(),
+                            ->url()
+                            ->helperText('URL complète du profil ou de la page LinkedIn.'),
                         TextInput::make('socialTwitter')
                             ->label('Twitter / X')
-                            ->url(),
+                            ->url()
+                            ->helperText('URL complète du compte X (Twitter).'),
                         TextInput::make('socialFacebook')
                             ->label('Facebook')
-                            ->url(),
+                            ->url()
+                            ->helperText('URL complète de la page Facebook.'),
                         TextInput::make('socialYoutube')
                             ->label('YouTube')
-                            ->url(),
+                            ->url()
+                            ->helperText('URL complète de la chaîne YouTube.'),
                     ]),
                 Section::make('SEO')
+                    ->description('Paramètres par défaut pour les titres et descriptions des pages.')
                     ->schema([
                         TextInput::make('seoTitleSuffix')
                             ->label('Suffixe des titres')
+                            ->helperText('Ajouté après le titre de chaque page (ex. « | COMCO »).')
                             ->columnSpanFull(),
                         Textarea::make('seoDefaultDescription')
                             ->label('Description par défaut')
                             ->rows(3)
+                            ->helperText('Utilisée quand une page n’a pas de description SEO propre.')
                             ->columnSpanFull(),
                     ]),
             ]);

@@ -160,16 +160,19 @@ class ManageMaintenanceMode extends Page
                             ->helperText('Le site public est masqué immédiatement après enregistrement.'),
                     ]),
                 Section::make('Contenu affiché')
+                    ->description('Textes présentés aux visiteurs pendant la maintenance.')
                     ->schema([
                         TextInput::make('title')
                             ->label('Titre')
                             ->required()
-                            ->maxLength(120),
+                            ->maxLength(120)
+                            ->helperText('Titre principal de la page de maintenance.'),
                         Textarea::make('message')
                             ->label('Message')
                             ->required()
                             ->rows(4)
-                            ->maxLength(1000),
+                            ->maxLength(1000)
+                            ->helperText('Message d’information destiné au public.'),
                     ]),
             ]);
     }

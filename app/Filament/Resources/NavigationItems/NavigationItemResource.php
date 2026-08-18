@@ -36,7 +36,7 @@ class NavigationItemResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
-    protected static string $resourceDescription = 'Configurez la navigation publique : en-tête du site, sous-menus par section et trois colonnes de liens dans le pied de page.';
+    protected static string $resourceDescription = 'Configurez la navigation publique : menu principal, sous-menus, menu latéral (groupe + slug hub) et colonnes du pied de page. Créez d’abord la page CMS, puis rattachez-la ici avec la même section et le même slug.';
 
     protected static ?string $tourStepId = 'navigation-items';
 
@@ -44,11 +44,11 @@ class NavigationItemResource extends Resource
 
     protected static array $tourStepFeatures = [
         'Organiser le menu principal (Accueil, Qui sommes-nous, Centre d\'information, Médias, E-services, Forum, Contact)',
-        'Créer des sous-liens vers une page CMS (section + slug) ou une route interne (forum, contact)',
+        'Attacher une page CMS : même « section » et « slug » que dans Pages',
+        'Créer un menu latéral : type Groupe + section + slug de la page hub, puis enfants sous ce parent',
+        'Créer un déroulant classique : type Groupe avec section seule (sans slug)',
         'Gérer les menus du pied de page : institution, e-services et liens utiles',
-        'Définir l\'ordre d\'affichage de chaque entrée via le champ « Ordre »',
         'Masquer un lien temporairement avec « Actif » sans le supprimer',
-        'Ajouter un nouvel élément de menu sans intervention technique',
     ];
 
     public static function form(Schema $schema): Schema

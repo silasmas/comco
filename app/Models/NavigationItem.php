@@ -82,10 +82,10 @@ class NavigationItem extends Model
     public static function linkTypeLabels(): array
     {
         return [
-            self::LINK_ROUTE => 'Route interne',
+            self::LINK_ROUTE => 'Route interne (accueil, contact, forum…)',
             self::LINK_SECTION => 'Page CMS (section + slug)',
             self::LINK_EXTERNAL => 'URL externe',
-            self::LINK_GROUP => 'Groupe (menu déroulant)',
+            self::LINK_GROUP => 'Groupe (déroulant ou menu latéral)',
         ];
     }
 

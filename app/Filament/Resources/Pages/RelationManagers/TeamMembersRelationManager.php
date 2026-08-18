@@ -59,9 +59,11 @@ class TeamMembersRelationManager extends RelationManager
             ->components([
                 TextInput::make('name')
                     ->label('Nom')
-                    ->required(),
+                    ->required()
+                    ->helperText('Nom affiché sous la photo.'),
                 TextInput::make('role')
-                    ->label('Fonction / rôle'),
+                    ->label('Fonction / rôle')
+                    ->helperText('Titre ou fonction (ex. Président, Secrétaire général).'),
                 RichEditor::make('text')
                     ->label('Texte de description')
                     ->helperText('Bouton « Justifier » disponible dans la barre d\'outils.')
@@ -70,26 +72,31 @@ class TeamMembersRelationManager extends RelationManager
                     FileUpload::make('image')
                         ->label('Photo')
                         ->directory('pages/team')
-                        ->disk('public'),
+                        ->disk('public')
+                        ->helperText('Portrait du membre. Rognez après l’upload si besoin.'),
                     [null, '4:5', '3:4', '1:1']
                 ),
                 TextInput::make('link_url')
                     ->label('Lien « Voir plus »')
                     ->url()
+                    ->helperText('URL optionnelle (profil, biographie…).')
                     ->maxLength(255),
                 TextInput::make('link_label')
                     ->label('Libellé du lien')
                     ->placeholder('Voir plus')
+                    ->helperText('Texte du lien si une URL est renseignée.')
                     ->maxLength(100),
                 TextInput::make('sort_order')
                     ->label('Ordre')
                     ->numeric()
                     ->default(0)
-                    ->required(),
+                    ->required()
+                    ->helperText('Position dans la grille (0 = en premier).'),
                 Toggle::make('is_active')
                     ->label('Actif')
                     ->default(true)
-                    ->required(),
+                    ->required()
+                    ->helperText('Désactivez pour masquer le profil sans le supprimer.'),
             ]);
     }
 

@@ -30,22 +30,26 @@ class PageForm
         return $schema
             ->components([
                 Section::make('Identification')
+                    ->description('Pour afficher cette page dans le menu : créez ensuite un élément dans « Navigation » avec exactement la même section et le même slug.')
                     ->columns(2)
                     ->schema([
                         TextInput::make('title')
                             ->label('Titre')
-                            ->required(),
+                            ->required()
+                            ->helperText('Titre affiché sur la page publique et dans les listes admin.'),
                         Select::make('section')
                             ->label('Section')
                             ->options(config('navigation.sections'))
-                            ->nullable(),
+                            ->nullable()
+                            ->helperText('Rubrique d’URL (ex. qui-sommes-nous). Doit correspondre à la « Section CMS » du menu Navigation.'),
                         TextInput::make('slug')
                             ->label('Slug URL')
-                            ->required(),
+                            ->required()
+                            ->helperText('Identifiant d’URL sans espaces (ex. presentation). À reprendre à l’identique dans Navigation pour rattacher le menu.'),
                         Select::make('template')
                             ->label('Gabarit d\'affichage')
                             ->options(config('cms-templates'))
-                            ->helperText('Détermine la mise en page publique (galerie, équipe, PDF, etc.).')
+                            ->helperText('presentation-hub active souvent le menu latéral (enfants du groupe Navigation). Autres gabarits : galerie, équipe, PDF, etc.')
                             ->nullable(),
                     ]),
                 Section::make('Contenu')
@@ -64,11 +68,13 @@ class PageForm
                     ]),
                 Section::make('Formulaire en ligne')
                     ->visible(fn (Get $get): bool => $get('section') === 'e-services')
+                    ->description('Le formulaire public est défini dans « E-services » : le slug de la page doit correspondre au slug du service.')
                     ->schema([
                         TextInput::make('e_service_form_status')
                             ->label('Statut du formulaire')
                             ->disabled()
                             ->dehydrated(false)
+                            ->helperText('Indicateur en lecture seule : aucune action à saisir ici.')
                             ->default(function (Get $get, ?Page $record): string {
                                 $slug = $get('slug') ?? $record?->slug;
 
@@ -91,15 +97,19 @@ class PageForm
                     ->columns(2)
                     ->schema([
                         TextInput::make('meta_title')
-                            ->label('Titre SEO'),
+                            ->label('Titre SEO')
+                            ->helperText('Titre navigateur / Google. Si vide, le titre de la page est utilisé.'),
                         Textarea::make('meta_description')
                             ->label('Description SEO')
+                            ->helperText('Résumé court pour les moteurs de recherche (idéalement 150–160 caractères).')
                             ->columnSpanFull(),
                         Toggle::make('is_published')
                             ->label('Publiée')
+                            ->helperText('Désactivé = page invisible au public (brouillon).')
                             ->required(),
                         DateTimePicker::make('published_at')
-                            ->label('Date de publication'),
+                            ->label('Date de publication')
+                            ->helperText('Date affichée / de référence. Peut rester vide pour un brouillon.'),
                     ]),
             ]);
     }

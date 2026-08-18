@@ -89,16 +89,19 @@ class GalleryItemsRelationManager extends RelationManager
                 ),
                 TextInput::make('caption')
                     ->label('Légende')
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->helperText('Texte affiché sous l’image (optionnel).'),
                 TextInput::make('sort_order')
                     ->label('Ordre')
                     ->numeric()
                     ->default(0)
-                    ->required(),
+                    ->required()
+                    ->helperText('Sur Présentation, la première image active sert souvent de couverture.'),
                 Toggle::make('is_active')
                     ->label('Active')
                     ->default(true)
-                    ->required(),
+                    ->required()
+                    ->helperText('Désactivez pour masquer l’image sans la supprimer.'),
             ]);
     }
 

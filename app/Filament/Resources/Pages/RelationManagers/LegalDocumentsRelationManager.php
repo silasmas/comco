@@ -53,7 +53,8 @@ class LegalDocumentsRelationManager extends RelationManager
             ->components([
                 TextInput::make('title')
                     ->label('Titre')
-                    ->required(),
+                    ->required()
+                    ->helperText('Nom du document affiché sur la page.'),
                 RichEditor::make('description')
                     ->label('Texte de description')
                     ->helperText('Bouton « Justifier » disponible dans la barre d\'outils.')
@@ -63,16 +64,19 @@ class LegalDocumentsRelationManager extends RelationManager
                     ->acceptedFileTypes(['application/pdf'])
                     ->directory('pages/legal')
                     ->disk('public')
-                    ->required(),
+                    ->required()
+                    ->helperText('Document PDF téléchargeable par le public.'),
                 TextInput::make('sort_order')
                     ->label('Ordre')
                     ->numeric()
                     ->default(0)
-                    ->required(),
+                    ->required()
+                    ->helperText('Position dans la liste (0 = en premier).'),
                 Toggle::make('is_active')
                     ->label('Actif')
                     ->default(true)
-                    ->required(),
+                    ->required()
+                    ->helperText('Désactivez pour masquer le document sans le supprimer.'),
             ]);
     }
 

@@ -36,36 +36,43 @@ class EServiceDefinitionForm
                             ->unique(EServiceDefinition::class, 'slug', ignoreRecord: true)
                             ->disabled(fn (?EServiceDefinition $record): bool => $record !== null)
                             ->dehydrated()
-                            ->helperText('Doit correspondre au slug de la page CMS (section e-services).'),
+                            ->helperText('Doit correspondre au slug de la page CMS (section e-services) pour afficher le formulaire.'),
                         TextInput::make('label')
                             ->label('Libellé')
-                            ->required(),
+                            ->required()
+                            ->helperText('Nom du service affiché sur le site et dans les listes admin.'),
                         Textarea::make('intro')
                             ->label('Introduction')
                             ->rows(3)
                             ->required()
+                            ->helperText('Texte d’introduction au-dessus du formulaire public.')
                             ->columnSpanFull(),
                         TextInput::make('sort_order')
                             ->label('Ordre')
                             ->numeric()
                             ->default(0)
-                            ->required(),
+                            ->required()
+                            ->helperText('Position dans la liste des e-services (0 = en premier).'),
                         Toggle::make('is_active')
                             ->label('Actif')
                             ->default(true)
-                            ->required(),
+                            ->required()
+                            ->helperText('Désactivez pour masquer le formulaire public sans supprimer la configuration.'),
                     ]),
                 Section::make('Champs du formulaire')
+                    ->description('Chaque ligne définit un champ visible par l’usager. L’identifiant technique ne doit pas contenir d’espaces.')
                     ->schema([
                         Repeater::make('fields')
                             ->label('Champs')
                             ->schema([
                                 TextInput::make('name')
                                     ->label('Identifiant technique')
-                                    ->required(),
+                                    ->required()
+                                    ->helperText('Clé interne (ex. nom_entreprise, email). Sans espaces ni accents.'),
                                 TextInput::make('label')
                                     ->label('Libellé affiché')
-                                    ->required(),
+                                    ->required()
+                                    ->helperText('Texte vu par l’usager à côté du champ.'),
                                 Select::make('type')
                                     ->label('Type')
                                     ->options([
@@ -75,16 +82,20 @@ class EServiceDefinitionForm
                                         'checkbox' => 'Case à cocher',
                                     ])
                                     ->required()
-                                    ->live(),
+                                    ->live()
+                                    ->helperText('Détermine le contrôle affiché et les options disponibles ci-dessous.'),
                                 Toggle::make('required')
                                     ->label('Obligatoire')
-                                    ->default(false),
+                                    ->default(false)
+                                    ->helperText('Si activé, l’usager doit remplir ce champ pour envoyer le formulaire.'),
                                 TextInput::make('rows')
                                     ->label('Nombre de lignes')
                                     ->numeric()
+                                    ->helperText('Hauteur de la zone de texte (textarea uniquement).')
                                     ->visible(fn ($get): bool => $get('type') === 'textarea'),
                                 TagsInput::make('options')
                                     ->label('Options')
+                                    ->helperText('Une option par étiquette (liste déroulante uniquement).')
                                     ->visible(fn ($get): bool => $get('type') === 'select')
                                     ->columnSpanFull(),
                             ])

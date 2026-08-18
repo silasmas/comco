@@ -43,21 +43,25 @@ class PostForm
             TextInput::make('title')
               ->label('Titre')
               ->required()
+              ->helperText('Titre affiché en liste, sur la fiche et dans la modale de mise en avant.')
               ->columnSpanFull(),
             TextInput::make('slug')
               ->label('Slug')
-              ->required(),
+              ->required()
+              ->helperText('Identifiant d’URL sans espaces (généré souvent depuis le titre).'),
             TextInput::make('category')
               ->label('Catégorie')
               ->helperText('Ex. Sensibilisation, Formation, 2021…'),
             TextInput::make('author')
-              ->label('Auteur'),
+              ->label('Auteur')
+              ->helperText('Nom affiché comme auteur de la publication (optionnel).'),
           ]),
         Section::make('Contenu')
           ->schema([
             Textarea::make('excerpt')
               ->label('Chapô')
               ->rows(3)
+              ->helperText('Résumé court affiché en liste et utilisé par défaut dans la mise en avant.')
               ->columnSpanFull(),
             RichEditor::make('body')
               ->label('Texte de description')
@@ -131,16 +135,19 @@ class PostForm
           ->description('Laissez « Publié » désactivé pour préparer le contenu, puis utilisez Prévisualiser avant mise en ligne.')
           ->schema([
             TextInput::make('meta_title')
-              ->label('Titre SEO'),
+              ->label('Titre SEO')
+              ->helperText('Titre navigateur / Google. Si vide, le titre de l’article est utilisé.'),
             Textarea::make('meta_description')
               ->label('Description SEO')
+              ->helperText('Résumé pour les moteurs de recherche (idéalement 150–160 caractères).')
               ->columnSpanFull(),
             Toggle::make('is_published')
               ->label('Publié (visible sur le site)')
               ->helperText('Désactivé = brouillon invisible au public.')
               ->required(),
             DateTimePicker::make('published_at')
-              ->label('Date de publication'),
+              ->label('Date de publication')
+              ->helperText('Date affichée sur le site. Utile pour planifier ou dater la publication.'),
           ]),
       ]);
   }

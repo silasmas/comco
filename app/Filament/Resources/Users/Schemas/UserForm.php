@@ -19,20 +19,23 @@ class UserForm
         TextInput::make('name')
           ->label('Nom complet')
           ->required()
-          ->maxLength(255),
+          ->maxLength(255)
+          ->helperText('Nom affiché dans l’administration et les notifications.'),
         TextInput::make('email')
           ->label('Email')
           ->email()
           ->required()
           ->maxLength(255)
-          ->unique(ignoreRecord: true),
+          ->unique(ignoreRecord: true)
+          ->helperText('Identifiant de connexion au tableau de bord.'),
         TextInput::make('password')
           ->label('Mot de passe')
           ->password()
           ->revealable()
           ->rule(Password::defaults())
           ->dehydrated(fn (?string $state): bool => filled($state))
-          ->required(fn (string $operation): bool => $operation === 'create'),
+          ->required(fn (string $operation): bool => $operation === 'create')
+          ->helperText('À la modification : laissez vide pour conserver le mot de passe actuel.'),
         Toggle::make('is_super_admin')
           ->label('Super administrateur')
           ->helperText('Accès complet, y compris la gestion des utilisateurs et l\'installation production.'),

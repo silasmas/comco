@@ -132,25 +132,31 @@ class ManageContactPage extends Page
         return $schema
             ->components([
                 Section::make('Représentations provinciales')
+                    ->description('Bloc d’information affiché sur la page Contact.')
                     ->schema([
                         TextInput::make('provincialTitle')
                             ->label('Titre')
-                            ->required(),
+                            ->required()
+                            ->helperText('Titre du bloc (ex. Représentations provinciales).'),
                         Textarea::make('provincialText')
                             ->label('Texte')
                             ->rows(4)
                             ->required()
+                            ->helperText('Texte descriptif ou liste des représentations.')
                             ->columnSpanFull(),
                     ]),
                 Section::make('Bloc e-services')
+                    ->description('Encart d’appel à l’action vers les e-services, sur la page Contact.')
                     ->schema([
                         TextInput::make('ctaTitle')
                             ->label('Titre')
-                            ->required(),
+                            ->required()
+                            ->helperText('Titre de l’encart (ex. Déposer une demande en ligne).'),
                         Textarea::make('ctaText')
                             ->label('Texte')
                             ->rows(3)
                             ->required()
+                            ->helperText('Courte explication invitant à utiliser les e-services.')
                             ->columnSpanFull(),
                     ]),
             ]);

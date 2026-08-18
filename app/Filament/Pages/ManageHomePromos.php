@@ -204,38 +204,44 @@ class ManageHomePromos extends Page
         return $schema
             ->components([
                 Section::make('Alerte signalement')
+                    ->description('Bandeau d’alerte sur l’accueil invitant à signaler une pratique.')
                     ->schema([
-                        TextInput::make('alertTitle')->label('Titre')->required(),
-                        Textarea::make('alertText')->label('Texte')->rows(3)->required()->columnSpanFull(),
-                        TextInput::make('alertButtonLabel')->label('Libellé du bouton')->required(),
+                        TextInput::make('alertTitle')->label('Titre')->required()->helperText('Titre court de l’alerte.'),
+                        Textarea::make('alertText')->label('Texte')->rows(3)->required()->helperText('Message d’accompagnement de l’alerte.')->columnSpanFull(),
+                        TextInput::make('alertButtonLabel')->label('Libellé du bouton')->required()->helperText('Texte du bouton (lien vers le signalement e-service).'),
                     ]),
                 Section::make('Bandeau contact')
+                    ->description('Encart invitant à contacter la COMCO depuis l’accueil.')
                     ->schema([
-                        Textarea::make('contactCtaTitle')->label('Texte')->rows(2)->required()->columnSpanFull(),
-                        TextInput::make('contactCtaButtonLabel')->label('Libellé du bouton')->required(),
+                        Textarea::make('contactCtaTitle')->label('Texte')->rows(2)->required()->helperText('Phrase d’appel affichée dans le bandeau.')->columnSpanFull(),
+                        TextInput::make('contactCtaButtonLabel')->label('Libellé du bouton')->required()->helperText('Texte du bouton vers la page Contact.'),
                     ]),
                 Section::make('Promotion cadre juridique')
+                    ->description('Bloc mettant en avant le cadre juridique (lien vers la page CMS associée).')
                     ->schema([
-                        TextInput::make('legislationSectionTitle')->label('Titre de section')->required(),
-                        TextInput::make('legislationLawTitle')->label('Titre du texte de loi')->required(),
-                        TextInput::make('legislationLawText')->label('Sous-titre du texte')->required(),
+                        TextInput::make('legislationSectionTitle')->label('Titre de section')->required()->helperText('Titre de la rubrique sur l’accueil.'),
+                        TextInput::make('legislationLawTitle')->label('Titre du texte de loi')->required()->helperText('Nom du texte mis en avant.'),
+                        TextInput::make('legislationLawText')->label('Sous-titre du texte')->required()->helperText('Courte précision sous le titre de loi.'),
                     ]),
                 Section::make('Promotion TALO')
+                    ->description('Bloc promotionnel TALO sur la page d’accueil.')
                     ->schema([
-                        TextInput::make('taloTitle')->label('Titre')->required(),
-                        Textarea::make('taloText')->label('Texte')->rows(3)->required()->columnSpanFull(),
+                        TextInput::make('taloTitle')->label('Titre')->required()->helperText('Titre du bloc TALO.'),
+                        Textarea::make('taloText')->label('Texte')->rows(3)->required()->helperText('Description affichée à côté de l’image.')->columnSpanFull(),
                         FileUpload::make('taloImage')
                             ->label('Image TALO')
                             ->image()
                             ->directory('site-blocks/home/promos')
                             ->disk('public')
+                            ->helperText('Image illustrative du bloc TALO (JPG ou PNG).')
                             ->columnSpanFull(),
                         Hidden::make('taloImageLegacy'),
                     ]),
                 Section::make('Section chiffres clés')
+                    ->description('Deux lignes d’introduction au-dessus des chiffres clés.')
                     ->schema([
-                        TextInput::make('funFactLineOne')->label('Première ligne')->required(),
-                        TextInput::make('funFactLineTwo')->label('Deuxième ligne')->required(),
+                        TextInput::make('funFactLineOne')->label('Première ligne')->required()->helperText('Première phrase d’introduction.'),
+                        TextInput::make('funFactLineTwo')->label('Deuxième ligne')->required()->helperText('Deuxième phrase d’introduction.'),
                     ]),
                 Section::make('Image « Pourquoi la COMCO »')
                     ->schema([

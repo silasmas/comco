@@ -122,6 +122,7 @@ class ManageHomeSections extends Page
     foreach (HomePageContent::sectionLabels() as $key => $label) {
       $toggles[] = Toggle::make($key)
         ->label($label)
+        ->helperText('Activé = visible sur l’accueil public ; désactivé = masqué sans supprimer le contenu.')
         ->inline(false)
         ->onColor('success')
         ->offColor('danger');
