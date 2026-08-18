@@ -47,6 +47,13 @@ class CreateSiteBlock extends CreateRecord
 
         unset($payload['uploaded_image']);
 
+        if (! empty($payload['uploaded_video'])) {
+            $payload['video'] = $payload['uploaded_video'];
+            $payload['source'] = 'upload';
+        }
+
+        unset($payload['uploaded_video']);
+
         if ($blockType === SiteBlock::TYPE_FUN_FACT && isset($payload['value'])) {
             $payload['value'] = (int) $payload['value'];
         }

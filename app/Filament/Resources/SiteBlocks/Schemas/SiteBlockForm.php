@@ -223,10 +223,46 @@ class SiteBlockForm
                 ->label('Transformation icône')
                 ->helperText('Classe de transformation Font Awesome (optionnel).')
                 ->visible(fn ($get): bool => self::hasField($get('block_type'), 'transform')),
+            Select::make('payload.source')
+                ->label('Source de la vidéo')
+                ->options([
+                    'youtube' => 'YouTube',
+                    'upload' => 'Fichier local (téléversement)',
+                    'url' => 'URL directe (MP4, WebM…)',
+                ])
+                ->default('youtube')
+                ->live()
+                ->native(false)
+                ->helperText('Choisissez YouTube, un fichier hébergé sur le site, ou une URL vidéo. Créez jusqu’à 3 blocs « Vidéo mise en avant » (ordre d’affichage).')
+                ->visible(fn ($get): bool => self::hasField($get('block_type'), 'video_source')),
             TextInput::make('payload.youtube')
-                ->label('Identifiant YouTube')
-                ->helperText('ID de la vidéo uniquement (ex. dQw4w9WgXcQ), pas l’URL complète.')
-                ->visible(fn ($get): bool => self::hasField($get('block_type'), 'youtube')),
+                ->label('YouTube (ID ou URL)')
+                ->helperText('Collez l’ID (ex. dQw4w9WgXcQ) ou l’URL complète YouTube / youtu.be.')
+                ->visible(fn ($get): bool => self::hasField($get('block_type'), 'video_source')
+                    && ($get('payload.source') ?? 'youtube') === 'youtube'),
+            FileUpload::make('payload.uploaded_video')
+                ->label('Téléverser une vidéo')
+                ->directory('site-blocks/videos')
+                ->disk('public')
+                ->acceptedFileTypes(['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'])
+                ->maxSize(102400)
+                ->helperText('MP4 ou WebM recommandé (max. ~100 Mo). Affiché via le lecteur du site.')
+                ->visible(fn ($get): bool => self::hasField($get('block_type'), 'video_source')
+                    && ($get('payload.source') ?? '') === 'upload'),
+            TextInput::make('payload.video')
+                ->label('Chemin vidéo actuel')
+                ->disabled()
+                ->dehydrated()
+                ->helperText('Renseigné automatiquement après téléversement.')
+                ->visible(fn ($get): bool => self::hasField($get('block_type'), 'video_source')
+                    && ($get('payload.source') ?? '') === 'upload'
+                    && filled($get('payload.video'))),
+            TextInput::make('payload.video_url')
+                ->label('URL de la vidéo')
+                ->url()
+                ->helperText('Lien direct vers un fichier vidéo (MP4…) ou une URL YouTube.')
+                ->visible(fn ($get): bool => self::hasField($get('block_type'), 'video_source')
+                    && ($get('payload.source') ?? '') === 'url'),
             TextInput::make('payload.link.section')
                 ->label('Section de lien')
                 ->helperText('Section CMS cible (ex. e-services), comme dans Navigation.')
@@ -303,7 +339,7 @@ class SiteBlockForm
             SiteBlock::TYPE_ACTIVITY => ['title', 'text'],
             SiteBlock::TYPE_TESTIMONIAL => ['quote', 'name', 'role', 'image'],
             SiteBlock::TYPE_PARTNER => ['logo', 'name'],
-            SiteBlock::TYPE_LATEST_VIDEO => ['title', 'text', 'image', 'youtube'],
+            SiteBlock::TYPE_LATEST_VIDEO => ['title', 'text', 'image', 'video_source'],
         ];
 
         return in_array($field, $map[$blockType] ?? [], true);

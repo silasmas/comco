@@ -31,7 +31,7 @@ class HomePageContent
             'slider' => 'Slider / bannière',
             'welcome' => 'Bienvenue',
             'alert' => 'Alerte signalement',
-            'story' => 'Histoire & vidéo',
+            'story' => 'Histoire & vidéos',
             'missions' => 'Nos missions',
             'why_choose' => 'Pourquoi la COMCO',
             'contact_cta' => 'Bandeau contact',
@@ -262,15 +262,31 @@ class HomePageContent
     }
 
     /**
-     * Retourne la vidéo institutionnelle mise en avant.
+     * Retourne jusqu'à trois vidéos institutionnelles actives.
      *
-     * @return array<string, mixed> Données de la vidéo
+     * @return list<array<string, mixed>> Liste ordonnée des vidéos
+     */
+    public function latestVideos(): array
+    {
+        $fallback = config('institution.latestVideo', []);
+        $items = $this->items(
+            SiteBlock::TYPE_LATEST_VIDEO,
+            filled($fallback) ? [$fallback] : []
+        );
+
+        return array_values(array_slice($items, 0, 3));
+    }
+
+    /**
+     * Retourne la vidéo institutionnelle mise en avant (compatibilité).
+     *
+     * @return array<string, mixed> Données de la première vidéo
      */
     public function latestVideo(): array
     {
-        $items = $this->items(SiteBlock::TYPE_LATEST_VIDEO, [config('institution.latestVideo', [])]);
+        $videos = $this->latestVideos();
 
-        return $items[0] ?? config('institution.latestVideo', []);
+        return $videos[0] ?? config('institution.latestVideo', []);
     }
 
     /**

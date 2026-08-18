@@ -144,23 +144,57 @@
   @endif
 
   @if ($homeContent->sectionEnabled('story'))
-    {{-- Story + vidéo --}}
+    {{-- Story + vidéos (jusqu'à 3) --}}
     <section class="pt-0">
       <div class="container">
-        <div class="row flex-center text-center pb-6">
-          <div class="col-12">
-            <div class="position-relative mt-4 py-5 py-md-7 comco-video-band">
-              <div class="bg-holder rounded-3" style="background-image:url({{ blockAsset($homeContent->latestVideo()) }});"></div>
-              <button
-                class="btn-elixir-play"
-                type="button"
-                data-bigpicture='{"ytSrc":"{{ $homeContent->latestVideo()['youtube'] ?? '' }}"}'
-              >
-                <span class="fas fa-play fs-1"></span>
-              </button>
-            </div>
+        @php
+          $homeVideos = $homeContent->latestVideos();
+        @endphp
+        @if (count($homeVideos) > 0)
+          <div class="row flex-center text-center pb-6 g-4">
+            @foreach ($homeVideos as $homeVideo)
+              @php
+                $playback = homeVideoPlayback($homeVideo);
+                $poster = blockAsset($homeVideo);
+                $colClass = count($homeVideos) === 1 ? 'col-12' : (count($homeVideos) === 2 ? 'col-md-6' : 'col-md-6 col-lg-4');
+              @endphp
+              <div class="{{ $colClass }}">
+                <div class="position-relative mt-4 comco-video-band @if(count($homeVideos) > 1) comco-video-band--grid @endif">
+                  @if ($playback['kind'] === 'youtube' && filled($playback['src']))
+                    <div class="bg-holder rounded-3" @if(filled($poster)) style="background-image:url({{ $poster }});" @endif></div>
+                    <button
+                      class="btn-elixir-play"
+                      type="button"
+                      data-bigpicture='{"ytSrc":"{{ $playback['src'] }}"}'
+                      aria-label="Lire la vidéo"
+                    >
+                      <span class="fas fa-play fs-1"></span>
+                    </button>
+                  @elseif ($playback['kind'] === 'file' && filled($playback['src']))
+                    <video
+                      class="comco-home-video rounded-3"
+                      controls
+                      playsinline
+                      preload="metadata"
+                      @if(filled($poster)) poster="{{ $poster }}" @endif
+                      src="{{ $playback['src'] }}"
+                    >
+                      Votre navigateur ne prend pas en charge la lecture vidéo.
+                    </video>
+                  @else
+                    <div class="bg-holder rounded-3 comco-video-band__empty" @if(filled($poster)) style="background-image:url({{ $poster }});" @endif></div>
+                  @endif
+                </div>
+                @if (filled($homeVideo['title'] ?? null))
+                  <h5 class="mt-3 mb-1">{{ $homeVideo['title'] }}</h5>
+                @endif
+                @if (filled($homeVideo['text'] ?? null))
+                  <p class="mb-0 text-700 px-lg-3">{{ $homeVideo['text'] }}</p>
+                @endif
+              </div>
+            @endforeach
           </div>
-        </div>
+        @endif
         <div class="row">
           @foreach ($homeContent->storyItems() as $story)
             <div class="col-sm-6 col-lg-4 mt-3 mt-lg-0 px-4 px-sm-3">

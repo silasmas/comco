@@ -100,6 +100,85 @@ function postVideo(?string $path): ?string
 }
 
 /**
+ * Extrait l'identifiant YouTube depuis un ID brut ou une URL.
+ *
+ * @param  string|null  $value  ID ou URL YouTube
+ * @return string|null Identifiant vidéo ou null
+ */
+function youtubeVideoId(?string $value): ?string
+{
+    if ($value === null || trim($value) === '') {
+        return null;
+    }
+
+    $value = trim($value);
+
+    if (preg_match('/^[A-Za-z0-9_-]{6,}$/', $value) === 1) {
+        return $value;
+    }
+
+    if (preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/', $value, $matches) === 1) {
+        return $matches[1];
+    }
+
+    return null;
+}
+
+/**
+ * Résout le mode de lecture d'une vidéo d'accueil (YouTube, fichier ou URL).
+ *
+ * @param  array<string, mixed>  $item  Payload du bloc vidéo
+ * @return array{kind: string, src: string|null} kind = youtube|file|none
+ */
+function homeVideoPlayback(array $item): array
+{
+    $source = (string) ($item['source'] ?? '');
+
+    if ($source === '') {
+        if (filled($item['youtube'] ?? null)) {
+            $source = 'youtube';
+        } elseif (filled($item['video'] ?? null)) {
+            $source = 'upload';
+        } elseif (filled($item['video_url'] ?? null)) {
+            $source = 'url';
+        } else {
+            $source = 'youtube';
+        }
+    }
+
+    if ($source === 'upload') {
+        return [
+            'kind' => 'file',
+            'src' => postVideo($item['video'] ?? null),
+        ];
+    }
+
+    if ($source === 'url') {
+        $url = (string) ($item['video_url'] ?? '');
+        $youtubeId = youtubeVideoId($url);
+
+        if ($youtubeId !== null) {
+            return [
+                'kind' => 'youtube',
+                'src' => $youtubeId,
+            ];
+        }
+
+        return [
+            'kind' => 'file',
+            'src' => postVideo($url !== '' ? $url : null),
+        ];
+    }
+
+    $youtubeId = youtubeVideoId($item['youtube'] ?? null);
+
+    return [
+        'kind' => $youtubeId !== null ? 'youtube' : 'none',
+        'src' => $youtubeId,
+    ];
+}
+
+/**
  * Retourne l'URL absolue du logo COMCO pour les emails.
  *
  * @return string URL publique du logo

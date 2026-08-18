@@ -94,7 +94,7 @@ class SiteBlock extends Model
             self::TYPE_ACTIVITY => 'Activité',
             self::TYPE_TESTIMONIAL => 'Témoignage',
             self::TYPE_PARTNER => 'Logo partenaire',
-            self::TYPE_LATEST_VIDEO => 'Vidéo mise en avant',
+            self::TYPE_LATEST_VIDEO => 'Vidéo d’accueil (max. 3)',
             self::TYPE_SETTING => 'Paramètre de page',
             self::TYPE_INFO_CARD => 'Carte d\'information',
             self::TYPE_CTA => 'Bloc d\'appel à l\'action',
