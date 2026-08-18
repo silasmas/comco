@@ -7,7 +7,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -65,9 +65,10 @@ class LegalDocumentsRelationManager extends RelationManager
                     ->label('Titre')
                     ->required()
                     ->helperText('Nom du document affiché sur la page.'),
-                RichEditor::make('description')
+                Textarea::make('description')
                     ->label('Texte de description')
-                    ->helperText('Bouton « Justifier » disponible dans la barre d\'outils.')
+                    ->rows(3)
+                    ->helperText('Court texte sous le titre dans la liste (optionnel, sans mise en forme HTML).')
                     ->columnSpanFull(),
                 FileUpload::make('filename')
                     ->label('Fichier PDF')

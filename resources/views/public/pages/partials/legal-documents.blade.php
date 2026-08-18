@@ -13,6 +13,9 @@
           <h5 class="text-primary mb-4">{{ $listTitle }}</h5>
           <div class="list-group list-group-flush comco-legal-list">
             @foreach ($documents as $document)
+              @php
+                $descriptionText = trim(html_entity_decode(strip_tags((string) $document->description), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+              @endphp
               <button
                 type="button"
                 class="list-group-item list-group-item-action comco-legal-tab @if($loop->first) is-selected @endif"
@@ -20,8 +23,8 @@
                 data-pdf-title="{{ $document->title }}"
               >
                 <strong class="d-block comco-legal-tab-title">{{ $document->title }}</strong>
-                @if ($document->description)
-                  <small class="comco-legal-tab-desc">{{ $document->description }}</small>
+                @if ($descriptionText !== '')
+                  <small class="comco-legal-tab-desc">{{ $descriptionText }}</small>
                 @endif
               </button>
             @endforeach
