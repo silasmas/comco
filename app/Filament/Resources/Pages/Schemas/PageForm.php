@@ -39,9 +39,10 @@ class PageForm
                             ->helperText('Titre affiché sur la page publique et dans les listes admin.'),
                         Select::make('section')
                             ->label('Section')
-                            ->options(config('navigation.sections'))
+                            ->options(fn (): array => navigationSections())
+                            ->searchable()
                             ->nullable()
-                            ->helperText('Rubrique d’URL (ex. qui-sommes-nous). Doit correspondre à la « Section CMS » du menu Navigation.'),
+                            ->helperText('Liste issue de config/navigation.php (clé « sections »), enrichie par les groupes du menu principal. Choisissez « Centre d’information (centre-information) » pour cette rubrique.'),
                         TextInput::make('slug')
                             ->label('Slug URL')
                             ->required()

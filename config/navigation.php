@@ -87,9 +87,9 @@ return [
     ],
   ],
   'sections' => [
-    'qui-sommes-nous' => 'Présentation',
-    'centre-information' => 'Nos textes et lois',
-    'medias' => 'Nos galeries',
-    'e-services' => 'E-services',
+    'qui-sommes-nous' => 'Présentation (qui-sommes-nous)',
+    'centre-information' => 'Centre d\'information (centre-information)',
+    'medias' => 'Nos galeries (medias)',
+    'e-services' => 'E-services (e-services)',
   ],
 ];

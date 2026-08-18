@@ -65,9 +65,11 @@ class NavigationItemForm
                             ->label('Route Laravel')
                             ->helperText('Nom de route interne. Exemples : home (accueil), contact, forum.index.')
                             ->visible(fn (Get $get): bool => $get('link_type') === NavigationItem::LINK_ROUTE),
-                        TextInput::make('section')
+                        Select::make('section')
                             ->label('Section CMS')
-                            ->helperText('Doit correspondre à la section de la page CMS. Ex. : qui-sommes-nous, centre-information, medias, e-services.')
+                            ->options(fn (): array => navigationSections())
+                            ->searchable()
+                            ->helperText('Doit correspondre à la section de la page CMS. Choisissez « Centre d’information (centre-information) » pour cette rubrique.')
                             ->visible(fn (Get $get): bool => in_array($get('link_type'), [NavigationItem::LINK_SECTION, NavigationItem::LINK_GROUP], true)),
                         TextInput::make('slug')
                             ->label('Slug de page')

@@ -66,7 +66,8 @@ class SiteNavigation
             ->mapWithKeys(fn (NavigationItem $item): array => [(string) $item->section => (string) $item->label])
             ->all();
 
-        $sections = array_merge(config('navigation.sections', []), $sections);
+        // Le catalogue config prime sur les libellés issus du menu (ex. centre-information).
+        $sections = array_merge($sections, config('navigation.sections', []));
 
         if ($sections === []) {
             return config('navigation.sections', []);
