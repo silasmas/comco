@@ -43,18 +43,14 @@
         <ul class="navbar-nav py-3 py-lg-0 ms-lg-n1 me-lg-auto align-items-lg-center">
           @foreach ($mainMenu as $item)
             @php
-              $isPresentationHub = ($item['section'] ?? null) === 'qui-sommes-nous';
-              $usesSidebar = $isPresentationHub || (! empty($item['sidebar']) && isset($item['section'], $item['slug']));
+              $usesSidebar = ! empty($item['sidebar']) && isset($item['section'], $item['slug']);
               $hasDropdown = isset($item['children']) && ! $usesSidebar;
-              $presentationUrl = $isPresentationHub
-                ? route('sections.show', ['section' => 'qui-sommes-nous', 'slug' => $item['slug'] ?? 'presentation'])
-                : null;
             @endphp
             <li class="nav-item @if($hasDropdown) dropdown @endif">
               @if ($usesSidebar)
                 <a
                   class="nav-link @if(request()->is(($item['section'] ?? '').'*')) active @endif"
-                  href="{{ $presentationUrl ?? NavigationUrl::resolve($item) }}"
+                  href="{{ NavigationUrl::resolve($item) }}"
                 >
                   {{ $item['label'] }}
                 </a>

@@ -11,6 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Page extends Model
 {
+    public const DISPLAY_CONTENT = 'content';
+
+    public const DISPLAY_PDF = 'pdf';
+
+    public const DISPLAY_BOTH = 'both';
+
     /**
      * Attributs assignables en masse.
      *
@@ -23,6 +29,7 @@ class Page extends Model
         'excerpt',
         'body',
         'template',
+        'content_display',
         'meta_title',
         'meta_description',
         'is_published',
@@ -40,6 +47,44 @@ class Page extends Model
             'is_published' => 'boolean',
             'published_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Libellés des modes d'affichage du contenu de page.
+     *
+     * @return array<string, string> Modes disponibles
+     */
+    public static function contentDisplayLabels(): array
+    {
+        return [
+            self::DISPLAY_CONTENT => 'Contenu texte uniquement',
+            self::DISPLAY_PDF => 'Fichier(s) PDF uniquement',
+            self::DISPLAY_BOTH => 'Contenu texte et PDF',
+        ];
+    }
+
+    /**
+     * Indique si la page doit afficher le contenu texte (chapô / body).
+     *
+     * @return bool True si le texte est affiché
+     */
+    public function showsContent(): bool
+    {
+        $mode = $this->content_display ?: self::DISPLAY_CONTENT;
+
+        return in_array($mode, [self::DISPLAY_CONTENT, self::DISPLAY_BOTH], true);
+    }
+
+    /**
+     * Indique si la page doit afficher les documents PDF.
+     *
+     * @return bool True si les PDF sont affichés
+     */
+    public function showsPdf(): bool
+    {
+        $mode = $this->content_display ?: self::DISPLAY_CONTENT;
+
+        return in_array($mode, [self::DISPLAY_PDF, self::DISPLAY_BOTH], true);
     }
 
     /**

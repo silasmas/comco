@@ -39,7 +39,7 @@ class GalleryItemsRelationManager extends RelationManager
         if (
             $ownerRecord instanceof Page
             && pageTemplate($ownerRecord->section ?? '', $ownerRecord->slug, $ownerRecord->template) === 'presentation-hub'
-            && ($ownerRecord->slug ?? '') === 'presentation'
+            && \App\Support\PageSidebar::isHub($ownerRecord)
         ) {
             return 'Image de couverture';
         }
@@ -48,7 +48,7 @@ class GalleryItemsRelationManager extends RelationManager
     }
 
     /**
-     * Affiche l'onglet pour la galerie ou la page Présentation (image de couverture).
+     * Affiche l'onglet pour la galerie ou la page hub (image de couverture).
      *
      * @param  Page  $ownerRecord  Page CMS parente
      * @return bool True si l'onglet est visible
@@ -65,7 +65,7 @@ class GalleryItemsRelationManager extends RelationManager
             return true;
         }
 
-        return $template === 'presentation-hub' && ($ownerRecord->slug ?? '') === 'presentation';
+        return $template === 'presentation-hub' && \App\Support\PageSidebar::isHub($ownerRecord);
     }
 
     /**

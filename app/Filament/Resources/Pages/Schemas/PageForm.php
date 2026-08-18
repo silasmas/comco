@@ -30,7 +30,10 @@ class PageForm
         return $schema
             ->components([
                 Section::make('Identification')
-                    ->description('Pour afficher cette page dans le menu : créez ensuite un élément dans « Navigation » avec exactement la même section et le même slug.')
+                    ->description(
+                        'Menu latéral : 1) gabarit « Page avec menu latéral », 2) dans Navigation créer un Groupe '
+                        .'(même section + slug hub) puis ajouter les enfants. Chaque page enfant choisit texte, PDF ou les deux.'
+                    )
                     ->columns(2)
                     ->schema([
                         TextInput::make('title')
@@ -42,30 +45,59 @@ class PageForm
                             ->options(fn (): array => navigationSections())
                             ->searchable()
                             ->nullable()
-                            ->helperText('Liste issue de config/navigation.php (clé « sections »), enrichie par les groupes du menu principal. Choisissez « Centre d’information (centre-information) » pour cette rubrique.'),
+                            ->helperText('Doit correspondre à la section du groupe Navigation (ex. Centre d’information).'),
                         TextInput::make('slug')
                             ->label('Slug URL')
                             ->required()
-                            ->helperText('Identifiant d’URL sans espaces (ex. presentation). À reprendre à l’identique dans Navigation pour rattacher le menu.'),
+                            ->helperText('Identifiant d’URL sans espaces. Hub = slug du groupe Navigation ; pages enfants = slug de chaque entrée sidebar.'),
                         Select::make('template')
                             ->label('Gabarit d\'affichage')
                             ->options(config('cms-templates'))
-                            ->helperText('presentation-hub active souvent le menu latéral (enfants du groupe Navigation). Autres gabarits : galerie, équipe, PDF, etc.')
+                            ->live()
+                            ->helperText('Choisissez « Page avec menu latéral » pour activer la sidebar. Les entrées du menu se gèrent dans Navigation.')
                             ->nullable(),
+                        Select::make('content_display')
+                            ->label('Affichage du contenu')
+                            ->options(Page::contentDisplayLabels())
+                            ->default(Page::DISPLAY_CONTENT)
+                            ->required()
+                            ->native(false)
+                            ->helperText('Texte = chapô + contenu. PDF = onglet Documents. Les deux = texte puis visionneuse PDF.')
+                            ->columnSpanFull(),
                     ]),
-                Section::make('Contenu')
-                    ->description('Pour la page Présentation : le chapô et le texte s\'affichent sous l\'image de couverture (onglet dédié en bas de fiche).')
+                Section::make('Contenu texte')
+                    ->description('Utilisé si le mode d’affichage inclut le contenu texte.')
+                    ->visible(fn (Get $get): bool => in_array(
+                        $get('content_display') ?: Page::DISPLAY_CONTENT,
+                        [Page::DISPLAY_CONTENT, Page::DISPLAY_BOTH],
+                        true
+                    ))
                     ->schema([
                         Textarea::make('excerpt')
                             ->label('Chapô / extrait')
                             ->rows(3)
-                            ->helperText('Texte d\'introduction affiché sous l\'image sur la page Présentation.')
+                            ->helperText('Texte d’introduction. Sur la page hub, s’affiche sous l’image de couverture.')
                             ->columnSpanFull(),
                         RichEditor::make('body')
                             ->label('Contenu principal / description')
                             ->fileAttachmentsDirectory('pages/content')
-                            ->helperText('Paragraphes, titres et listes. Bouton « Justifier » disponible dans la barre d\'outils.')
+                            ->helperText('Paragraphes, titres et listes. Bouton « Justifier » disponible dans la barre d’outils.')
                             ->columnSpanFull(),
+                    ]),
+                Section::make('Documents PDF')
+                    ->description('Après enregistrement, utilisez l’onglet « Documents PDF » en bas de fiche pour téléverser les fichiers.')
+                    ->visible(fn (Get $get): bool => in_array(
+                        $get('content_display'),
+                        [Page::DISPLAY_PDF, Page::DISPLAY_BOTH],
+                        true
+                    ) || ($get('template') === 'legal'))
+                    ->schema([
+                        TextInput::make('pdf_help')
+                            ->label('Aide')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->default('Les PDF se gèrent dans l’onglet « Documents PDF » (ou Documents juridiques) après la première sauvegarde.')
+                            ->helperText('Mode PDF ou « texte et PDF » : ajoutez au moins un fichier actif pour l’affichage public.'),
                     ]),
                 Section::make('Formulaire en ligne')
                     ->visible(fn (Get $get): bool => $get('section') === 'e-services')

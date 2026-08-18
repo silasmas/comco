@@ -1,16 +1,22 @@
 @php
   use App\Models\CoordinationMember;
   use App\Support\NavigationUrl;
+  use App\Support\PageSidebar;
 
-  $isOverview = ($page->slug ?? '') === 'presentation';
+  $sidebar = PageSidebar::forPage($page);
+  $sectionKey = $sidebar['section'] ?? ($page->section ?? '');
+  $hubSlug = $sidebar['hubSlug'] ?? null;
+  $sidebarLabel = $sidebar['label'] ?? ($page->title ?? 'Rubriques');
+  $sidebarChildren = $sidebar['children'] ?? [];
+  $isOverview = $hubSlug !== null && ($page->slug ?? '') === $hubSlug;
   $isCoordination = ($page->slug ?? '') === 'coordination';
-  $sidebarItems = collect(config('navigation.main', []))
-    ->first(fn (array $item): bool => ($item['section'] ?? null) === 'qui-sommes-nous');
-  $sidebarChildren = $sidebarItems['children'] ?? [];
   $coverImage = $page->galleryItems->first();
   $cards = $isCoordination
     ? CoordinationMember::query()->active()->ordered()->get()
     : $page->teamMembers;
+  $showText = $page->showsContent();
+  $showPdf = $page->showsPdf();
+  $pdfDocuments = $showPdf ? $page->legalDocuments : collect();
 
   $sidebarIcons = [
     'presentation' => 'fas fa-building',
@@ -19,6 +25,10 @@
     'coordination' => 'fas fa-users',
     'partenaires' => 'fas fa-handshake',
     'equipe' => 'fas fa-user-tie',
+    'cadre-juridique' => 'fas fa-gavel',
+    'decrets' => 'fas fa-file-alt',
+    'documentation-diverse' => 'fas fa-folder-open',
+    'actualites' => 'fas fa-newspaper',
   ];
 @endphp
 
@@ -32,7 +42,7 @@
               <span class="fas fa-landmark"></span>
             </span>
             <div>
-              <p class="comco-side-nav__brand-title mb-0">Présentation</p>
+              <p class="comco-side-nav__brand-title mb-0">{{ $sidebarLabel }}</p>
               <p class="comco-side-nav__brand-sub mb-0">COMCO</p>
             </div>
           </div>
@@ -41,53 +51,63 @@
             class="comco-side-nav__toggle d-lg-none"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#comcoPresentationSideNav"
+            data-bs-target="#comcoPageSideNav"
             aria-expanded="false"
-            aria-controls="comcoPresentationSideNav"
+            aria-controls="comcoPageSideNav"
           >
             <span>Rubriques</span>
             <span class="fas fa-chevron-down" aria-hidden="true"></span>
           </button>
 
           <nav
-            id="comcoPresentationSideNav"
+            id="comcoPageSideNav"
             class="comco-side-nav__panel collapse d-lg-block"
-            aria-label="Sous-menu Présentation"
+            aria-label="Sous-menu {{ $sidebarLabel }}"
           >
-            <ul class="comco-side-nav__list">
-              <li>
-                <a
-                  class="comco-side-nav__link{{ $isOverview ? ' is-active' : '' }}"
-                  href="{{ route('sections.show', ['section' => 'qui-sommes-nous', 'slug' => 'presentation']) }}"
-                >
-                  <span class="{{ $sidebarIcons['presentation'] }}" aria-hidden="true"></span>
-                  <span>Présentation</span>
-                </a>
-              </li>
-            </ul>
+            @if ($hubSlug && filled($sectionKey))
+              <ul class="comco-side-nav__list">
+                <li>
+                  <a
+                    class="comco-side-nav__link{{ $isOverview ? ' is-active' : '' }}"
+                    href="{{ route('sections.show', ['section' => $sectionKey, 'slug' => $hubSlug]) }}"
+                  >
+                    <span class="{{ $sidebarIcons[$hubSlug] ?? 'fas fa-home' }}" aria-hidden="true"></span>
+                    <span>{{ $sidebarLabel }}</span>
+                  </a>
+                </li>
+              </ul>
 
-            <div class="comco-side-nav__divider" role="presentation"></div>
+              @if (count($sidebarChildren) > 0)
+                <div class="comco-side-nav__divider" role="presentation"></div>
+              @endif
+            @endif
 
             <ul class="comco-side-nav__list">
-              @foreach ($sidebarChildren as $child)
+              @forelse ($sidebarChildren as $child)
                 @php $childSlug = $child['slug'] ?? ''; @endphp
                 <li>
                   <a
                     class="comco-side-nav__link{{ ($page->slug ?? '') === $childSlug ? ' is-active' : '' }}"
-                    href="{{ NavigationUrl::resolveChild(['section' => 'qui-sommes-nous'], $child) }}"
+                    href="{{ NavigationUrl::resolveChild(['section' => $sectionKey], $child) }}"
                   >
                     <span class="{{ $sidebarIcons[$childSlug] ?? 'fas fa-circle' }}" aria-hidden="true"></span>
                     <span>{{ $child['label'] }}</span>
                   </a>
                 </li>
-              @endforeach
+              @empty
+                @unless ($hubSlug)
+                  <li>
+                    <p class="text-500 small mb-0 px-2">Aucun élément de menu latéral. Ajoutez des enfants sous le groupe dans Navigation.</p>
+                  </li>
+                @endunless
+              @endforelse
             </ul>
           </nav>
         </div>
       </aside>
 
       <div class="col-lg-9">
-        @if ($isOverview)
+        @if ($isOverview && $showText)
           <article class="comco-overview">
             <div class="comco-overview__media">
               <img
@@ -101,11 +121,13 @@
               <p class="comco-overview__lead">{{ $page->excerpt }}</p>
             @endif
 
-            <div class="comco-overview__body content-page">
-              {!! $page->body !!}
-            </div>
+            @if ($page->body)
+              <div class="comco-overview__body content-page">
+                {!! $page->body !!}
+              </div>
+            @endif
           </article>
-        @else
+        @elseif ($showText)
           @php
             $isCardHub = in_array($page->slug ?? '', ['coordination', 'partenaires', 'equipe'], true);
             $hasCards = $cards->isNotEmpty();
@@ -182,14 +204,25 @@
                   @endif
                 </div>
               @empty
-                @unless (filled($page->body) || filled($page->excerpt))
+                @unless (filled($page->body) || filled($page->excerpt) || $pdfDocuments->isNotEmpty())
                   <div class="col-12">
                     <p class="text-500 mb-0">Le contenu de cette rubrique sera publié prochainement.</p>
                   </div>
                 @endunless
               @endforelse
             </div>
+          @elseif (! filled($page->body) && ! filled($page->excerpt) && $pdfDocuments->isEmpty())
+            <p class="text-500 mb-0">Le contenu de cette rubrique sera publié prochainement.</p>
           @endif
+        @endif
+
+        @if ($showPdf)
+          <div class="{{ $showText ? 'mt-5' : '' }}">
+            @include('public.pages.partials.legal-documents', [
+              'documents' => $pdfDocuments,
+              'listTitle' => 'Documents PDF',
+            ])
+          </div>
         @endif
       </div>
     </div>

@@ -9,7 +9,7 @@ return [
     'service' => 'Service (2 colonnes)',
     'alumni' => 'Équipe & partenaires',
     'newsroom' => 'Actualités',
-    'legal' => 'Cadre juridique (PDF)',
+    'legal' => 'Cadre juridique (PDF seul, sans sidebar)',
     'gallery' => 'Galerie photo',
-    'presentation-hub' => 'Présentation (sidebar + contenu)',
+    'presentation-hub' => 'Page avec menu latéral (sidebar)',
 ];

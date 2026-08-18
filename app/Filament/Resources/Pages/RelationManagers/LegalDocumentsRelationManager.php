@@ -24,10 +24,10 @@ class LegalDocumentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'legalDocuments';
 
-    protected static ?string $title = 'Documents juridiques';
+    protected static ?string $title = 'Documents PDF';
 
     /**
-     * Affiche l'onglet uniquement pour les pages au gabarit legal.
+     * Affiche l'onglet pour le gabarit legal ou une page hub/sidebar en mode PDF.
      *
      * @param  Page  $ownerRecord  Page CMS parente
      * @return bool True si l'onglet est visible
@@ -38,7 +38,17 @@ class LegalDocumentsRelationManager extends RelationManager
             return false;
         }
 
-        return pageTemplate($ownerRecord->section ?? '', $ownerRecord->slug, $ownerRecord->template) === 'legal';
+        $template = pageTemplate($ownerRecord->section ?? '', $ownerRecord->slug, $ownerRecord->template);
+
+        if ($template === 'legal') {
+            return true;
+        }
+
+        if ($template === 'presentation-hub') {
+            return $ownerRecord->showsPdf();
+        }
+
+        return false;
     }
 
     /**

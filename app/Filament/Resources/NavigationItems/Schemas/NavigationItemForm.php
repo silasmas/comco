@@ -27,11 +27,10 @@ class NavigationItemForm
             ->components([
                 Section::make('Élément de menu')
                     ->description(
-                        'Guide : 1) Créez la page dans « Pages » (même section + slug). '
-                        .'2) Onglet simple → type Page CMS, sans parent. '
-                        .'3) Déroulant → parent type Groupe (section seule), enfants sous ce parent. '
-                        .'4) Menu latéral → parent type Groupe avec section ET slug hub (ex. presentation), puis enfants. '
-                        .'Pieds de page : choisissez le menu pied ; pas de parent.'
+                        'Guide sidebar : 1) Créez les pages (gabarit « Page avec menu latéral », mode texte/PDF/les deux). '
+                        .'2) Groupe Navigation : section + slug hub (sidebar vierge si aucun enfant). '
+                        .'3) Ajoutez les enfants (même section, slug de chaque page). '
+                        .'Déroulant classique = Groupe sans slug. Pieds de page = menus pied, sans parent.'
                     )
                     ->columns(2)
                     ->schema([
