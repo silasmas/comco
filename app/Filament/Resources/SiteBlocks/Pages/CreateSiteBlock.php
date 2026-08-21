@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\SiteBlocks\Pages;
 
+use App\Filament\Resources\SiteBlocks\Concerns\HasSlidePreviewAction;
 use App\Filament\Resources\SiteBlocks\SiteBlockResource;
 use App\Models\SiteBlock;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 
 /**
@@ -11,7 +13,21 @@ use Filament\Resources\Pages\CreateRecord;
  */
 class CreateSiteBlock extends CreateRecord
 {
+    use HasSlidePreviewAction;
+
     protected static string $resource = SiteBlockResource::class;
+
+    /**
+     * Actions d'en-tête, dont l'aperçu latéral du slide.
+     *
+     * @return list<Action>
+     */
+    protected function getHeaderActions(): array
+    {
+        return [
+            $this->makeHeaderSlidePreviewAction(),
+        ];
+    }
 
     /**
      * Prépare les données par défaut avant la création.

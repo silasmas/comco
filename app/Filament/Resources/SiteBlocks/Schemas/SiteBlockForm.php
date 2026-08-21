@@ -5,6 +5,7 @@ namespace App\Filament\Resources\SiteBlocks\Schemas;
 use App\Models\SiteBlock;
 use App\Support\CroppableImageUpload;
 use App\Support\HomeSlideStyle;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
@@ -12,10 +13,13 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
+use Filament\Support\Icons\Heroicon;
+use Illuminate\Contracts\View\View as ViewContract;
 
 /**
  * Schéma de formulaire des blocs dynamiques de la page d'accueil.
@@ -68,15 +72,27 @@ class SiteBlockForm
                 Section::make('Contenu')
                     ->description('Renseignez uniquement les champs utiles au type choisi. Les autres restent masqués.')
                     ->schema(self::contentFields()),
-                Section::make('Aperçu du slide (PC / mobile)')
-                    ->description('Mise à jour en direct selon le contenu et l’apparence. Utilisez-le pour vérifier titres longs et boutons.')
+                Section::make('Aperçu du slide')
+                    ->description('Ouvre un panneau latéral large avec bascule PC / Mobile pour juger le rendu réel.')
                     ->visible(fn ($get): bool => $get('block_type') === SiteBlock::TYPE_SLIDER)
                     ->schema([
-                        View::make('filament.site-blocks.slide-preview')
-                            ->viewData(fn (Get $get): array => [
-                                'preview' => HomeSlideStyle::previewFromForm($get),
-                            ])
-                            ->columnSpanFull(),
+                        Actions::make([
+                            Action::make('previewSlide')
+                                ->label('Ouvrir l’aperçu PC / Mobile')
+                                ->icon(Heroicon::OutlinedEye)
+                                ->color('warning')
+                                ->slideOver()
+                                ->modalWidth(Width::Screen)
+                                ->modalHeading('Aperçu du slide')
+                                ->modalDescription('Basculez entre PC et mobile. Le mode PC utilise toute la largeur du panneau.')
+                                ->modalSubmitAction(false)
+                                ->modalCancelActionLabel('Fermer')
+                                ->modalContent(function (Get $get): ViewContract {
+                                    return view('filament.site-blocks.slide-preview-panel', [
+                                        'preview' => HomeSlideStyle::previewFromForm($get),
+                                    ]);
+                                }),
+                        ])->fullWidth(),
                     ]),
                 Section::make('Apparence du slide')
                     ->description('Couleurs, polices, boutons, position et hauteur. Laissez vide pour les valeurs par défaut.')

@@ -3,15 +3,33 @@
 namespace App\Filament\Resources\SiteBlocks\Pages;
 
 use App\Filament\Resources\Pages\ComcoEditRecord;
+use App\Filament\Resources\SiteBlocks\Concerns\HasSlidePreviewAction;
 use App\Filament\Resources\SiteBlocks\SiteBlockResource;
 use App\Models\SiteBlock;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 
 /**
  * Page d'édition d'un bloc dynamique de la page d'accueil.
  */
 class EditSiteBlock extends ComcoEditRecord
 {
+    use HasSlidePreviewAction;
+
     protected static string $resource = SiteBlockResource::class;
+
+    /**
+     * Actions d'en-tête, dont l'aperçu latéral du slide.
+     *
+     * @return list<Action|DeleteAction>
+     */
+    protected function getHeaderActions(): array
+    {
+        return [
+            $this->makeHeaderSlidePreviewAction(),
+            DeleteAction::make(),
+        ];
+    }
 
     /**
      * Normalise le payload avant la sauvegarde.

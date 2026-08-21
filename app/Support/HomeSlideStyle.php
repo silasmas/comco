@@ -227,6 +227,19 @@ class HomeSlideStyle
     }
 
     /**
+     * Construit les données d'aperçu admin à partir d'un tableau d'état formulaire.
+     *
+     * @param  array<string, mixed>  $data  État Livewire / formulaire
+     * @return array<string, mixed> Données d'aperçu
+     */
+    public static function previewFromArray(array $data): array
+    {
+        return self::previewFromForm(
+            static fn (string $key): mixed => data_get($data, $key)
+        );
+    }
+
+    /**
      * Construit les données d'aperçu admin à partir de l'état du formulaire.
      *
      * @param  callable(string): mixed  $get  Accesseur d'état Filament
