@@ -417,4 +417,78 @@ class HomeSlideStyle
     {
         return '41.7rem'; // ~667px — iPhone classique
     }
+
+    /**
+     * Prépare toutes les variables Blade d'aperçu (même scope que la vue parente).
+     *
+     * @param  array<string, mixed>  $preview  Données previewFromForm/previewFromArray
+     * @return array<string, mixed> Variables à extraire dans la vue
+     */
+    public static function previewViewData(array $preview): array
+    {
+        $hAlign = $preview['hAlign'] ?? 'start';
+        $vAlign = $preview['vAlign'] ?? 'center';
+        $btnAlign = ($preview['btnAlign'] ?? 'inherit') === 'inherit'
+            ? $hAlign
+            : ($preview['btnAlign'] ?? 'start');
+        $btnPlacement = $preview['btnPlacement'] ?? 'after_text';
+        $justifyMap = ['start' => 'flex-start', 'center' => 'center', 'end' => 'flex-end'];
+        $textAlignMap = ['start' => 'left', 'center' => 'center', 'end' => 'right'];
+        $contentTextAlign = $textAlignMap[$hAlign] ?? 'left';
+        $btnJustify = $justifyMap[$btnAlign] ?? 'flex-start';
+        $vJustify = $justifyMap[$vAlign] ?? 'center';
+        $contentMargin = match ($hAlign) {
+            'center' => '0 auto',
+            'end' => '0 0 0 auto',
+            default => '0',
+        };
+        $primaryColors = self::previewButtonColors($preview['primaryStyle'] ?? 'warning');
+        $secondaryColors = self::previewButtonColors($preview['secondaryStyle'] ?? 'danger');
+        $btnRadius = self::previewButtonRadius($preview['btnShape'] ?? 'rounded');
+        $desktopH = self::previewFrameHeight($preview['minHeight'] ?? 'default', 'desktop');
+        $mobileH = self::previewFrameHeight($preview['minHeight'] ?? 'default', 'mobile');
+        $phoneShellH = self::previewPhoneShellHeight();
+        $titleFont = $preview['titleFont'] ?? 'system-ui, sans-serif';
+        $textFont = $preview['textFont'] ?? 'system-ui, sans-serif';
+        $showPrimary = filled($preview['primaryLabel'] ?? null);
+        $showSecondary = filled($preview['secondaryLabel'] ?? null);
+        $frameData = compact(
+            'preview',
+            'btnPlacement',
+            'contentTextAlign',
+            'contentMargin',
+            'vJustify',
+            'btnJustify',
+            'titleFont',
+            'textFont',
+            'showPrimary',
+            'showSecondary',
+            'primaryColors',
+            'secondaryColors',
+            'btnRadius'
+        );
+
+        return compact(
+            'preview',
+            'hAlign',
+            'vAlign',
+            'btnAlign',
+            'btnPlacement',
+            'contentTextAlign',
+            'contentMargin',
+            'vJustify',
+            'btnJustify',
+            'primaryColors',
+            'secondaryColors',
+            'btnRadius',
+            'desktopH',
+            'mobileH',
+            'phoneShellH',
+            'titleFont',
+            'textFont',
+            'showPrimary',
+            'showSecondary',
+            'frameData'
+        );
+    }
 }

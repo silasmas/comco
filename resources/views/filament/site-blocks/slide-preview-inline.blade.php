@@ -2,7 +2,9 @@
   Aperçu inline (toujours visible) avant ouverture du panneau latéral.
   @var array $preview
 --}}
-@include('filament.site-blocks.partials.slide-preview-vars')
+@php
+  extract(\App\Support\HomeSlideStyle::previewViewData($preview), EXTR_SKIP);
+@endphp
 @include('filament.site-blocks.partials.slide-preview-styles')
 
 <div
@@ -29,7 +31,11 @@
       ]))
     </div>
     <div class="comco-slide-preview-shell__mobile" x-show="device === 'mobile'" x-cloak>
-      @include('filament.site-blocks.partials.slide-preview-phone')
+      @include('filament.site-blocks.partials.slide-preview-phone', [
+        'frameData' => $frameData,
+        'mobileH' => $mobileH,
+        'phoneShellH' => $phoneShellH,
+      ])
     </div>
   </div>
 </div>
