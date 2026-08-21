@@ -124,6 +124,19 @@ class SiteBlockForm
                 ->options(HomeSlideStyle::buttonShapeOptions())
                 ->default('rounded')
                 ->native(false),
+            Select::make('payload.btn_h_align')
+                ->label('Position horizontale des boutons')
+                ->options(HomeSlideStyle::buttonAlignOptions())
+                ->default('inherit')
+                ->native(false)
+                ->helperText('Gauche, centre ou droite — indépendant de l’alignement du titre.'),
+            Select::make('payload.btn_placement')
+                ->label('Emplacement des boutons')
+                ->options(HomeSlideStyle::buttonPlacementOptions())
+                ->default('after_text')
+                ->native(false)
+                ->helperText('Sous le titre, sous la description, au-dessus du titre, ou en bas du bloc.')
+                ->columnSpanFull(),
             TextInput::make('payload.btn_primary_label')
                 ->label('Bouton 1 — libellé')
                 ->placeholder('En savoir plus')

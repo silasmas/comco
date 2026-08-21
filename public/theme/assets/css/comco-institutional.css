@@ -46,6 +46,20 @@
   /* Évite le forçage warning du thème si une couleur custom est définie inline */
 }
 
+.comco-slide__content--actions-bottom {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.comco-slide__content--actions-bottom .comco-slide__actions-wrap--bottom {
+  margin-top: auto;
+}
+
+.comco-slide__actions {
+  gap: 0.25rem 0;
+}
+
 .comco-topbar-signal {
   white-space: nowrap;
   font-weight: 700;

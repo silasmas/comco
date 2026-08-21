@@ -66,6 +66,56 @@ class HomeSlideStyle
     }
 
     /**
+     * Alignement horizontal du groupe de boutons (indépendant du texte).
+     *
+     * @return array<string, string>
+     */
+    public static function buttonAlignOptions(): array
+    {
+        return [
+            'inherit' => 'Comme le texte',
+            'start' => 'Gauche',
+            'center' => 'Centre',
+            'end' => 'Droite',
+        ];
+    }
+
+    /**
+     * Emplacement des boutons par rapport au titre / texte.
+     *
+     * @return array<string, string>
+     */
+    public static function buttonPlacementOptions(): array
+    {
+        return [
+            'after_text' => 'Sous la description (défaut)',
+            'after_title' => 'Juste sous le titre',
+            'before_title' => 'Au-dessus du titre',
+            'bottom' => 'En bas du bloc texte',
+        ];
+    }
+
+    /**
+     * Classes CSS pour l'alignement du groupe de boutons.
+     *
+     * @param  string|null  $align  Alignement choisi
+     * @param  string|null  $contentAlign  Alignement du texte (si inherit)
+     * @return string Classes CSS
+     */
+    public static function buttonAlignClass(?string $align, ?string $contentAlign = 'start'): string
+    {
+        $resolved = ($align === null || $align === '' || $align === 'inherit')
+            ? ($contentAlign ?: 'start')
+            : $align;
+
+        return match ($resolved) {
+            'center' => 'comco-slide__actions--center justify-content-center text-center',
+            'end' => 'comco-slide__actions--end justify-content-end text-end',
+            default => 'comco-slide__actions--start justify-content-start text-start',
+        };
+    }
+
+    /**
      * Styles Bootstrap des boutons.
      *
      * @return array<string, string>
