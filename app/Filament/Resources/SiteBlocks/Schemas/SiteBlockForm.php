@@ -40,6 +40,8 @@ class SiteBlockForm
                 Section::make('Bloc')
                     ->description('Les blocs structurent la page d’accueil. Le type détermine les champs de contenu disponibles ci-dessous.')
                     ->columns(2)
+                    ->collapsible()
+                    ->persistCollapsed()
                     ->schema([
                         Select::make('page')
                             ->label('Page')
@@ -72,10 +74,14 @@ class SiteBlockForm
                     ]),
                 Section::make('Contenu')
                     ->description('Renseignez uniquement les champs utiles au type choisi. Les autres restent masqués.')
+                    ->collapsible()
+                    ->persistCollapsed()
                     ->schema(self::contentFields()),
                 Section::make('Aperçu du slide')
                     ->description('Aperçu live ci-dessous. Le bouton ouvre un panneau latéral plus large. Sur mobile, la hauteur du slide est celle du site (pas tout l’écran).')
                     ->visible(fn ($get): bool => $get('block_type') === SiteBlock::TYPE_SLIDER)
+                    ->collapsible()
+                    ->persistCollapsed()
                     ->schema([
                         View::make('filament.site-blocks.slide-preview-inline')
                             ->viewData(fn (Get $get): array => [
@@ -104,6 +110,8 @@ class SiteBlockForm
                     ->description('Couleurs, polices, boutons, position et hauteur. Laissez vide pour les valeurs par défaut.')
                     ->columns(2)
                     ->visible(fn ($get): bool => $get('block_type') === SiteBlock::TYPE_SLIDER)
+                    ->collapsible()
+                    ->persistCollapsed()
                     ->schema(self::sliderStyleFields()),
             ]);
     }
