@@ -225,4 +225,170 @@ class HomeSlideStyle
 
         return '#';
     }
+
+    /**
+     * Construit les données d'aperçu admin à partir de l'état du formulaire.
+     *
+     * @param  callable(string): mixed  $get  Accesseur d'état Filament
+     * @return array{
+     *   title: string,
+     *   text: string,
+     *   imageUrl: string,
+     *   titleColor: string,
+     *   textColor: string,
+     *   titleFont: string|null,
+     *   textFont: string|null,
+     *   hAlign: string,
+     *   vAlign: string,
+     *   minHeight: string,
+     *   btnShape: string,
+     *   btnAlign: string,
+     *   btnPlacement: string,
+     *   primaryLabel: string|null,
+     *   primaryStyle: string,
+     *   secondaryLabel: string|null,
+     *   secondaryStyle: string
+     * }
+     */
+    public static function previewFromForm(callable $get): array
+    {
+        $contentHAlign = (string) ($get('payload.content_h_align') ?? 'start');
+        $hasCustomPrimary = filled($get('payload.btn_primary_label'))
+            || filled($get('payload.btn_primary_url'))
+            || filled($get('payload.btn_primary_section'));
+
+        return [
+            'title' => (string) ($get('payload.title') ?: 'Titre du slide'),
+            'text' => (string) ($get('payload.text') ?: 'Description du slide affichée sous le titre.'),
+            'imageUrl' => self::previewImageUrl($get),
+            'titleColor' => (string) ($get('payload.title_color') ?: '#ffffff'),
+            'textColor' => (string) ($get('payload.text_color') ?: '#ffc107'),
+            'titleFont' => self::previewFont($get('payload.title_font')),
+            'textFont' => self::previewFont($get('payload.text_font')),
+            'hAlign' => $contentHAlign,
+            'vAlign' => (string) ($get('payload.content_v_align') ?: 'center'),
+            'minHeight' => (string) ($get('payload.min_height') ?: 'default'),
+            'btnShape' => (string) ($get('payload.btn_shape') ?: 'rounded'),
+            'btnAlign' => (string) ($get('payload.btn_h_align') ?: 'inherit'),
+            'btnPlacement' => (string) ($get('payload.btn_placement') ?: 'after_text'),
+            'primaryLabel' => $hasCustomPrimary
+                ? (($get('payload.btn_primary_label') !== null && $get('payload.btn_primary_label') !== '')
+                    ? (string) $get('payload.btn_primary_label')
+                    : null)
+                : 'En savoir plus',
+            'primaryStyle' => (string) ($get('payload.btn_primary_style') ?: 'warning'),
+            'secondaryLabel' => filled($get('payload.btn_secondary_label'))
+                ? (string) $get('payload.btn_secondary_label')
+                : null,
+            'secondaryStyle' => (string) ($get('payload.btn_secondary_style') ?: 'danger'),
+        ];
+    }
+
+    /**
+     * Résout l'URL d'image pour l'aperçu (upload temporaire ou chemin stocké).
+     *
+     * @param  callable(string): mixed  $get  Accesseur d'état Filament
+     * @return string URL publique ou temporaire
+     */
+    public static function previewImageUrl(callable $get): string
+    {
+        $uploaded = $get('payload.uploaded_image');
+
+        if (is_array($uploaded)) {
+            $uploaded = $uploaded[0] ?? null;
+        }
+
+        if (is_object($uploaded) && method_exists($uploaded, 'temporaryUrl')) {
+            try {
+                return (string) $uploaded->temporaryUrl();
+            } catch (\Throwable) {
+                // Continuer vers le chemin stocké.
+            }
+        }
+
+        if (is_string($uploaded) && $uploaded !== '') {
+            return asset('storage/'.ltrim($uploaded, '/'));
+        }
+
+        $image = (string) ($get('payload.image') ?? '');
+        $source = (string) ($get('payload.image_source') ?? 'comco');
+
+        return blockAsset([
+            'image' => $image,
+            'image_source' => $source,
+        ]);
+    }
+
+    /**
+     * Normalise une police pour le rendu d'aperçu.
+     *
+     * @param  mixed  $font  Valeur formulaire
+     * @return string|null Police CSS ou null
+     */
+    public static function previewFont(mixed $font): ?string
+    {
+        if (! is_string($font) || $font === '' || $font === 'inherit') {
+            return null;
+        }
+
+        return $font;
+    }
+
+    /**
+     * Couleurs approximatives des styles de boutons Bootstrap pour l'admin.
+     *
+     * @param  string  $style  Clé style (warning, danger…)
+     * @return array{bg: string, color: string, border: string}
+     */
+    public static function previewButtonColors(string $style): array
+    {
+        return match ($style) {
+            'primary' => ['bg' => '#0d6efd', 'color' => '#ffffff', 'border' => '#0d6efd'],
+            'danger' => ['bg' => '#dc3545', 'color' => '#ffffff', 'border' => '#dc3545'],
+            'success' => ['bg' => '#198754', 'color' => '#ffffff', 'border' => '#198754'],
+            'light' => ['bg' => '#f8f9fa', 'color' => '#212529', 'border' => '#f8f9fa'],
+            'outline-light' => ['bg' => 'transparent', 'color' => '#ffffff', 'border' => '#ffffff'],
+            'outline-warning' => ['bg' => 'transparent', 'color' => '#ffc107', 'border' => '#ffc107'],
+            default => ['bg' => '#ffc107', 'color' => '#212529', 'border' => '#ffc107'],
+        };
+    }
+
+    /**
+     * Rayon de bordure pour la forme de bouton en aperçu.
+     *
+     * @param  string  $shape  Forme
+     * @return string Valeur CSS
+     */
+    public static function previewButtonRadius(string $shape): string
+    {
+        return match ($shape) {
+            'pill' => '999px',
+            'square' => '0',
+            default => '0.375rem',
+        };
+    }
+
+    /**
+     * Hauteur CSS de l'aperçu selon le réglage slide.
+     *
+     * @param  string  $minHeight  Option formulaire
+     * @param  string  $device  desktop|mobile
+     * @return string Valeur CSS
+     */
+    public static function previewFrameHeight(string $minHeight, string $device = 'desktop'): string
+    {
+        if ($minHeight !== 'default' && $minHeight !== '') {
+            if (str_ends_with($minHeight, 'vh')) {
+                $vh = (float) $minHeight;
+
+                return $device === 'mobile'
+                    ? max(14, round($vh * 0.28)).'rem'
+                    : max(18, round($vh * 0.36)).'rem';
+            }
+
+            return $minHeight;
+        }
+
+        return $device === 'mobile' ? '16rem' : '22rem';
+    }
 }

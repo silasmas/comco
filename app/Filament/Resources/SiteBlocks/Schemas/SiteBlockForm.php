@@ -13,6 +13,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 
 /**
@@ -66,6 +68,16 @@ class SiteBlockForm
                 Section::make('Contenu')
                     ->description('Renseignez uniquement les champs utiles au type choisi. Les autres restent masqués.')
                     ->schema(self::contentFields()),
+                Section::make('Aperçu du slide (PC / mobile)')
+                    ->description('Mise à jour en direct selon le contenu et l’apparence. Utilisez-le pour vérifier titres longs et boutons.')
+                    ->visible(fn ($get): bool => $get('block_type') === SiteBlock::TYPE_SLIDER)
+                    ->schema([
+                        View::make('filament.site-blocks.slide-preview')
+                            ->viewData(fn (Get $get): array => [
+                                'preview' => HomeSlideStyle::previewFromForm($get),
+                            ])
+                            ->columnSpanFull(),
+                    ]),
                 Section::make('Apparence du slide')
                     ->description('Couleurs, polices, boutons, position et hauteur. Laissez vide pour les valeurs par défaut.')
                     ->columns(2)
@@ -86,36 +98,43 @@ class SiteBlockForm
                 ->label('Couleur du titre')
                 ->type('color')
                 ->default('#ffffff')
+                ->live(debounce: 300)
                 ->helperText('Couleur du titre sur l’image.'),
             TextInput::make('payload.text_color')
                 ->label('Couleur de la description')
                 ->type('color')
                 ->default('#ffc107')
+                ->live(debounce: 300)
                 ->helperText('Couleur du sous-titre / description.'),
             Select::make('payload.title_font')
                 ->label('Police du titre')
                 ->options(HomeSlideStyle::fontOptions())
                 ->default('inherit')
+                ->live()
                 ->native(false),
             Select::make('payload.text_font')
                 ->label('Police de la description')
                 ->options(HomeSlideStyle::fontOptions())
                 ->default('inherit')
+                ->live()
                 ->native(false),
             Select::make('payload.content_h_align')
                 ->label('Position horizontale du texte')
                 ->options(HomeSlideStyle::horizontalAlignOptions())
                 ->default('start')
+                ->live()
                 ->native(false),
             Select::make('payload.content_v_align')
                 ->label('Position verticale')
                 ->options(HomeSlideStyle::verticalAlignOptions())
                 ->default('center')
+                ->live()
                 ->native(false),
             Select::make('payload.min_height')
                 ->label('Hauteur du slide')
                 ->options(HomeSlideStyle::heightOptions())
                 ->default('default')
+                ->live()
                 ->native(false)
                 ->helperText('Augmente la hauteur visuelle de cette diapositive.')
                 ->columnSpanFull(),
@@ -123,28 +142,33 @@ class SiteBlockForm
                 ->label('Forme des boutons')
                 ->options(HomeSlideStyle::buttonShapeOptions())
                 ->default('rounded')
+                ->live()
                 ->native(false),
             Select::make('payload.btn_h_align')
                 ->label('Position horizontale des boutons')
                 ->options(HomeSlideStyle::buttonAlignOptions())
                 ->default('inherit')
+                ->live()
                 ->native(false)
                 ->helperText('Gauche, centre ou droite — indépendant de l’alignement du titre.'),
             Select::make('payload.btn_placement')
                 ->label('Emplacement des boutons')
                 ->options(HomeSlideStyle::buttonPlacementOptions())
                 ->default('after_text')
+                ->live()
                 ->native(false)
                 ->helperText('Sous le titre, sous la description, au-dessus du titre, ou en bas du bloc.')
                 ->columnSpanFull(),
             TextInput::make('payload.btn_primary_label')
                 ->label('Bouton 1 — libellé')
                 ->placeholder('En savoir plus')
+                ->live(debounce: 400)
                 ->helperText('Laissez vide pour masquer ce bouton.'),
             Select::make('payload.btn_primary_style')
                 ->label('Bouton 1 — style')
                 ->options(HomeSlideStyle::buttonStyleOptions())
                 ->default('warning')
+                ->live()
                 ->native(false),
             TextInput::make('payload.btn_primary_section')
                 ->label('Bouton 1 — section CMS')
@@ -159,11 +183,13 @@ class SiteBlockForm
             TextInput::make('payload.btn_secondary_label')
                 ->label('Bouton 2 — libellé')
                 ->placeholder('(optionnel)')
+                ->live(debounce: 400)
                 ->helperText('Le signalement rouge est aussi dans la barre du haut. Laissez vide pour ne pas le dupliquer dans le slide.'),
             Select::make('payload.btn_secondary_style')
                 ->label('Bouton 2 — style')
                 ->options(HomeSlideStyle::buttonStyleOptions())
                 ->default('danger')
+                ->live()
                 ->native(false),
             TextInput::make('payload.btn_secondary_section')
                 ->label('Bouton 2 — section CMS')
@@ -188,11 +214,13 @@ class SiteBlockForm
             TextInput::make('payload.title')
                 ->label('Titre')
                 ->helperText('Titre principal affiché dans ce bloc.')
+                ->live(debounce: 400)
                 ->visible(fn ($get): bool => self::hasField($get('block_type'), 'title')),
             Textarea::make('payload.text')
                 ->label('Texte de description')
                 ->rows(4)
                 ->helperText('Paragraphe descriptif du bloc.')
+                ->live(debounce: 400)
                 ->columnSpanFull()
                 ->visible(fn ($get): bool => self::hasField($get('block_type'), 'text')),
             Textarea::make('payload.desc')
@@ -295,10 +323,12 @@ class SiteBlockForm
                     'theme' => 'Thème Elixir (/theme/)',
                 ])
                 ->default('comco')
+                ->live()
                 ->helperText('Dossier d’origine si vous utilisez un chemin de fichier existant.')
                 ->visible(fn ($get): bool => self::hasField($get('block_type'), 'image')),
             TextInput::make('payload.image')
                 ->label('Chemin du visuel')
+                ->live(debounce: 400)
                 ->helperText('Ex. 1.jpg.jpeg, assets/img/client1.png ou gallery/06-f.jpg')
                 ->visible(fn ($get): bool => self::hasField($get('block_type'), 'image')),
             TextInput::make('payload.logo')
@@ -310,6 +340,7 @@ class SiteBlockForm
                     ->label('Téléverser une image')
                     ->directory('site-blocks/home')
                     ->disk('public')
+                    ->live()
                     ->helperText('Ouvrez l\'éditeur après l\'upload pour rogner (ex. 16:9). Le rognage ne grossit jamais l\'image et conserve la qualité. Pour un slide, préférez un format large.')
                     ->visible(fn ($get): bool => self::hasField($get('block_type'), 'image')),
                 [null, '16:9', '21:9', '3:2', '4:3']
