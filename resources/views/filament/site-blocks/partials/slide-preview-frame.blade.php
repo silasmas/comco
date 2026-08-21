@@ -9,11 +9,14 @@
   if (($btnPlacement ?? '') === 'bottom') {
     $contentStyle .= ' flex: 1;';
   }
+  $heightCss = ($fixedHeight ?? false)
+    ? 'height: '.$frameHeight.'; min-height: '.$frameHeight.'; max-height: '.$frameHeight.';'
+    : 'min-height: '.$frameHeight.';';
 @endphp
 
 <div
   class="comco-slide-preview__frame"
-  style="min-height: {{ $frameHeight }}; background-image: url('{{ $preview['imageUrl'] }}');"
+  style="{{ $heightCss }} background-image: url('{{ $preview['imageUrl'] }}');"
 >
   <div class="comco-slide-preview__inner" style="justify-content: {{ $vJustify }};">
     <div class="comco-slide-preview__content" style="{{ $contentStyle }}">

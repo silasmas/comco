@@ -382,7 +382,10 @@ class HomeSlideStyle
     }
 
     /**
-     * Hauteur CSS de l'aperçu selon le réglage slide.
+     * Hauteur CSS de l'aperçu selon le réglage slide (alignée sur le CSS public).
+     *
+     * Mobile réel : 28rem par défaut. PC réel : 42rem (≥1200px).
+     * Les options rem/vh du formulaire sont respectées telles quelles.
      *
      * @param  string  $minHeight  Option formulaire
      * @param  string  $device  desktop|mobile
@@ -392,16 +395,26 @@ class HomeSlideStyle
     {
         if ($minHeight !== 'default' && $minHeight !== '') {
             if (str_ends_with($minHeight, 'vh')) {
-                $vh = (float) $minHeight;
+                $vh = max(1.0, (float) $minHeight);
+                // Viewport de référence réaliste (px) pour convertir vh → rem.
+                $refPx = $device === 'mobile' ? 667.0 : 900.0;
 
-                return $device === 'mobile'
-                    ? max(14, round($vh * 0.28)).'rem'
-                    : max(18, round($vh * 0.36)).'rem';
+                return round(($vh / 100.0) * $refPx / 16.0, 2).'rem';
             }
 
             return $minHeight;
         }
 
-        return $device === 'mobile' ? '16rem' : '22rem';
+        return $device === 'mobile' ? '28rem' : '42rem';
+    }
+
+    /**
+     * Hauteur totale du cadre téléphone (viewport mobile simulé).
+     *
+     * @return string Valeur CSS
+     */
+    public static function previewPhoneShellHeight(): string
+    {
+        return '41.7rem'; // ~667px — iPhone classique
     }
 }

@@ -1,14 +1,14 @@
 {{--
-  Panneau latéral d'aperçu slide — bascule PC / Mobile (plein espace).
+  Aperçu inline (toujours visible) avant ouverture du panneau latéral.
   @var array $preview
 --}}
 @include('filament.site-blocks.partials.slide-preview-vars')
 @include('filament.site-blocks.partials.slide-preview-styles')
 
 <div
-  class="comco-slide-preview-shell comco-slide-preview-shell--panel"
+  class="comco-slide-preview-shell comco-slide-preview-shell--inline"
   x-data="{ device: 'pc' }"
-  wire:key="slide-panel-{{ md5(json_encode($preview)) }}"
+  wire:key="slide-inline-{{ md5(json_encode($preview)) }}"
 >
   <div class="comco-slide-preview-shell__toolbar">
     <div class="comco-slide-preview-shell__toggle" role="group" aria-label="Choix d’appareil">
@@ -16,8 +16,7 @@
       <button type="button" @click="device = 'mobile'" :class="{ 'is-active': device === 'mobile' }">Mobile</button>
     </div>
     <div class="comco-slide-preview-shell__meta">
-      Alignement texte : {{ $hAlign }} · boutons : {{ $btnAlign }} · emplacement : {{ $btnPlacement }}
-      · hauteur PC {{ $desktopH }} / mobile {{ $mobileH }}
+      Hauteur slide : PC {{ $desktopH }} · Mobile {{ $mobileH }} (écran téléphone {{ $phoneShellH }})
     </div>
   </div>
 

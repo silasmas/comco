@@ -16,6 +16,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
@@ -73,18 +74,23 @@ class SiteBlockForm
                     ->description('Renseignez uniquement les champs utiles au type choisi. Les autres restent masqués.')
                     ->schema(self::contentFields()),
                 Section::make('Aperçu du slide')
-                    ->description('Ouvre un panneau latéral large avec bascule PC / Mobile pour juger le rendu réel.')
+                    ->description('Aperçu live ci-dessous. Le bouton ouvre un panneau latéral plus large. Sur mobile, la hauteur du slide est celle du site (pas tout l’écran).')
                     ->visible(fn ($get): bool => $get('block_type') === SiteBlock::TYPE_SLIDER)
                     ->schema([
+                        View::make('filament.site-blocks.slide-preview-inline')
+                            ->viewData(fn (Get $get): array => [
+                                'preview' => HomeSlideStyle::previewFromForm($get),
+                            ])
+                            ->columnSpanFull(),
                         Actions::make([
                             Action::make('previewSlide')
-                                ->label('Ouvrir l’aperçu PC / Mobile')
-                                ->icon(Heroicon::OutlinedEye)
+                                ->label('Agrandir l’aperçu (panneau latéral)')
+                                ->icon(Heroicon::OutlinedArrowsPointingOut)
                                 ->color('warning')
                                 ->slideOver()
                                 ->modalWidth(Width::Screen)
                                 ->modalHeading('Aperçu du slide')
-                                ->modalDescription('Basculez entre PC et mobile. Le mode PC utilise toute la largeur du panneau.')
+                                ->modalDescription('Basculez PC / Mobile. La hauteur mobile respecte le réglage du slide.')
                                 ->modalSubmitAction(false)
                                 ->modalCancelActionLabel('Fermer')
                                 ->modalContent(function (Get $get): ViewContract {
