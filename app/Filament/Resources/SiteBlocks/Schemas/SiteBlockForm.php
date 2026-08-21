@@ -16,6 +16,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\View;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
@@ -154,12 +155,23 @@ class SiteBlockForm
                 ->default('default')
                 ->live()
                 ->native(false),
+            TextInput::make('payload.title_size_custom')
+                ->label('Taille titre personnalisée')
+                ->placeholder('ex. 2.5rem ou 40px')
+                ->live(debounce: 400)
+                ->helperText('Uniquement si « Personnalisée » est sélectionnée.')
+                ->visible(fn ($get): bool => ($get('payload.title_size') ?? '') === 'custom'),
             Select::make('payload.text_size')
                 ->label('Taille de la description')
                 ->options(HomeSlideStyle::textSizeOptions())
                 ->default('default')
                 ->live()
                 ->native(false),
+            TextInput::make('payload.text_size_custom')
+                ->label('Taille description personnalisée')
+                ->placeholder('ex. 1.25rem ou 18px')
+                ->live(debounce: 400)
+                ->visible(fn ($get): bool => ($get('payload.text_size') ?? '') === 'custom'),
             Select::make('payload.content_h_align')
                 ->label('Position horizontale du texte')
                 ->options(HomeSlideStyle::horizontalAlignOptions())
@@ -192,6 +204,11 @@ class SiteBlockForm
                 ->default('md')
                 ->live()
                 ->native(false),
+            TextInput::make('payload.btn_size_custom')
+                ->label('Taille bouton personnalisée')
+                ->placeholder('ex. 1.1rem ou 16px')
+                ->live(debounce: 400)
+                ->visible(fn ($get): bool => ($get('payload.btn_size') ?? '') === 'custom'),
             Select::make('payload.btn_h_align')
                 ->label('Position horizontale des boutons')
                 ->options(HomeSlideStyle::buttonAlignOptions())
@@ -228,16 +245,37 @@ class SiteBlockForm
                 ->label('Bouton 1 — couleur du texte')
                 ->type('color')
                 ->live(debounce: 300),
+            Select::make('payload.btn_primary_page')
+                ->label('Bouton 1 — page de destination')
+                ->options(fn (): array => HomeSlideStyle::cmsPageOptions())
+                ->searchable()
+                ->nullable()
+                ->live()
+                ->native(false)
+                ->helperText('Page du site ouverte au clic. Choisissez dans la liste des pages CMS.')
+                ->afterStateUpdated(function (?string $state, Set $set): void {
+                    if (! is_string($state) || ! str_contains($state, '/')) {
+                        return;
+                    }
+                    [$section, $slug] = explode('/', $state, 2);
+                    $set('payload.btn_primary_section', $section);
+                    $set('payload.btn_primary_slug', $slug);
+                })
+                ->columnSpanFull(),
             TextInput::make('payload.btn_primary_section')
-                ->label('Bouton 1 — section CMS')
-                ->placeholder('qui-sommes-nous'),
+                ->label('Bouton 1 — section (auto)')
+                ->disabled()
+                ->dehydrated()
+                ->visible(fn ($get): bool => filled($get('payload.btn_primary_page'))),
             TextInput::make('payload.btn_primary_slug')
-                ->label('Bouton 1 — slug CMS')
-                ->placeholder('presentation'),
+                ->label('Bouton 1 — slug (auto)')
+                ->disabled()
+                ->dehydrated()
+                ->visible(fn ($get): bool => filled($get('payload.btn_primary_page'))),
             TextInput::make('payload.btn_primary_url')
-                ->label('Bouton 1 — URL (prioritaire)')
+                ->label('Bouton 1 — URL externe (prioritaire)')
                 ->url()
-                ->helperText('Si remplie, remplace section/slug.'),
+                ->helperText('Si remplie, ignore la page CMS ci-dessus (lien externe ou route libre).'),
             TextInput::make('payload.btn_secondary_label')
                 ->label('Bouton 2 — libellé')
                 ->placeholder('(optionnel)')
@@ -257,14 +295,35 @@ class SiteBlockForm
                 ->label('Bouton 2 — couleur du texte')
                 ->type('color')
                 ->live(debounce: 300),
+            Select::make('payload.btn_secondary_page')
+                ->label('Bouton 2 — page de destination')
+                ->options(fn (): array => HomeSlideStyle::cmsPageOptions())
+                ->searchable()
+                ->nullable()
+                ->live()
+                ->native(false)
+                ->helperText('Page du site ouverte au clic.')
+                ->afterStateUpdated(function (?string $state, Set $set): void {
+                    if (! is_string($state) || ! str_contains($state, '/')) {
+                        return;
+                    }
+                    [$section, $slug] = explode('/', $state, 2);
+                    $set('payload.btn_secondary_section', $section);
+                    $set('payload.btn_secondary_slug', $slug);
+                })
+                ->columnSpanFull(),
             TextInput::make('payload.btn_secondary_section')
-                ->label('Bouton 2 — section CMS')
-                ->placeholder('e-services'),
+                ->label('Bouton 2 — section (auto)')
+                ->disabled()
+                ->dehydrated()
+                ->visible(fn ($get): bool => filled($get('payload.btn_secondary_page'))),
             TextInput::make('payload.btn_secondary_slug')
-                ->label('Bouton 2 — slug CMS')
-                ->placeholder('signaler-pratique'),
+                ->label('Bouton 2 — slug (auto)')
+                ->disabled()
+                ->dehydrated()
+                ->visible(fn ($get): bool => filled($get('payload.btn_secondary_page'))),
             TextInput::make('payload.btn_secondary_url')
-                ->label('Bouton 2 — URL (prioritaire)')
+                ->label('Bouton 2 — URL externe (prioritaire)')
                 ->url(),
         ];
     }

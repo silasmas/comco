@@ -13,10 +13,12 @@ if (! is_file($root.'/artisan')) {
   exit(1);
 }
 
-$base = 'https://raw.githubusercontent.com/silasmas/comco/ce1db43/';
+$base = 'https://raw.githubusercontent.com/silasmas/comco/main/';
 $files = [
   'app/Support/HomeSlideStyle.php',
   'app/Filament/Resources/SiteBlocks/Schemas/SiteBlockForm.php',
+  'app/Filament/Resources/SiteBlocks/Pages/EditSiteBlock.php',
+  'app/Filament/Resources/SiteBlocks/Pages/CreateSiteBlock.php',
   'resources/views/public/home/index.blade.php',
   'resources/views/components/home-slide-actions.blade.php',
   'resources/views/filament/site-blocks/partials/slide-preview-actions.blade.php',

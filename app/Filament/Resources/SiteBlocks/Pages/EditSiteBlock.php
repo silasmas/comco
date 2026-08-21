@@ -6,6 +6,7 @@ use App\Filament\Resources\Pages\ComcoEditRecord;
 use App\Filament\Resources\SiteBlocks\Concerns\HasSlidePreviewAction;
 use App\Filament\Resources\SiteBlocks\SiteBlockResource;
 use App\Models\SiteBlock;
+use App\Support\HomeSlideStyle;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 
@@ -29,6 +30,24 @@ class EditSiteBlock extends ComcoEditRecord
             $this->makeHeaderSlidePreviewAction(),
             DeleteAction::make(),
         ];
+    }
+
+    /**
+     * Hydrate les clés page de destination avant affichage du formulaire.
+     *
+     * @param  array<string, mixed>  $data  Données modèle
+     * @return array<string, mixed> Données formulaire
+     */
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $payload = $data['payload'] ?? [];
+        if (is_array($payload)) {
+            $payload = HomeSlideStyle::hydrateButtonPageField($payload, 'btn_primary');
+            $payload = HomeSlideStyle::hydrateButtonPageField($payload, 'btn_secondary');
+            $data['payload'] = $payload;
+        }
+
+        return $data;
     }
 
     /**
@@ -67,6 +86,9 @@ class EditSiteBlock extends ComcoEditRecord
         }
 
         unset($payload['uploaded_video']);
+
+        $payload = HomeSlideStyle::syncButtonPageFields($payload, 'btn_primary');
+        $payload = HomeSlideStyle::syncButtonPageFields($payload, 'btn_secondary');
 
         if ($blockType === SiteBlock::TYPE_FUN_FACT && isset($payload['value'])) {
             $payload['value'] = (int) $payload['value'];

@@ -65,6 +65,7 @@ class HomeSlideStyle
             'lg' => 'Grand',
             'xl' => 'Très grand',
             '2xl' => 'Énorme',
+            'custom' => 'Personnalisée (valeur CSS)',
         ];
     }
 
@@ -72,10 +73,15 @@ class HomeSlideStyle
      * CSS font-size du titre selon l'option choisie.
      *
      * @param  string|null  $size  Option taille
+     * @param  string|null  $custom  Valeur CSS libre (ex. 2.5rem)
      * @return string|null Valeur CSS ou null (classes thème)
      */
-    public static function titleSizeCss(?string $size): ?string
+    public static function titleSizeCss(?string $size, ?string $custom = null): ?string
     {
+        if ($size === 'custom' && filled($custom)) {
+            return self::sanitizeCssSize($custom);
+        }
+
         return match ($size) {
             'sm' => 'clamp(1.25rem, 2vw, 1.75rem)',
             'md' => 'clamp(1.5rem, 2.5vw, 2.25rem)',
@@ -90,10 +96,15 @@ class HomeSlideStyle
      * CSS font-size de la description selon l'option choisie.
      *
      * @param  string|null  $size  Option taille
+     * @param  string|null  $custom  Valeur CSS libre (ex. 1.25rem)
      * @return string|null Valeur CSS ou null (classes thème)
      */
-    public static function textSizeCss(?string $size): ?string
+    public static function textSizeCss(?string $size, ?string $custom = null): ?string
     {
+        if ($size === 'custom' && filled($custom)) {
+            return self::sanitizeCssSize($custom);
+        }
+
         return match ($size) {
             'sm' => 'clamp(0.9rem, 1.2vw, 1.05rem)',
             'md' => 'clamp(1rem, 1.4vw, 1.25rem)',
@@ -115,6 +126,7 @@ class HomeSlideStyle
             'sm' => 'Petit',
             'md' => 'Moyen (défaut)',
             'lg' => 'Grand',
+            'custom' => 'Personnalisée (valeur CSS)',
         ];
     }
 
@@ -131,6 +143,111 @@ class HomeSlideStyle
             'lg' => 'btn-lg',
             default => '',
         };
+    }
+
+    /**
+     * Style inline pour une taille de bouton personnalisée.
+     *
+     * @param  string|null  $size  Option taille
+     * @param  string|null  $custom  Valeur CSS (ex. 1.1rem)
+     * @return string Attribut style partiel
+     */
+    public static function buttonSizeStyle(?string $size, ?string $custom = null): string
+    {
+        if ($size !== 'custom') {
+            return '';
+        }
+
+        $value = self::sanitizeCssSize($custom);
+
+        return $value !== null ? 'font-size: '.$value.';' : '';
+    }
+
+    /**
+     * Nettoie une taille CSS saisie (rem, px, em, %).
+     *
+     * @param  string|null  $value  Saisie utilisateur
+     * @return string|null Valeur sûre ou null
+     */
+    public static function sanitizeCssSize(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $value = trim($value);
+
+        if ($value === '') {
+            return null;
+        }
+
+        if (preg_match('/^\d+(\.\d+)?(px|rem|em|%)$/i', $value) !== 1) {
+            return null;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Liste des pages CMS pour les liens de boutons du slide.
+     *
+     * @return array<string, string> Clé section/slug => libellé
+     */
+    public static function cmsPageOptions(): array
+    {
+        return \App\Models\Page::query()
+            ->orderBy('section')
+            ->orderBy('title')
+            ->get(['title', 'section', 'slug'])
+            ->mapWithKeys(static function ($page): array {
+                $key = $page->section.'/'.$page->slug;
+
+                return [$key => $page->title.' ('.$key.')'];
+            })
+            ->all();
+    }
+
+    /**
+     * Synchronise la clé page (section/slug) vers section + slug séparés.
+     *
+     * @param  array<string, mixed>  $payload  Payload formulaire
+     * @param  string  $prefix  btn_primary|btn_secondary
+     * @return array<string, mixed> Payload mis à jour
+     */
+    public static function syncButtonPageFields(array $payload, string $prefix): array
+    {
+        $pageKey = $payload[$prefix.'_page'] ?? null;
+
+        if (is_string($pageKey) && str_contains($pageKey, '/')) {
+            [$section, $slug] = explode('/', $pageKey, 2);
+            $payload[$prefix.'_section'] = $section;
+            $payload[$prefix.'_slug'] = $slug;
+        }
+
+        return $payload;
+    }
+
+    /**
+     * Remplit la clé page à partir de section/slug existants (édition).
+     *
+     * @param  array<string, mixed>  $payload  Payload enregistré
+     * @param  string  $prefix  btn_primary|btn_secondary
+     * @return array<string, mixed> Payload hydraté
+     */
+    public static function hydrateButtonPageField(array $payload, string $prefix): array
+    {
+        if (filled($payload[$prefix.'_page'] ?? null)) {
+            return $payload;
+        }
+
+        $section = $payload[$prefix.'_section'] ?? null;
+        $slug = $payload[$prefix.'_slug'] ?? null;
+
+        if (filled($section) && filled($slug)) {
+            $payload[$prefix.'_page'] = $section.'/'.$slug;
+        }
+
+        return $payload;
     }
 
     /**
@@ -330,6 +447,17 @@ class HomeSlideStyle
             return (string) $slide[$prefix.'_url'];
         }
 
+        $pageKey = $slide[$prefix.'_page'] ?? null;
+        if (is_string($pageKey) && str_contains($pageKey, '/')) {
+            [$section, $slug] = explode('/', $pageKey, 2);
+            if ($section !== '' && $slug !== '') {
+                return route('sections.show', [
+                    'section' => $section,
+                    'slug' => $slug,
+                ]);
+            }
+        }
+
         $section = $slide[$prefix.'_section'] ?? null;
         $slug = $slide[$prefix.'_slug'] ?? null;
 
@@ -400,12 +528,15 @@ class HomeSlideStyle
             'titleFont' => self::previewFont($get('payload.title_font')),
             'textFont' => self::previewFont($get('payload.text_font')),
             'titleSize' => (string) ($get('payload.title_size') ?: 'default'),
+            'titleSizeCustom' => (string) ($get('payload.title_size_custom') ?: ''),
             'textSize' => (string) ($get('payload.text_size') ?: 'default'),
+            'textSizeCustom' => (string) ($get('payload.text_size_custom') ?: ''),
             'hAlign' => $contentHAlign,
             'vAlign' => (string) ($get('payload.content_v_align') ?: 'center'),
             'minHeight' => (string) ($get('payload.min_height') ?: 'default'),
             'btnShape' => (string) ($get('payload.btn_shape') ?: 'rounded'),
             'btnSize' => (string) ($get('payload.btn_size') ?: 'md'),
+            'btnSizeCustom' => (string) ($get('payload.btn_size_custom') ?: ''),
             'btnAlign' => (string) ($get('payload.btn_h_align') ?: 'inherit'),
             'btnPlacement' => (string) ($get('payload.btn_placement') ?: 'after_text'),
             'primaryLabel' => $hasCustomPrimary
@@ -582,18 +713,27 @@ class HomeSlideStyle
         ], 'btn_secondary', 'danger');
         $btnRadius = self::previewButtonRadius($preview['btnShape'] ?? 'rounded');
         $btnSize = (string) ($preview['btnSize'] ?? 'md');
+        $btnSizeCustom = (string) ($preview['btnSizeCustom'] ?? '');
         $btnPadding = match ($btnSize) {
             'sm' => '0.3rem 0.65rem',
             'lg' => '0.7rem 1.2rem',
+            'custom' => '0.5rem 1rem',
             default => '0.45rem 0.85rem',
         };
         $btnFontSize = match ($btnSize) {
             'sm' => '0.75rem',
             'lg' => '1.05rem',
+            'custom' => (self::sanitizeCssSize($btnSizeCustom) ?? '0.95rem'),
             default => '0.88rem',
         };
-        $titleSizeCss = self::titleSizeCss($preview['titleSize'] ?? 'default') ?? 'clamp(1.35rem, 2.4vw, 2.1rem)';
-        $textSizeCss = self::textSizeCss($preview['textSize'] ?? 'default') ?? 'clamp(0.95rem, 1.4vw, 1.25rem)';
+        $titleSizeCss = self::titleSizeCss(
+            $preview['titleSize'] ?? 'default',
+            $preview['titleSizeCustom'] ?? null
+        ) ?? 'clamp(1.35rem, 2.4vw, 2.1rem)';
+        $textSizeCss = self::textSizeCss(
+            $preview['textSize'] ?? 'default',
+            $preview['textSizeCustom'] ?? null
+        ) ?? 'clamp(0.95rem, 1.4vw, 1.25rem)';
         $desktopH = self::previewFrameHeight($preview['minHeight'] ?? 'default', 'desktop');
         $mobileH = self::previewFrameHeight($preview['minHeight'] ?? 'default', 'mobile');
         $phoneShellH = self::previewPhoneShellHeight();

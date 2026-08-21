@@ -5,6 +5,7 @@ namespace App\Filament\Resources\SiteBlocks\Pages;
 use App\Filament\Resources\SiteBlocks\Concerns\HasSlidePreviewAction;
 use App\Filament\Resources\SiteBlocks\SiteBlockResource;
 use App\Models\SiteBlock;
+use App\Support\HomeSlideStyle;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -69,6 +70,9 @@ class CreateSiteBlock extends CreateRecord
         }
 
         unset($payload['uploaded_video']);
+
+        $payload = HomeSlideStyle::syncButtonPageFields($payload, 'btn_primary');
+        $payload = HomeSlideStyle::syncButtonPageFields($payload, 'btn_secondary');
 
         if ($blockType === SiteBlock::TYPE_FUN_FACT && isset($payload['value'])) {
             $payload['value'] = (int) $payload['value'];

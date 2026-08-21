@@ -21,6 +21,10 @@
               $vAlign = \App\Support\HomeSlideStyle::verticalAlignClass($slide['content_v_align'] ?? 'center');
               $btnShape = \App\Support\HomeSlideStyle::buttonShapeClass($slide['btn_shape'] ?? 'rounded');
               $btnSizeClass = \App\Support\HomeSlideStyle::buttonSizeClass($slide['btn_size'] ?? 'md');
+              $btnSizeStyle = \App\Support\HomeSlideStyle::buttonSizeStyle(
+                $slide['btn_size'] ?? 'md',
+                $slide['btn_size_custom'] ?? null
+              );
               $btnPlacement = $slide['btn_placement'] ?? 'after_text';
               $btnAlignClass = \App\Support\HomeSlideStyle::buttonAlignClass(
                 $slide['btn_h_align'] ?? 'inherit',
@@ -31,8 +35,14 @@
               $textColor = $slide['text_color'] ?? '#ffc107';
               $titleFont = ($slide['title_font'] ?? 'inherit') === 'inherit' ? null : $slide['title_font'];
               $textFont = ($slide['text_font'] ?? 'inherit') === 'inherit' ? null : $slide['text_font'];
-              $titleSizeCss = \App\Support\HomeSlideStyle::titleSizeCss($slide['title_size'] ?? 'default');
-              $textSizeCss = \App\Support\HomeSlideStyle::textSizeCss($slide['text_size'] ?? 'default');
+              $titleSizeCss = \App\Support\HomeSlideStyle::titleSizeCss(
+                $slide['title_size'] ?? 'default',
+                $slide['title_size_custom'] ?? null
+              );
+              $textSizeCss = \App\Support\HomeSlideStyle::textSizeCss(
+                $slide['text_size'] ?? 'default',
+                $slide['text_size_custom'] ?? null
+              );
               $hasCustomPrimary = filled($slide['btn_primary_label'] ?? null)
                 || filled($slide['btn_primary_url'] ?? null)
                 || filled($slide['btn_primary_section'] ?? null);
@@ -64,11 +74,11 @@
                 'primaryLabel' => $primaryLabel,
                 'primaryUrl' => $primaryUrl,
                 'primaryClass' => $primaryLook['class'],
-                'primaryStyleAttr' => $primaryLook['style'],
+                'primaryStyleAttr' => trim($primaryLook['style'].' '.$btnSizeStyle),
                 'secondaryLabel' => $secondaryLabel,
                 'secondaryUrl' => $secondaryUrl,
                 'secondaryClass' => $secondaryLook['class'],
-                'secondaryStyleAttr' => $secondaryLook['style'],
+                'secondaryStyleAttr' => trim($secondaryLook['style'].' '.$btnSizeStyle),
                 'btnShape' => $btnShape,
                 'btnSizeClass' => $btnSizeClass,
                 'btnAlignClass' => $btnAlignClass,
