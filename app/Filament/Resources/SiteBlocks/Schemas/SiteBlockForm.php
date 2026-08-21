@@ -148,6 +148,18 @@ class SiteBlockForm
                 ->default('inherit')
                 ->live()
                 ->native(false),
+            Select::make('payload.title_size')
+                ->label('Taille du titre')
+                ->options(HomeSlideStyle::textSizeOptions())
+                ->default('default')
+                ->live()
+                ->native(false),
+            Select::make('payload.text_size')
+                ->label('Taille de la description')
+                ->options(HomeSlideStyle::textSizeOptions())
+                ->default('default')
+                ->live()
+                ->native(false),
             Select::make('payload.content_h_align')
                 ->label('Position horizontale du texte')
                 ->options(HomeSlideStyle::horizontalAlignOptions())
@@ -174,6 +186,12 @@ class SiteBlockForm
                 ->default('rounded')
                 ->live()
                 ->native(false),
+            Select::make('payload.btn_size')
+                ->label('Taille des boutons')
+                ->options(HomeSlideStyle::buttonSizeOptions())
+                ->default('md')
+                ->live()
+                ->native(false),
             Select::make('payload.btn_h_align')
                 ->label('Position horizontale des boutons')
                 ->options(HomeSlideStyle::buttonAlignOptions())
@@ -195,11 +213,21 @@ class SiteBlockForm
                 ->live(debounce: 400)
                 ->helperText('Laissez vide pour masquer ce bouton.'),
             Select::make('payload.btn_primary_style')
-                ->label('Bouton 1 — style')
+                ->label('Bouton 1 — style prédéfini')
                 ->options(HomeSlideStyle::buttonStyleOptions())
                 ->default('warning')
                 ->live()
-                ->native(false),
+                ->native(false)
+                ->helperText('Utilisé si aucune couleur personnalisée n’est définie.'),
+            TextInput::make('payload.btn_primary_bg')
+                ->label('Bouton 1 — couleur de fond')
+                ->type('color')
+                ->live(debounce: 300)
+                ->helperText('Laissez vide pour garder le style prédéfini.'),
+            TextInput::make('payload.btn_primary_text_color')
+                ->label('Bouton 1 — couleur du texte')
+                ->type('color')
+                ->live(debounce: 300),
             TextInput::make('payload.btn_primary_section')
                 ->label('Bouton 1 — section CMS')
                 ->placeholder('qui-sommes-nous'),
@@ -216,11 +244,19 @@ class SiteBlockForm
                 ->live(debounce: 400)
                 ->helperText('Le signalement rouge est aussi dans la barre du haut. Laissez vide pour ne pas le dupliquer dans le slide.'),
             Select::make('payload.btn_secondary_style')
-                ->label('Bouton 2 — style')
+                ->label('Bouton 2 — style prédéfini')
                 ->options(HomeSlideStyle::buttonStyleOptions())
                 ->default('danger')
                 ->live()
                 ->native(false),
+            TextInput::make('payload.btn_secondary_bg')
+                ->label('Bouton 2 — couleur de fond')
+                ->type('color')
+                ->live(debounce: 300),
+            TextInput::make('payload.btn_secondary_text_color')
+                ->label('Bouton 2 — couleur du texte')
+                ->type('color')
+                ->live(debounce: 300),
             TextInput::make('payload.btn_secondary_section')
                 ->label('Bouton 2 — section CMS')
                 ->placeholder('e-services'),

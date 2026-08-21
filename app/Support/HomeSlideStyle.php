@@ -52,6 +52,127 @@ class HomeSlideStyle
     }
 
     /**
+     * Tailles de texte pour le titre / la description.
+     *
+     * @return array<string, string>
+     */
+    public static function textSizeOptions(): array
+    {
+        return [
+            'default' => 'Par défaut (thème)',
+            'sm' => 'Petit',
+            'md' => 'Moyen',
+            'lg' => 'Grand',
+            'xl' => 'Très grand',
+            '2xl' => 'Énorme',
+        ];
+    }
+
+    /**
+     * CSS font-size du titre selon l'option choisie.
+     *
+     * @param  string|null  $size  Option taille
+     * @return string|null Valeur CSS ou null (classes thème)
+     */
+    public static function titleSizeCss(?string $size): ?string
+    {
+        return match ($size) {
+            'sm' => 'clamp(1.25rem, 2vw, 1.75rem)',
+            'md' => 'clamp(1.5rem, 2.5vw, 2.25rem)',
+            'lg' => 'clamp(1.85rem, 3vw, 2.75rem)',
+            'xl' => 'clamp(2.1rem, 3.5vw, 3.25rem)',
+            '2xl' => 'clamp(2.4rem, 4vw, 3.75rem)',
+            default => null,
+        };
+    }
+
+    /**
+     * CSS font-size de la description selon l'option choisie.
+     *
+     * @param  string|null  $size  Option taille
+     * @return string|null Valeur CSS ou null (classes thème)
+     */
+    public static function textSizeCss(?string $size): ?string
+    {
+        return match ($size) {
+            'sm' => 'clamp(0.9rem, 1.2vw, 1.05rem)',
+            'md' => 'clamp(1rem, 1.4vw, 1.25rem)',
+            'lg' => 'clamp(1.15rem, 1.7vw, 1.5rem)',
+            'xl' => 'clamp(1.3rem, 2vw, 1.75rem)',
+            '2xl' => 'clamp(1.45rem, 2.3vw, 2rem)',
+            default => null,
+        };
+    }
+
+    /**
+     * Tailles de boutons disponibles.
+     *
+     * @return array<string, string>
+     */
+    public static function buttonSizeOptions(): array
+    {
+        return [
+            'sm' => 'Petit',
+            'md' => 'Moyen (défaut)',
+            'lg' => 'Grand',
+        ];
+    }
+
+    /**
+     * Classe Bootstrap de taille de bouton.
+     *
+     * @param  string|null  $size  Option taille
+     * @return string Classe CSS
+     */
+    public static function buttonSizeClass(?string $size): string
+    {
+        return match ($size) {
+            'sm' => 'btn-sm',
+            'lg' => 'btn-lg',
+            default => '',
+        };
+    }
+
+    /**
+     * Résout l'apparence d'un bouton (style Bootstrap + couleurs custom optionnelles).
+     *
+     * @param  array<string, mixed>  $slide  Payload slide
+     * @param  string  $prefix  btn_primary|btn_secondary
+     * @param  string  $defaultStyle  Style Bootstrap par défaut
+     * @return array{useCustom: bool, class: string, style: string, bg: string, color: string, border: string}
+     */
+    public static function buttonAppearance(array $slide, string $prefix, string $defaultStyle): array
+    {
+        $style = (string) ($slide[$prefix.'_style'] ?? $defaultStyle);
+        $defaults = self::previewButtonColors($style !== '' ? $style : $defaultStyle);
+        $customBg = filled($slide[$prefix.'_bg'] ?? null) ? (string) $slide[$prefix.'_bg'] : null;
+        $customText = filled($slide[$prefix.'_text_color'] ?? null) ? (string) $slide[$prefix.'_text_color'] : null;
+
+        if ($customBg !== null || $customText !== null) {
+            $bg = $customBg ?? $defaults['bg'];
+            $color = $customText ?? $defaults['color'];
+
+            return [
+                'useCustom' => true,
+                'class' => '',
+                'style' => 'background-color: '.$bg.'; color: '.$color.'; border-color: '.$bg.';',
+                'bg' => $bg,
+                'color' => $color,
+                'border' => $bg,
+            ];
+        }
+
+        return [
+            'useCustom' => false,
+            'class' => 'btn-'.$style,
+            'style' => '',
+            'bg' => $defaults['bg'],
+            'color' => $defaults['color'],
+            'border' => $defaults['border'],
+        ];
+    }
+
+    /**
      * Formes de boutons.
      *
      * @return array<string, string>
@@ -278,10 +399,13 @@ class HomeSlideStyle
             'textColor' => (string) ($get('payload.text_color') ?: '#ffc107'),
             'titleFont' => self::previewFont($get('payload.title_font')),
             'textFont' => self::previewFont($get('payload.text_font')),
+            'titleSize' => (string) ($get('payload.title_size') ?: 'default'),
+            'textSize' => (string) ($get('payload.text_size') ?: 'default'),
             'hAlign' => $contentHAlign,
             'vAlign' => (string) ($get('payload.content_v_align') ?: 'center'),
             'minHeight' => (string) ($get('payload.min_height') ?: 'default'),
             'btnShape' => (string) ($get('payload.btn_shape') ?: 'rounded'),
+            'btnSize' => (string) ($get('payload.btn_size') ?: 'md'),
             'btnAlign' => (string) ($get('payload.btn_h_align') ?: 'inherit'),
             'btnPlacement' => (string) ($get('payload.btn_placement') ?: 'after_text'),
             'primaryLabel' => $hasCustomPrimary
@@ -290,10 +414,14 @@ class HomeSlideStyle
                     : null)
                 : 'En savoir plus',
             'primaryStyle' => (string) ($get('payload.btn_primary_style') ?: 'warning'),
+            'primaryBg' => (string) ($get('payload.btn_primary_bg') ?: ''),
+            'primaryTextColor' => (string) ($get('payload.btn_primary_text_color') ?: ''),
             'secondaryLabel' => filled($get('payload.btn_secondary_label'))
                 ? (string) $get('payload.btn_secondary_label')
                 : null,
             'secondaryStyle' => (string) ($get('payload.btn_secondary_style') ?: 'danger'),
+            'secondaryBg' => (string) ($get('payload.btn_secondary_bg') ?: ''),
+            'secondaryTextColor' => (string) ($get('payload.btn_secondary_text_color') ?: ''),
         ];
     }
 
@@ -442,9 +570,30 @@ class HomeSlideStyle
             'end' => '0 0 0 auto',
             default => '0',
         };
-        $primaryColors = self::previewButtonColors($preview['primaryStyle'] ?? 'warning');
-        $secondaryColors = self::previewButtonColors($preview['secondaryStyle'] ?? 'danger');
+        $primaryColors = self::buttonAppearance([
+            'btn_primary_style' => $preview['primaryStyle'] ?? 'warning',
+            'btn_primary_bg' => $preview['primaryBg'] ?? null,
+            'btn_primary_text_color' => $preview['primaryTextColor'] ?? null,
+        ], 'btn_primary', 'warning');
+        $secondaryColors = self::buttonAppearance([
+            'btn_secondary_style' => $preview['secondaryStyle'] ?? 'danger',
+            'btn_secondary_bg' => $preview['secondaryBg'] ?? null,
+            'btn_secondary_text_color' => $preview['secondaryTextColor'] ?? null,
+        ], 'btn_secondary', 'danger');
         $btnRadius = self::previewButtonRadius($preview['btnShape'] ?? 'rounded');
+        $btnSize = (string) ($preview['btnSize'] ?? 'md');
+        $btnPadding = match ($btnSize) {
+            'sm' => '0.3rem 0.65rem',
+            'lg' => '0.7rem 1.2rem',
+            default => '0.45rem 0.85rem',
+        };
+        $btnFontSize = match ($btnSize) {
+            'sm' => '0.75rem',
+            'lg' => '1.05rem',
+            default => '0.88rem',
+        };
+        $titleSizeCss = self::titleSizeCss($preview['titleSize'] ?? 'default') ?? 'clamp(1.35rem, 2.4vw, 2.1rem)';
+        $textSizeCss = self::textSizeCss($preview['textSize'] ?? 'default') ?? 'clamp(0.95rem, 1.4vw, 1.25rem)';
         $desktopH = self::previewFrameHeight($preview['minHeight'] ?? 'default', 'desktop');
         $mobileH = self::previewFrameHeight($preview['minHeight'] ?? 'default', 'mobile');
         $phoneShellH = self::previewPhoneShellHeight();
@@ -461,11 +610,15 @@ class HomeSlideStyle
             'btnJustify',
             'titleFont',
             'textFont',
+            'titleSizeCss',
+            'textSizeCss',
             'showPrimary',
             'showSecondary',
             'primaryColors',
             'secondaryColors',
-            'btnRadius'
+            'btnRadius',
+            'btnPadding',
+            'btnFontSize'
         );
 
         return compact(
@@ -481,6 +634,10 @@ class HomeSlideStyle
             'primaryColors',
             'secondaryColors',
             'btnRadius',
+            'btnPadding',
+            'btnFontSize',
+            'titleSizeCss',
+            'textSizeCss',
             'desktopH',
             'mobileH',
             'phoneShellH',

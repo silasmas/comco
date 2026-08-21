@@ -26,7 +26,7 @@
 
       <h3
         class="comco-slide-preview__title"
-        style="color: {{ $preview['titleColor'] }}; font-family: {{ $titleFont }};"
+        style="color: {{ $preview['titleColor'] }}; font-family: {{ $titleFont }}; font-size: {{ $titleSizeCss ?? 'clamp(1.35rem, 2.4vw, 2.1rem)' }};"
       >{{ $preview['title'] }}</h3>
 
       @if (($btnPlacement ?? '') === 'after_title')
@@ -35,7 +35,7 @@
 
       <p
         class="comco-slide-preview__text"
-        style="color: {{ $preview['textColor'] }}; font-family: {{ $textFont }};"
+        style="color: {{ $preview['textColor'] }}; font-family: {{ $textFont }}; font-size: {{ $textSizeCss ?? 'clamp(0.95rem, 1.4vw, 1.25rem)' }};"
       >{{ $preview['text'] }}</p>
 
       @if (in_array($btnPlacement ?? '', ['after_text', 'bottom'], true))

@@ -1,23 +1,17 @@
 {{--
   Groupe de boutons d'un slide d'accueil.
-  @var string|null $primaryLabel
-  @var string $primaryStyle
-  @var string $primaryUrl
-  @var string|null $secondaryLabel
-  @var string $secondaryStyle
-  @var string|null $secondaryUrl
-  @var string $btnShape
-  @var string $btnAlignClass
-  @var string $extraClass Classes supplémentaires sur le conteneur actions
 --}}
 @props([
   'primaryLabel' => null,
-  'primaryStyle' => 'warning',
   'primaryUrl' => '#',
+  'primaryClass' => 'btn-warning',
+  'primaryStyleAttr' => '',
   'secondaryLabel' => null,
-  'secondaryStyle' => 'danger',
   'secondaryUrl' => null,
+  'secondaryClass' => 'btn-danger',
+  'secondaryStyleAttr' => '',
   'btnShape' => 'rounded',
+  'btnSizeClass' => '',
   'btnAlignClass' => '',
   'extraClass' => '',
 ])
@@ -26,12 +20,20 @@
   <div @class(['overflow-hidden', $extraClass])>
     <div class="comco-slide__actions d-flex flex-wrap {{ $btnAlignClass }}">
       @if (filled($primaryLabel))
-        <a class="btn btn-{{ $primaryStyle }} {{ $btnShape }} me-3 mt-3" href="{{ $primaryUrl }}">
+        <a
+          class="btn {{ $primaryClass }} {{ $btnShape }} {{ $btnSizeClass }} me-3 mt-3"
+          href="{{ $primaryUrl }}"
+          @if(filled($primaryStyleAttr)) style="{{ $primaryStyleAttr }}" @endif
+        >
           {{ $primaryLabel }}<span class="fas fa-chevron-right ms-2"></span>
         </a>
       @endif
       @if (filled($secondaryLabel))
-        <a class="btn btn-{{ $secondaryStyle }} {{ $btnShape }} mt-3" href="{{ $secondaryUrl }}">
+        <a
+          class="btn {{ $secondaryClass }} {{ $btnShape }} {{ $btnSizeClass }} mt-3"
+          href="{{ $secondaryUrl }}"
+          @if(filled($secondaryStyleAttr)) style="{{ $secondaryStyleAttr }}" @endif
+        >
           {{ $secondaryLabel }}<span class="fas fa-exclamation-triangle ms-2"></span>
         </a>
       @endif

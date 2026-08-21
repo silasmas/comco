@@ -20,6 +20,7 @@
               $hAlign = \App\Support\HomeSlideStyle::horizontalAlignClasses($slide['content_h_align'] ?? 'start');
               $vAlign = \App\Support\HomeSlideStyle::verticalAlignClass($slide['content_v_align'] ?? 'center');
               $btnShape = \App\Support\HomeSlideStyle::buttonShapeClass($slide['btn_shape'] ?? 'rounded');
+              $btnSizeClass = \App\Support\HomeSlideStyle::buttonSizeClass($slide['btn_size'] ?? 'md');
               $btnPlacement = $slide['btn_placement'] ?? 'after_text';
               $btnAlignClass = \App\Support\HomeSlideStyle::buttonAlignClass(
                 $slide['btn_h_align'] ?? 'inherit',
@@ -30,21 +31,23 @@
               $textColor = $slide['text_color'] ?? '#ffc107';
               $titleFont = ($slide['title_font'] ?? 'inherit') === 'inherit' ? null : $slide['title_font'];
               $textFont = ($slide['text_font'] ?? 'inherit') === 'inherit' ? null : $slide['text_font'];
+              $titleSizeCss = \App\Support\HomeSlideStyle::titleSizeCss($slide['title_size'] ?? 'default');
+              $textSizeCss = \App\Support\HomeSlideStyle::textSizeCss($slide['text_size'] ?? 'default');
               $hasCustomPrimary = filled($slide['btn_primary_label'] ?? null)
                 || filled($slide['btn_primary_url'] ?? null)
                 || filled($slide['btn_primary_section'] ?? null);
               $primaryLabel = $hasCustomPrimary
                 ? ($slide['btn_primary_label'] ?? null)
                 : 'En savoir plus';
-              $primaryStyle = $slide['btn_primary_style'] ?? 'warning';
               $primaryUrl = $hasCustomPrimary
                 ? \App\Support\HomeSlideStyle::buttonUrl($slide, 'btn_primary')
                 : route('sections.show', ['section' => 'qui-sommes-nous', 'slug' => 'presentation']);
+              $primaryLook = \App\Support\HomeSlideStyle::buttonAppearance($slide, 'btn_primary', 'warning');
               $secondaryLabel = $slide['btn_secondary_label'] ?? null;
-              $secondaryStyle = $slide['btn_secondary_style'] ?? 'danger';
               $secondaryUrl = filled($secondaryLabel)
                 ? \App\Support\HomeSlideStyle::buttonUrl($slide, 'btn_secondary')
                 : null;
+              $secondaryLook = \App\Support\HomeSlideStyle::buttonAppearance($slide, 'btn_secondary', 'danger');
               $showActions = filled($primaryLabel) || filled($secondaryLabel);
               $heightStyle = ($minHeight !== 'default' && filled($minHeight))
                 ? '--comco-slide-min-h: '.$minHeight.';'
@@ -53,6 +56,23 @@
               if ($btnPlacement === 'bottom') {
                 $contentColClass .= ' comco-slide__content--actions-bottom';
               }
+              $titleClass = $titleSizeCss ? 'lh-1 comco-slide__title' : 'fs-4 fs-md-5 lh-1 comco-slide__title';
+              $textClass = 'slide-subtitle comco-slide__text pt-4 lh-xs '
+                .(($btnPlacement === 'after_text' || $btnPlacement === 'bottom') ? 'mb-5 ' : 'mb-0 ')
+                .($textSizeCss ? '' : 'fs-1 fs-md-2');
+              $actionsProps = [
+                'primaryLabel' => $primaryLabel,
+                'primaryUrl' => $primaryUrl,
+                'primaryClass' => $primaryLook['class'],
+                'primaryStyleAttr' => $primaryLook['style'],
+                'secondaryLabel' => $secondaryLabel,
+                'secondaryUrl' => $secondaryUrl,
+                'secondaryClass' => $secondaryLook['class'],
+                'secondaryStyleAttr' => $secondaryLook['style'],
+                'btnShape' => $btnShape,
+                'btnSizeClass' => $btnSizeClass,
+                'btnAlignClass' => $btnAlignClass,
+              ];
             @endphp
             <div class="swiper-slide comco-slide" @if($heightStyle !== '') style="{{ $heightStyle }}" @endif>
               <div class="bg-holder" style="background-image:url({{ blockAsset($slide) }});"></div>
@@ -61,52 +81,61 @@
                   <div class="{{ $contentColClass }}">
                     @if ($showActions && $btnPlacement === 'before_title')
                       <x-home-slide-actions
-                        :primary-label="$primaryLabel"
-                        :primary-style="$primaryStyle"
-                        :primary-url="$primaryUrl"
-                        :secondary-label="$secondaryLabel"
-                        :secondary-style="$secondaryStyle"
-                        :secondary-url="$secondaryUrl"
-                        :btn-shape="$btnShape"
-                        :btn-align-class="$btnAlignClass.' mb-3'"
+                        :primary-label="$actionsProps['primaryLabel']"
+                        :primary-url="$actionsProps['primaryUrl']"
+                        :primary-class="$actionsProps['primaryClass']"
+                        :primary-style-attr="$actionsProps['primaryStyleAttr']"
+                        :secondary-label="$actionsProps['secondaryLabel']"
+                        :secondary-url="$actionsProps['secondaryUrl']"
+                        :secondary-class="$actionsProps['secondaryClass']"
+                        :secondary-style-attr="$actionsProps['secondaryStyleAttr']"
+                        :btn-shape="$actionsProps['btnShape']"
+                        :btn-size-class="$actionsProps['btnSizeClass']"
+                        :btn-align-class="$actionsProps['btnAlignClass'].' mb-3'"
                       />
                     @endif
                     <div class="overflow-hidden">
                       <h1
-                        class="fs-4 fs-md-5 lh-1 comco-slide__title"
-                        style="color: {{ $titleColor }};@if($titleFont) font-family: {{ $titleFont }};@endif"
+                        class="{{ $titleClass }}"
+                        style="color: {{ $titleColor }};@if($titleFont) font-family: {{ $titleFont }};@endif@if($titleSizeCss) font-size: {{ $titleSizeCss }};@endif"
                       >{{ $slide['title'] }}</h1>
                     </div>
                     @if ($showActions && $btnPlacement === 'after_title')
                       <x-home-slide-actions
-                        :primary-label="$primaryLabel"
-                        :primary-style="$primaryStyle"
-                        :primary-url="$primaryUrl"
-                        :secondary-label="$secondaryLabel"
-                        :secondary-style="$secondaryStyle"
-                        :secondary-url="$secondaryUrl"
-                        :btn-shape="$btnShape"
-                        :btn-align-class="$btnAlignClass.' mb-4'"
+                        :primary-label="$actionsProps['primaryLabel']"
+                        :primary-url="$actionsProps['primaryUrl']"
+                        :primary-class="$actionsProps['primaryClass']"
+                        :primary-style-attr="$actionsProps['primaryStyleAttr']"
+                        :secondary-label="$actionsProps['secondaryLabel']"
+                        :secondary-url="$actionsProps['secondaryUrl']"
+                        :secondary-class="$actionsProps['secondaryClass']"
+                        :secondary-style-attr="$actionsProps['secondaryStyleAttr']"
+                        :btn-shape="$actionsProps['btnShape']"
+                        :btn-size-class="$actionsProps['btnSizeClass']"
+                        :btn-align-class="$actionsProps['btnAlignClass'].' mb-4'"
                       />
                     @endif
                     @if (filled($slide['text'] ?? null))
                       <div class="overflow-hidden">
                         <p
-                          class="slide-subtitle comco-slide__text pt-4 @if($btnPlacement === 'after_text' || $btnPlacement === 'bottom') mb-5 @else mb-0 @endif fs-1 fs-md-2 lh-xs"
-                          style="color: {{ $textColor }} !important;@if($textFont) font-family: {{ $textFont }};@endif"
+                          class="{{ $textClass }}"
+                          style="color: {{ $textColor }} !important;@if($textFont) font-family: {{ $textFont }};@endif@if($textSizeCss) font-size: {{ $textSizeCss }};@endif"
                         >{{ $slide['text'] }}</p>
                       </div>
                     @endif
                     @if ($showActions && in_array($btnPlacement, ['after_text', 'bottom'], true))
                       <x-home-slide-actions
-                        :primary-label="$primaryLabel"
-                        :primary-style="$primaryStyle"
-                        :primary-url="$primaryUrl"
-                        :secondary-label="$secondaryLabel"
-                        :secondary-style="$secondaryStyle"
-                        :secondary-url="$secondaryUrl"
-                        :btn-shape="$btnShape"
-                        :btn-align-class="$btnAlignClass"
+                        :primary-label="$actionsProps['primaryLabel']"
+                        :primary-url="$actionsProps['primaryUrl']"
+                        :primary-class="$actionsProps['primaryClass']"
+                        :primary-style-attr="$actionsProps['primaryStyleAttr']"
+                        :secondary-label="$actionsProps['secondaryLabel']"
+                        :secondary-url="$actionsProps['secondaryUrl']"
+                        :secondary-class="$actionsProps['secondaryClass']"
+                        :secondary-style-attr="$actionsProps['secondaryStyleAttr']"
+                        :btn-shape="$actionsProps['btnShape']"
+                        :btn-size-class="$actionsProps['btnSizeClass']"
+                        :btn-align-class="$actionsProps['btnAlignClass']"
                         :extra-class="$btnPlacement === 'bottom' ? 'comco-slide__actions-wrap--bottom' : ''"
                       />
                     @endif
