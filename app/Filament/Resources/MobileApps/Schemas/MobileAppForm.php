@@ -60,16 +60,20 @@ class MobileAppForm
               ->label('Fichier APK')
               ->disk('public')
               ->directory('mobile-apps')
+              // Les navigateurs envoient souvent octet-stream / zip pour un .apk.
               ->acceptedFileTypes([
                 'application/vnd.android.package-archive',
                 'application/octet-stream',
-                '.apk',
+                'application/java-archive',
+                'application/zip',
+                'application/x-zip-compressed',
               ])
+              ->rules(['extensions:apk'])
               ->maxSize(1024 * 200)
               ->required()
               ->downloadable()
               ->openable(false)
-              ->helperText('Fichier .apk uniquement (max. 200 Mo).')
+              ->helperText('Fichier .apk uniquement (max. 200 Mo). L’upload peut prendre quelques secondes.')
               ->columnSpanFull(),
             Textarea::make('notes')
               ->label('Notes internes')
