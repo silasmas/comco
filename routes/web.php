@@ -7,6 +7,7 @@ use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\CoordinationController;
 use App\Http\Controllers\Public\ForumController;
 use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\MobileAppController;
 use App\Http\Controllers\Public\PageController;
 use App\Http\Controllers\Public\PostController;
 use App\Http\Controllers\Public\SitemapController;
@@ -72,6 +73,8 @@ Route::prefix('public/admin')->group(function (): void {
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/app-mobile/{slug}', [MobileAppController::class, 'show'])->name('mobile-apps.show');
+Route::get('/app-mobile/{slug}/telecharger', [MobileAppController::class, 'download'])->name('mobile-apps.download');
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');
 Route::get('/plan-du-site', [SitemapController::class, 'show'])->name('sitemap');
 Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');

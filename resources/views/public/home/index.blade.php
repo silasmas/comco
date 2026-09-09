@@ -83,6 +83,21 @@
                 'btnSizeClass' => $btnSizeClass,
                 'btnAlignClass' => $btnAlignClass,
               ];
+              // Styles construits en PHP : @if dans un attribut style casse la compilation Blade.
+              $titleStyle = 'color: '.$titleColor.';';
+              if ($titleFont) {
+                $titleStyle .= ' font-family: '.$titleFont.';';
+              }
+              if ($titleSizeCss) {
+                $titleStyle .= ' font-size: '.$titleSizeCss.';';
+              }
+              $textStyle = 'color: '.$textColor.' !important;';
+              if ($textFont) {
+                $textStyle .= ' font-family: '.$textFont.';';
+              }
+              if ($textSizeCss) {
+                $textStyle .= ' font-size: '.$textSizeCss.';';
+              }
             @endphp
             <div class="swiper-slide comco-slide" @if($heightStyle !== '') style="{{ $heightStyle }}" @endif>
               <div class="bg-holder" style="background-image:url({{ blockAsset($slide) }});"></div>
@@ -105,10 +120,7 @@
                       />
                     @endif
                     <div class="overflow-hidden">
-                      <h1
-                        class="{{ $titleClass }}"
-                        style="color: {{ $titleColor }};@if($titleFont) font-family: {{ $titleFont }};@endif@if($titleSizeCss) font-size: {{ $titleSizeCss }};@endif"
-                      >{{ $slide['title'] }}</h1>
+                      <h1 class="{{ $titleClass }}" style="{{ $titleStyle }}">{{ $slide['title'] }}</h1>
                     </div>
                     @if ($showActions && $btnPlacement === 'after_title')
                       <x-home-slide-actions
@@ -127,10 +139,7 @@
                     @endif
                     @if (filled($slide['text'] ?? null))
                       <div class="overflow-hidden">
-                        <p
-                          class="{{ $textClass }}"
-                          style="color: {{ $textColor }} !important;@if($textFont) font-family: {{ $textFont }};@endif@if($textSizeCss) font-size: {{ $textSizeCss }};@endif"
-                        >{{ $slide['text'] }}</p>
+                        <p class="{{ $textClass }}" style="{{ $textStyle }}">{{ $slide['text'] }}</p>
                       </div>
                     @endif
                     @if ($showActions && in_array($btnPlacement, ['after_text', 'bottom'], true))
