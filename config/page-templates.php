@@ -21,6 +21,10 @@ return [
     'cadre-juridique' => 'legal',
     'decrets' => 'legal',
     'documentation-diverse' => 'blank',
+    'CentredInformation' => 'presentation-hub',
+    'rapport' => 'presentation-hub',
+    'publication' => 'presentation-hub',
+    'autrerapport' => 'presentation-hub',
   ],
 
   'medias' => [

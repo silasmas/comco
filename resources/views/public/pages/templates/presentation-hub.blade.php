@@ -29,6 +29,10 @@
     'decrets' => 'fas fa-file-alt',
     'documentation-diverse' => 'fas fa-folder-open',
     'actualites' => 'fas fa-newspaper',
+    'CentredInformation' => 'fas fa-home',
+    'rapport' => 'fas fa-file-alt',
+    'publication' => 'fas fa-book-open',
+    'autrerapport' => 'fas fa-folder-open',
   ];
 @endphp
 
@@ -112,7 +116,7 @@
             <div class="comco-overview__media">
               <img
                 class="comco-overview__image"
-                src="{{ $coverImage ? pageAsset($coverImage->image, $coverImage->image_source) : themeAsset('assets/img/background-2.jpg') }}"
+                src="{{ $coverImage ? pageAsset($coverImage->image, $coverImage->image_source ?? 'theme') : comcoAsset('talo.jpg') }}"
                 alt="{{ $coverImage->caption ?? $page->title }}"
               >
             </div>
