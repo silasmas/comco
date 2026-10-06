@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\MobileApp;
-use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -13,6 +13,31 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  */
 class MobileAppController extends Controller
 {
+  /**
+   * Liste des applications actives, ou redirection s'il n'y en a qu'une.
+   *
+   * @return View|RedirectResponse Vue liste ou redirection vers le détail
+   */
+  public function index(): View|RedirectResponse
+  {
+    $apps = MobileApp::query()
+      ->active()
+      ->orderByDesc('updated_at')
+      ->get()
+      ->filter(fn (MobileApp $app): bool => $app->fileExists())
+      ->values();
+
+    abort_if($apps->isEmpty(), 404);
+
+    if ($apps->count() === 1) {
+      return redirect()->route('mobile-apps.show', ['slug' => $apps->first()->slug]);
+    }
+
+    return view('public.mobile-apps.index', [
+      'apps' => $apps,
+    ]);
+  }
+
   /**
    * Affiche la page de partage (lien + QR + bouton de téléchargement).
    *

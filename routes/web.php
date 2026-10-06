@@ -73,6 +73,7 @@ Route::prefix('public/admin')->group(function (): void {
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/app-mobile', [MobileAppController::class, 'index'])->name('mobile-apps.index');
 Route::get('/app-mobile/{slug}', [MobileAppController::class, 'show'])->name('mobile-apps.show');
 Route::get('/app-mobile/{slug}/telecharger', [MobileAppController::class, 'download'])->name('mobile-apps.download');
 Route::get('/contact', [ContactController::class, 'show'])->name('contact');

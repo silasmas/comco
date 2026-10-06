@@ -9,6 +9,17 @@
       <div class="col-md mt-3 mt-md-0">
         <p class="lh-lg mb-2 fw-semi-bold footer-tagline">{{ config('institution.tagline') }}</p>
         <p class="lh-lg mb-0">&copy; {{ date('Y') }} {{ config('institution.shortName') }} / RDC. Tous droits réservés.</p>
+        @php
+          $showApkFooter = \Illuminate\Support\Facades\Schema::hasTable('mobile_apps')
+            && \App\Models\MobileApp::query()->active()->whereNotNull('file_path')->exists();
+        @endphp
+        @if ($showApkFooter)
+          <p class="lh-lg mb-0 mt-2">
+            <a href="{{ route('mobile-apps.index') }}" class="text-white text-decoration-underline">
+              Télécharger l’application mobile (APK)
+            </a>
+          </p>
+        @endif
       </div>
       <div class="col-md-4 text-md-end mt-3 mt-md-0">
         <p class="mb-1">{{ config('institution.contact.address') }}</p>

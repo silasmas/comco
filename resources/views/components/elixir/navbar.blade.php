@@ -1,6 +1,11 @@
 @php
   use App\Support\NavigationUrl;
+  use App\Models\MobileApp;
+  use Illuminate\Support\Facades\Schema;
+
   $mainMenu = config('navigation.main');
+  $mobileAppsAvailable = Schema::hasTable('mobile_apps')
+    && MobileApp::query()->active()->whereNotNull('file_path')->exists();
 @endphp
 
 <div class="sticky-top navbar-elixir">
@@ -83,6 +88,16 @@
               @endif
             </li>
           @endforeach
+          @if ($mobileAppsAvailable)
+            <li class="nav-item">
+              <a
+                class="nav-link @if(request()->routeIs('mobile-apps.*')) active @endif"
+                href="{{ route('mobile-apps.index') }}"
+              >
+                Application mobile
+              </a>
+            </li>
+          @endif
         </ul>
         <a
           class="comco-ministry-link comco-ministry-link--desktop d-none d-lg-inline-flex"
